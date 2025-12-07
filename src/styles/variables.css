@@ -1,0 +1,18 @@
+:root {
+  /* Purple color variants */
+  --very-light-purple: #eaddf8;
+  --medium-purple: #BF7EFA;
+  --purple: #9527F5;
+  --darker-purple: #8607f5;
+
+  /* Green color variants */
+  --light-green: #D1FAE5;
+  --medium-green: #34D399;
+  --green: #10B981;
+
+  /* Red color variants */
+  --light-red: #FEE2E2;
+  --medium-red: #F87171;
+  --red: #EF4444;
+}
+
