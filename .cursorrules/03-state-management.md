@@ -354,3 +354,5 @@ const FeatureComponent = () => {
 4. **Debounce/throttle** frequent state updates
 5. **Lazy load** state management libraries if possible
 
+
+

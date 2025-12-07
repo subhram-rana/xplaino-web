@@ -394,3 +394,5 @@ export default {
 - [ ] Profile before optimizing
 - [ ] Test performance on slow devices/networks
 
+
+
