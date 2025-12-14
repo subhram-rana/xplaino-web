@@ -1,0 +1,24 @@
+.promoVideo {
+  flex: 1;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(149, 39, 245, 0.2), 0 4px 20px rgba(149, 39, 245, 0.1);
+}
+
+.video {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .promoVideo {
+    max-width: 600px;
+    width: 100%;
+  }
+}
+

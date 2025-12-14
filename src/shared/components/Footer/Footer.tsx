@@ -12,15 +12,21 @@ export const Footer: React.FC = () => {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.links}>
-          <Link to="/terms-and-conditions" className={styles.link}>
-            Terms & Conditions
-          </Link>
           <Link to="/privacy-policy" className={styles.link}>
             Privacy Policy
           </Link>
+          <Link to="/terms-and-conditions" className={styles.link}>
+            Terms
+          </Link>
+          <Link to="/refund-policy" className={styles.link}>
+            Refund Policy
+          </Link>
+          <Link to="/contact" className={styles.link}>
+            Contact Us
+          </Link>
         </div>
         <p className={styles.copyright}>
-          © {new Date().getFullYear()} Xplaino. All rights reserved.
+          Copyright © {new Date().getFullYear()}
         </p>
       </div>
     </footer>

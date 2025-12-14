@@ -1,0 +1,547 @@
+.reportIssue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  width: 100%;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  padding: 2rem;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.formVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.formHidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldGroupVisible {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #000;
+  font-family: 'Inter', sans-serif;
+}
+
+.required {
+  color: var(--red);
+  margin-left: 2px;
+}
+
+.optional {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #666;
+  margin-left: 4px;
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--very-light-purple);
+  border-radius: 20px;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s ease;
+  background-color: white;
+  color: #000;
+}
+
+.select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239527F5' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+.dropdownContainer {
+  position: relative;
+  width: 100%;
+}
+
+.dropdownButton {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--purple);
+  border-radius: 20px;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  background-color: white;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.2s ease;
+  text-align: left;
+}
+
+.dropdownButton:hover {
+  border-color: var(--darker-purple);
+}
+
+.dropdownButtonOpen {
+  border-color: var(--purple);
+}
+
+.dropdownButtonText {
+  flex: 1;
+}
+
+.dropdownChevron {
+  font-size: 0.75rem;
+  color: var(--purple);
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.dropdownChevronOpen {
+  transform: rotate(180deg);
+}
+
+.dropdownList {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--very-light-purple);
+  border-radius: 20px;
+  overflow: hidden;
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownOption {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: none;
+  background-color: white;
+  color: #000;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: block;
+}
+
+.dropdownOption:hover {
+  background-color: #f5f0ff;
+}
+
+.dropdownOptionSelected {
+  background-color: #f5f0ff;
+  font-weight: 500;
+}
+
+.dropdownOption:first-child {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.dropdownOption:last-child {
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.select:focus,
+.input:focus {
+  border-color: var(--medium-purple);
+}
+
+.select:hover,
+.input:hover {
+  border-color: var(--medium-purple);
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.inputError,
+.select.inputError,
+.textarea.inputError,
+.dropdownButton.inputError {
+  border-color: var(--red);
+}
+
+.inputError:focus,
+.select.inputError:focus,
+.textarea.inputError:focus,
+.dropdownButton.inputError:focus {
+  border-color: var(--red);
+}
+
+.errorMessage {
+  font-size: 0.875rem;
+  color: var(--red);
+  font-family: 'Inter', sans-serif;
+  margin-top: -0.25rem;
+}
+
+.textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--very-light-purple);
+  border-radius: 20px;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  resize: vertical;
+  min-height: 200px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.textarea:focus {
+  border-color: var(--medium-purple);
+}
+
+.textarea::placeholder {
+  color: #999;
+}
+
+.fileUploadArea {
+  position: relative;
+  width: 100%;
+}
+
+.fileInput {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.fileInputLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  border: 2px dashed var(--very-light-purple);
+  border-radius: 20px;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  min-height: 120px;
+}
+
+.fileInputLabel:hover {
+  border-color: var(--medium-purple);
+  background-color: #f5f0ff;
+}
+
+.fileInputLabelDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+}
+
+.fileInputLabelDisabled:hover {
+  border-color: var(--very-light-purple);
+  background-color: #f0f0f0;
+}
+
+.fileInputText {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--purple);
+  font-family: 'Inter', sans-serif;
+}
+
+.fileInputHint {
+  font-size: 0.875rem;
+  color: #666;
+  font-family: 'Inter', sans-serif;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.fileItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #f5f0ff;
+  border: 1px solid var(--very-light-purple);
+  border-radius: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.fileItem:hover {
+  background-color: #ede5ff;
+}
+
+.fileName {
+  font-size: 0.9rem;
+  color: #000;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+}
+
+.removeFileButton {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.removeFileButton:hover {
+  transform: scale(1.2);
+  color: var(--medium-red);
+}
+
+.removeFileButton:active {
+  transform: scale(1);
+}
+
+.submitButton {
+  padding: 0.875rem 2rem;
+  background-color: var(--purple);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  align-self: center;
+  min-width: 150px;
+}
+
+.submitButton:hover {
+  background-color: var(--darker-purple);
+  transform: scale(1.05);
+}
+
+.submitButton:active {
+  transform: scale(1);
+}
+
+.successMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 2rem;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.successVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.successHidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.successText {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.reportAnotherButton {
+  padding: 0.875rem 2rem;
+  background-color: var(--purple);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  min-width: 200px;
+}
+
+.reportAnotherButton:hover {
+  background-color: var(--darker-purple);
+  transform: scale(1.05);
+}
+
+.reportAnotherButton:active {
+  transform: scale(1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .reportIssue {
+    min-height: calc(100vh - 150px);
+  }
+
+  .form {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .heading {
+    font-size: 1.75rem;
+  }
+
+  .textarea {
+    min-height: 150px;
+  }
+
+  .fileInputLabel {
+    padding: 1.5rem 1rem;
+    min-height: 100px;
+  }
+
+  .fileInputText {
+    font-size: 0.95rem;
+  }
+
+  .fileInputHint {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .heading {
+    font-size: 1.5rem;
+  }
+
+  .label {
+    font-size: 0.9rem;
+  }
+
+  .select,
+  .input,
+  .textarea,
+  .dropdownButton {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .dropdownOption {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .fileInputLabel {
+    padding: 1.25rem 0.75rem;
+    min-height: 90px;
+  }
+
+  .fileInputText {
+    font-size: 0.9rem;
+  }
+
+  .fileInputHint {
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 0 0.5rem;
+  }
+
+  .fileItem {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .fileName {
+    font-size: 0.85rem;
+  }
+
+  .submitButton {
+    width: 100%;
+  }
+
+  .successText {
+    font-size: 1.25rem;
+  }
+
+  .reportAnotherButton {
+    width: 100%;
+  }
+}
+

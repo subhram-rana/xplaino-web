@@ -1,4 +1,8 @@
 import React from 'react';
+import { Promo } from './components/Promo';
+import { UseCase } from './components/UseCase';
+import { FeatureSet } from './components/FeatureSet';
+import { ChromeButton } from '@/shared/components/ChromeButton';
 import styles from './Home.module.css';
 
 /**
@@ -9,8 +13,12 @@ import styles from './Home.module.css';
 export const Home: React.FC = () => {
   return (
     <div className={styles.home}>
-      <h1>Welcome to Xplaino</h1>
-      <p>Your platform for explanations and discussions.</p>
+      <Promo />
+      <FeatureSet />
+      <UseCase />
+      <div className={styles.chromeButtonContainer}>
+        <ChromeButton />
+      </div>
     </div>
   );
 };

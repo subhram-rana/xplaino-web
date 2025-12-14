@@ -1,7 +1,28 @@
 .pageContent {
   padding-left: 4.5rem;
   padding-right: 4.5rem;
+  padding-bottom: 4rem;
   min-height: calc(100vh - 80px);
+}
+
+.pageContentFullWidth {
+  padding-bottom: 4rem;
+  min-height: calc(100vh - 80px);
+}
+
+.fadeIn {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive design */
@@ -9,6 +30,11 @@
   .pageContent {
     padding-left: 3rem;
     padding-right: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .pageContentFullWidth {
+    padding-bottom: 3rem;
   }
 }
 
@@ -16,6 +42,11 @@
   .pageContent {
     padding-left: 2.25rem;
     padding-right: 2.25rem;
+    padding-bottom: 2rem;
+  }
+
+  .pageContentFullWidth {
+    padding-bottom: 2rem;
   }
 }
 

@@ -1,0 +1,61 @@
+.chromeButton {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 0.875rem 1.5rem;
+  padding-left: 0.875rem;
+  background-color: var(--purple);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: fit-content;
+  box-shadow: 0 8px 32px rgba(149, 39, 245, 0.2), 0 4px 20px rgba(149, 39, 245, 0.1);
+  animation: breathe 2s ease-in-out infinite;
+  transform-origin: center;
+  margin: 0;
+}
+
+.chromeButton:hover {
+  background-color: var(--darker-purple);
+  animation: none;
+  transform: scale(1.05);
+}
+
+.chromeLogo {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.buttonText {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-family: 'Inter', sans-serif;
+  margin-left: 0;
+  padding-left: 2rem;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .chromeButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

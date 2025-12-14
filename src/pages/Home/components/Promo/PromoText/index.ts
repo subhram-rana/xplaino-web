@@ -1,0 +1,2 @@
+export { PromoText } from './PromoText';
+

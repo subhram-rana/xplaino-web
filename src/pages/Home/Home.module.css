@@ -1,1 +1,24 @@
+.home {
+  width: 100%;
+}
 
+.chromeButtonContainer {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 4.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .chromeButtonContainer {
+    padding: 2rem 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chromeButtonContainer {
+    padding: 1.5rem 1rem;
+  }
+}

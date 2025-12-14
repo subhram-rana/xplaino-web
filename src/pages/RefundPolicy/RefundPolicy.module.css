@@ -1,0 +1,14 @@
+.refundPolicy {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.refundPolicy h1 {
+  margin-bottom: 1.5rem;
+}
+
+.refundPolicy p {
+  line-height: 1.6;
+}
+

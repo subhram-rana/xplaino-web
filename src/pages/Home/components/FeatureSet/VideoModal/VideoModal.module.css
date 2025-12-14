@@ -1,0 +1,203 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+  animation: overlayFadeIn 0.3s ease-out;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContent {
+  background-color: #000;
+  border-radius: 30px;
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+}
+
+.modalOpening {
+  animation: modalOpen 0.3s ease-out forwards;
+}
+
+.modalClosing {
+  animation: modalClose 0.3s ease-in forwards;
+}
+
+@keyframes modalOpen {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes modalClose {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.modalTitle {
+  padding: 1.5rem 1.5rem 1rem;
+  margin: 0;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+.videoWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.video {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  display: block;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background-color: var(--very-light-purple);
+}
+
+.controlButton {
+  background: none;
+  border: none;
+  color: var(--purple);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  min-width: 40px;
+}
+
+.controlButton:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.seekBar {
+  flex: 1;
+  height: 6px;
+  background-color: rgba(149, 39, 245, 0.3);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.seekBar::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: var(--purple);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.seekBar::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: var(--purple);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.time {
+  color: var(--purple);
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 100px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 1rem;
+  }
+
+  .modalContent {
+    max-width: 95vw;
+  }
+
+  .modalTitle {
+    font-size: 1.25rem;
+    padding: 1rem 1rem 0.75rem;
+  }
+
+  .controls {
+    padding: 0.75rem 1rem;
+  }
+
+  .time {
+    font-size: 0.75rem;
+    min-width: 80px;
+  }
+}
+
