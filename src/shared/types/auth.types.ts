@@ -1,0 +1,49 @@
+/**
+ * Authentication-related TypeScript types
+ * 
+ * Matches the API models from the Caten backend
+ */
+
+export type AuthVendor = 'GOOGLE';
+
+export interface UserInfo {
+  id: string;
+  name: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  email: string;
+  picture?: string | null;
+}
+
+export interface LoginRequest {
+  authVendor: AuthVendor;
+  idToken: string;
+}
+
+export interface LoginResponse {
+  isLoggedIn: boolean;
+  accessToken: string;
+  accessTokenExpiresAt: number;
+  refreshToken: string;
+  refreshTokenExpiresAt: number;
+  userSessionPk: string;
+  user: UserInfo;
+}
+
+export interface LogoutRequest {
+  authVendor: AuthVendor;
+}
+
+export interface LogoutResponse {
+  isLoggedIn: boolean;
+  accessToken: string;
+  accessTokenExpiresAt: number;
+  userSessionPk: string;
+  user: UserInfo;
+}
+
+/**
+ * Auth state stored in chrome.storage.local
+ */
+export interface AuthState extends LoginResponse {}
+

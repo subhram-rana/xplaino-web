@@ -7,9 +7,20 @@
 }
 
 .content {
-  text-align: center;
-  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
+}
+
+.loginContainer {
+  background-color: white;
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(149, 39, 245, 0.3), 0 8px 32px rgba(149, 39, 245, 0.2);
+  padding: 3rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
 }
 
 .heading {
@@ -17,23 +28,57 @@
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--purple);
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
-.message {
+.googleButtonWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  border-radius: 9999px;
+}
+
+/* Style the Google sign-in button to be pill-shaped */
+.googleButtonWrapper :global(div[role="button"]) {
+  border-radius: 9999px !important;
+  overflow: hidden !important;
+}
+
+.googleButtonWrapper :global(iframe) {
+  border-radius: 9999px !important;
+}
+
+.googleButtonWrapper :global(div) {
+  border-radius: 9999px !important;
+  overflow: hidden !important;
+}
+
+.errorMessage {
   font-family: 'Inter', sans-serif;
-  font-size: 1.125rem;
-  color: #666;
-  line-height: 1.6;
+  font-size: 0.875rem;
+  color: var(--red);
+  background-color: var(--light-red);
+  padding: 0.75rem 1rem;
+  border-radius: var(--button-border-radius);
+  margin-top: 1rem;
+}
+
+.loadingMessage {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: var(--purple);
+  margin-top: 1rem;
 }
 
 @media (max-width: 768px) {
-  .heading {
-    font-size: 2rem;
+  .loginContainer {
+    padding: 2rem 1.5rem;
   }
 
-  .message {
-    font-size: 1rem;
+  .heading {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
   }
 }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Navbar } from '@/shared/components/Navbar';
 import { PageContent } from '@/shared/components/PageContent';
 import { Footer } from '@/shared/components/Footer';
@@ -13,6 +14,7 @@ import { MyWords } from '@/pages/MyLearnings/Words';
 import { MyParagraphs } from '@/pages/MyLearnings/Paragraphs';
 import { MyPages } from '@/pages/MyLearnings/Pages';
 import { Login } from '@/pages/Login';
+import { authConfig } from '@/config/auth.config';
 
 /**
  * App - Main application component with routing
@@ -21,25 +23,27 @@ import { Login } from '@/pages/Login';
  */
 export const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <PageContent>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/report-issue" element={<ReportIssue />} />
-          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/refund-policy" element={<RefundPolicy />} />
-          <Route path="/my-words" element={<MyWords />} />
-          <Route path="/my-paragraphs" element={<MyParagraphs />} />
-          <Route path="/my-pages" element={<MyPages />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </PageContent>
-      <Footer />
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={authConfig.googleClientId}>
+      <BrowserRouter>
+        <Navbar />
+        <PageContent>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/report-issue" element={<ReportIssue />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/my-words" element={<MyWords />} />
+            <Route path="/my-paragraphs" element={<MyParagraphs />} />
+            <Route path="/my-pages" element={<MyPages />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </PageContent>
+        <Footer />
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 };
 

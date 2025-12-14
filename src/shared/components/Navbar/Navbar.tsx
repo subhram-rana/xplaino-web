@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import logoImage from '../../../assets/images/logo-white-removebg.png';
 import { DropdownIcon } from '@/shared/components/DropdownIcon';
+import { useAuth } from '@/shared/hooks/useAuth';
 
 /**
  * Navbar - Main navigation component with logo, brand name, and navigation links
@@ -12,6 +13,8 @@ import { DropdownIcon } from '@/shared/components/DropdownIcon';
 export const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { isLoggedIn, user, logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -24,6 +27,18 @@ export const Navbar: React.FC = () => {
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setIsLoggingOut(false);
+      closeMenu();
+    }
   };
 
   return (
@@ -104,9 +119,28 @@ export const Navbar: React.FC = () => {
         </div>
         
         <div className={styles.navRight}>
-          <Link to="/login" className={styles.loginButton} onClick={closeMenu}>
-            Login
-          </Link>
+          {isLoggedIn ? (
+            <div className={styles.userSection}>
+              {user?.picture && (
+                <img 
+                  src={user.picture} 
+                  alt={user.name || 'User'} 
+                  className={styles.profilePicture}
+                />
+              )}
+              <button 
+                className={styles.logoutButton} 
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? 'Logging out...' : 'Logout'}
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className={styles.loginButton} onClick={closeMenu}>
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </nav>
