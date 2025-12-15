@@ -1,14 +1,12 @@
 .myWords {
   min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
 }
 
-.content {
-  text-align: center;
-  max-width: 600px;
+.container {
+  max-width: 1200px;
   width: 100%;
 }
 
@@ -17,23 +15,262 @@
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--purple);
+  margin-bottom: 2rem;
+}
+
+.loading,
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.loading {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  color: #666;
+}
+
+.emptyHeading {
+  font-family: 'Inter', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--very-light-purple);
   margin-bottom: 1rem;
 }
 
-.message {
+.emptyMessage {
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   color: #666;
   line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.chromeButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.tableContainer {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: #f5f0ff;
+}
+
+.table thead tr th {
+  padding: 1rem;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--purple);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+  border-top: 1px solid #e5e5e5;
+}
+
+.table tbody tr:first-child {
+  border-top: none;
+}
+
+.table tbody tr:hover {
+  background: #fafafa;
+}
+
+.table tbody td {
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: #333;
+  vertical-align: top;
+}
+
+.wordCell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.copyButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--purple);
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.copyButton:hover {
+  background: #f5f0ff;
+}
+
+.copyButton:active {
+  background: #e8dfff;
+}
+
+.copyButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.wordText {
+  font-weight: 500;
+  color: var(--purple);
+}
+
+.meaningCell {
+  color: #333;
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.sourceLink {
+  color: var(--purple);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  text-decoration: none;
+}
+
+.sourceLink:hover {
+  background: #f5f0ff;
+}
+
+.sourceLink svg {
+  width: 18px;
+  height: 18px;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #dc2626;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: #fee2e2;
+}
+
+.deleteButton:active:not(:disabled) {
+  background: #fecaca;
+}
+
+.deleteButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.deleteButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.paginationInfo {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: #666;
+}
+
+.paginationControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.paginationButton {
+  padding: 0.5rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--purple);
+  background: white;
+  border: 1px solid var(--purple);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background: var(--purple);
+  color: white;
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
-  .heading {
-    font-size: 2rem;
+  .emptyHeading {
+    font-size: 1.75rem;
   }
 
-  .message {
-    font-size: 1rem;
+  .tableContainer {
+    overflow-x: auto;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  .table thead tr th,
+  .table tbody td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .meaningCell {
+    max-width: 300px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .paginationInfo {
+    text-align: center;
+  }
+
+  .paginationControls {
+    justify-content: center;
   }
 }
 

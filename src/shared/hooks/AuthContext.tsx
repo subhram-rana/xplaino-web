@@ -15,6 +15,7 @@ import {
   getAuthFromStorage,
   clearAuthFromStorage,
 } from '@/shared/services/auth.service';
+import { useMyWords } from './useMyWords';
 
 interface AuthContextValue {
   isLoggedIn: boolean;
@@ -30,6 +31,19 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 interface AuthProviderProps {
   children: ReactNode;
 }
+
+// Internal component to handle words state reset on logout
+const WordsStateManager: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
+  const { resetWords } = useMyWords();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      resetWords();
+    }
+  }, [isLoggedIn, resetWords]);
+
+  return null;
+};
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState | null>(null);
@@ -100,8 +114,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [authState?.accessToken, navigate]);
 
+  const isLoggedIn = !!authState;
+
   const value: AuthContextValue = {
-    isLoggedIn: !!authState,
+    isLoggedIn,
     user: authState?.user || null,
     accessToken: authState?.accessToken || null,
     isLoading,
@@ -109,7 +125,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      <WordsStateManager isLoggedIn={isLoggedIn} />
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export function useAuthContext(): AuthContextValue {
