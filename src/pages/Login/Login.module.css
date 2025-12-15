@@ -21,6 +21,11 @@
   max-width: 400px;
   width: 100%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
 }
 
 .heading {
@@ -34,12 +39,10 @@
 .googleButtonWrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.5rem;
-  overflow: hidden;
-  border-radius: 9999px;
+  align-items: center;
 }
 
-/* Style the Google sign-in button to be pill-shaped */
+/* Make the Google sign-in button pill-shaped without changing its size */
 .googleButtonWrapper :global(div[role="button"]) {
   border-radius: 9999px !important;
   overflow: hidden !important;

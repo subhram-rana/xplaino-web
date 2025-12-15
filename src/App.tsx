@@ -15,6 +15,7 @@ import { MyParagraphs } from '@/pages/MyLearnings/Paragraphs';
 import { MyPages } from '@/pages/MyLearnings/Pages';
 import { Login } from '@/pages/Login';
 import { authConfig } from '@/config/auth.config';
+import { AuthProvider } from '@/shared/hooks/AuthContext';
 
 /**
  * App - Main application component with routing
@@ -25,23 +26,25 @@ export const App: React.FC = () => {
   return (
     <GoogleOAuthProvider clientId={authConfig.googleClientId}>
       <BrowserRouter>
-        <Navbar />
-        <PageContent>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/report-issue" element={<ReportIssue />} />
-            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/refund-policy" element={<RefundPolicy />} />
-            <Route path="/my-words" element={<MyWords />} />
-            <Route path="/my-paragraphs" element={<MyParagraphs />} />
-            <Route path="/my-pages" element={<MyPages />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </PageContent>
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <PageContent>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/report-issue" element={<ReportIssue />} />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/my-words" element={<MyWords />} />
+              <Route path="/my-paragraphs" element={<MyParagraphs />} />
+              <Route path="/my-pages" element={<MyPages />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </PageContent>
+          <Footer />
+        </AuthProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>
   );

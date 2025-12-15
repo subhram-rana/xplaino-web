@@ -1,32 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '@/shared/hooks/useAuth';
-import styles from './Login.module.css';
+import styles from './LoginModal.module.css';
+import loginStyles from '../../../pages/Login/Login.module.css';
+
+interface LoginModalProps {
+  actionText: string;
+}
 
 /**
- * Login - Login page component
- * 
+ * LoginModal - Inline login component with Google sign-in
+ * Displays the same design as the /login page with action text above the button
+ *
+ * @param props - Component props
  * @returns JSX element
  */
-export const Login: React.FC = () => {
-  const { login, isLoggedIn, isLoading: authLoading } = useAuth();
-  const navigate = useNavigate();
+export const LoginModal: React.FC<LoginModalProps> = ({ actionText }) => {
+  const { login, isLoading: authLoading } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  // If user is already logged in, redirect away from /login
-  useEffect(() => {
-    if (isLoggedIn && !authLoading) {
-      navigate('/');
-    }
-  }, [isLoggedIn, authLoading, navigate]);
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       if (!credentialResponse.credential) {
         throw new Error('No credential received from Google');
       }
@@ -34,7 +32,11 @@ export const Login: React.FC = () => {
       await login(credentialResponse.credential);
     } catch (err) {
       console.error('Login error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to login. Please try again.');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Failed to login. Please try again.',
+      );
     } finally {
       setIsLoading(false);
     }
@@ -45,10 +47,11 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className={styles.login}>
-      <div className={styles.content}>
-        <div className={styles.loginContainer}>
-          <div className={styles.googleButtonWrapper}>
+    <div className={loginStyles.login}>
+      <div className={loginStyles.content}>
+        <div className={loginStyles.loginContainer}>
+          <p className={styles.actionText}>Login to {actionText}</p>
+          <div className={loginStyles.googleButtonWrapper}>
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={handleGoogleError}
@@ -56,14 +59,10 @@ export const Login: React.FC = () => {
             />
           </div>
           {error && (
-            <div className={styles.errorMessage}>
-              {error}
-            </div>
+            <div className={loginStyles.errorMessage}>{error}</div>
           )}
           {(isLoading || authLoading) && (
-            <div className={styles.loadingMessage}>
-              Signing in...
-            </div>
+            <div className={loginStyles.loadingMessage}>Signing in...</div>
           )}
         </div>
       </div>
@@ -71,5 +70,6 @@ export const Login: React.FC = () => {
   );
 };
 
-Login.displayName = 'Login';
+LoginModal.displayName = 'LoginModal';
+
 

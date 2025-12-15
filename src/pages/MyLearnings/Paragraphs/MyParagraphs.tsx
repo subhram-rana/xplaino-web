@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './MyParagraphs.module.css';
+import { useAuth } from '@/shared/hooks/useAuth';
+import { LoginModal } from '@/shared/components/LoginModal';
 
 /**
  * MyParagraphs - My Paragraphs page component
@@ -7,6 +9,16 @@ import styles from './MyParagraphs.module.css';
  * @returns JSX element
  */
 export const MyParagraphs: React.FC = () => {
+  const { isLoggedIn } = useAuth();
+
+  if (!isLoggedIn) {
+    return (
+      <div className={styles.myParagraphs}>
+        <LoginModal actionText="view your saved paragraphs" />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.myParagraphs}>
       <div className={styles.content}>

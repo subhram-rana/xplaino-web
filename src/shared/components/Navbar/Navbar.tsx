@@ -4,6 +4,7 @@ import styles from './Navbar.module.css';
 import logoImage from '../../../assets/images/logo-white-removebg.png';
 import { DropdownIcon } from '@/shared/components/DropdownIcon';
 import { useAuth } from '@/shared/hooks/useAuth';
+import { FiLogOut } from 'react-icons/fi';
 
 /**
  * Navbar - Main navigation component with logo, brand name, and navigation links
@@ -121,19 +122,27 @@ export const Navbar: React.FC = () => {
         <div className={styles.navRight}>
           {isLoggedIn ? (
             <div className={styles.userSection}>
+              <span className={styles.welcomeText}>
+                Welcome {user?.firstName || user?.name?.split(' ')[0] || 'User'}
+              </span>
               {user?.picture && (
                 <img 
                   src={user.picture} 
                   alt={user.name || 'User'} 
                   className={styles.profilePicture}
+                  referrerPolicy="no-referrer"
                 />
               )}
               <button 
                 className={styles.logoutButton} 
                 onClick={handleLogout}
                 disabled={isLoggingOut}
+                aria-label="Logout"
               >
-                {isLoggingOut ? 'Logging out...' : 'Logout'}
+                <FiLogOut
+                  className={styles.logoutIcon}
+                  size={22}
+                />
               </button>
             </div>
           ) : (

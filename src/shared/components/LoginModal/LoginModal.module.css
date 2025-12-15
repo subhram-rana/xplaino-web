@@ -1,0 +1,9 @@
+.actionText {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--purple);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+

@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './MyWords.module.css';
+import { useAuth } from '@/shared/hooks/useAuth';
+import { LoginModal } from '@/shared/components/LoginModal';
 
 /**
  * MyWords - My Words page component
@@ -7,6 +9,16 @@ import styles from './MyWords.module.css';
  * @returns JSX element
  */
 export const MyWords: React.FC = () => {
+  const { isLoggedIn } = useAuth();
+
+  if (!isLoggedIn) {
+    return (
+      <div className={styles.myWords}>
+        <LoginModal actionText="view your saved words" />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.myWords}>
       <div className={styles.content}>
