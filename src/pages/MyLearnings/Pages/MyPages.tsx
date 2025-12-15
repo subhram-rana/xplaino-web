@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FiArrowLeft, FiTrash2, FiExternalLink, FiFolderPlus } from 'react-icons/fi';
+import { FiArrowLeft, FiTrash2, FiFolderPlus } from 'react-icons/fi';
 import styles from './MyPages.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { LoginModal } from '@/shared/components/LoginModal';
@@ -299,16 +299,6 @@ export const MyPages: React.FC = () => {
                                 title="Open page"
                               >
                                 {page.url}
-                              </a>
-                              <a
-                                href={page.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={styles.sourceLink}
-                                aria-label="Open page in new tab"
-                                title="Open page"
-                              >
-                                <FiExternalLink />
                               </a>
                             </div>
                           </td>
