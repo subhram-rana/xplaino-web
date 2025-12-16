@@ -41,7 +41,13 @@
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  gap: 0.5rem;
   transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.reportButton svg {
+  width: 18px;
+  height: 18px;
 }
 
 .reportButton:hover {
@@ -203,7 +209,7 @@
 
 .tabOPEN.tabActive {
   background: #fbbf24;
-  color: #000;
+  color: white;
   box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
 }
 

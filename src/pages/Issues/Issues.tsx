@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FiCopy, FiCheck } from 'react-icons/fi';
+import { FiCopy, FiCheck, FiPlus } from 'react-icons/fi';
 import styles from './Issues.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { LoginModal } from '@/shared/components/LoginModal';
@@ -21,7 +21,7 @@ export const Issues: React.FC = () => {
   const { state, fetchIssues } = useMyIssues();
   const navigate = useNavigate();
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
-  const [activeTab, setActiveTab] = useState<TabFilter>('ALL');
+  const [activeTab, setActiveTab] = useState<TabFilter>('OPEN');
   const [copiedTicketId, setCopiedTicketId] = useState<string | null>(null);
   const [sliderStyle, setSliderStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -137,9 +137,15 @@ export const Issues: React.FC = () => {
   };
 
   useEffect(() => {
-    updateSliderPosition();
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      updateSliderPosition();
+    }, 50);
     window.addEventListener('resize', updateSliderPosition);
-    return () => window.removeEventListener('resize', updateSliderPosition);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateSliderPosition);
+    };
   }, [activeTab]);
 
   const handleTabClick = (tabValue: TabFilter) => {
@@ -162,7 +168,8 @@ export const Issues: React.FC = () => {
         <div className={styles.header}>
           <h1 className={styles.heading}>My Issues</h1>
           <Link to="/report-issue" className={styles.reportButton}>
-            Report an issue
+            <FiPlus />
+            <span>Report an issue</span>
           </Link>
         </div>
 
