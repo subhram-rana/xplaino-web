@@ -96,7 +96,8 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
+      return date.toLocaleDateString('en-IN', {
+        timeZone: 'Asia/Kolkata',
         year: 'numeric',
         month: 'short',
         day: 'numeric',
@@ -110,21 +111,25 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
 
   const formatPriceDisplay = (pricing: PricingResponse): string => {
     const period = pricing.recurring_period.toLowerCase();
-    const count = pricing.recurring_period_count;
+    const amount = pricing.amount;
+    const currency = pricing.currency;
     
-    if (count === 0) {
-      return '$0 per month/user';
+    // Get currency symbol
+    const currencySymbol = currency === 'USD' ? '$' : currency;
+    
+    if (amount === 0) {
+      return `${currencySymbol}0 per month/user`;
     }
     
     if (period === 'year') {
-      if (count >= 1000) {
-        const thousands = count / 1000;
-        return `$${thousands}k per year`;
+      if (amount >= 1000) {
+        const thousands = amount / 1000;
+        return `${currencySymbol}${thousands}k per year`;
       }
-      return `$${count.toLocaleString()} per year`;
+      return `${currencySymbol}${amount.toLocaleString()} per year`;
     }
     
-    return `$${count} per month/user`;
+    return `${currencySymbol}${amount} per month/user`;
   };
 
   const filterOptions: { value: FilterOption; label: string }[] = [

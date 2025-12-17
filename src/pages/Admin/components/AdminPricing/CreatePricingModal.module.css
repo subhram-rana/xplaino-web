@@ -70,6 +70,12 @@
   gap: 0.5rem;
 }
 
+.rowTwo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
 .fieldGroup {
   display: flex;
   flex-direction: column;
@@ -265,6 +271,10 @@
   }
 
   .rowFour {
+    grid-template-columns: 1fr;
+  }
+
+  .rowTwo {
     grid-template-columns: 1fr;
   }
 }

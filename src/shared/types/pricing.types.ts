@@ -19,6 +19,8 @@ export interface PricingResponse {
   expiry: string; // ISO format timestamp
   status: string; // 'ENABLED' or 'DISABLED'
   features: string; // JSON string or formatted text
+  currency: string; // 'USD'
+  amount: number;
   created_by: CreatedByUser;
   created_at: string; // ISO format timestamp
   updated_at: string; // ISO format timestamp
@@ -40,6 +42,8 @@ export interface CreatePricingRequest {
   expiry: string; // ISO format timestamp
   status: 'ENABLED' | 'DISABLED';
   features: string;
+  currency: 'USD';
+  amount: number;
 }
 
 export interface UpdatePricingRequest {
@@ -48,5 +52,7 @@ export interface UpdatePricingRequest {
   expiry?: string; // ISO format timestamp
   status?: 'ENABLED' | 'DISABLED';
   features?: string;
+  currency?: 'USD';
+  amount?: number;
 }
 

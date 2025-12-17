@@ -30,6 +30,8 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
     expiry: '',
     status: 'DISABLED',
     features: '',
+    currency: 'USD',
+    amount: 0,
   });
   const [activationDate, setActivationDate] = useState('');
   const [activationTime, setActivationTime] = useState('');
@@ -39,6 +41,7 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRecurringPeriodDropdownOpen, setIsRecurringPeriodDropdownOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState(false);
 
   // Close dropdowns when clicking outside
   React.useEffect(() => {
@@ -49,17 +52,18 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
       if (!target.closest(`.${styles.dropdownContainer}`)) {
         setIsRecurringPeriodDropdownOpen(false);
         setIsStatusDropdownOpen(false);
+        setIsCurrencyDropdownOpen(false);
       }
     };
 
-    if (isRecurringPeriodDropdownOpen || isStatusDropdownOpen) {
+    if (isRecurringPeriodDropdownOpen || isStatusDropdownOpen || isCurrencyDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isRecurringPeriodDropdownOpen, isStatusDropdownOpen, isOpen]);
+  }, [isRecurringPeriodDropdownOpen, isStatusDropdownOpen, isCurrencyDropdownOpen, isOpen]);
 
   if (!isOpen) return null;
 
@@ -85,6 +89,10 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
 
     if (formData.recurring_period_count <= 0) {
       newErrors.recurring_period_count = 'Recurring period count must be greater than 0';
+    }
+
+    if (formData.amount < 0) {
+      newErrors.amount = 'Amount must be 0 or greater';
     }
 
     if (!activationDate) {
@@ -160,6 +168,8 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
       expiry: '',
       status: 'DISABLED',
       features: '',
+      currency: 'USD',
+      amount: 0,
     });
     setActivationDate('');
     setActivationTime('');
@@ -168,6 +178,7 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
     setErrors({});
     setIsRecurringPeriodDropdownOpen(false);
     setIsStatusDropdownOpen(false);
+    setIsCurrencyDropdownOpen(false);
     onClose();
   };
 
@@ -198,6 +209,10 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
     { value: 'ENABLED', label: 'Enabled' },
   ];
 
+  const currencyOptions: { value: 'USD'; label: string }[] = [
+    { value: 'USD', label: 'USD' },
+  ];
+
   const selectedRecurringPeriodLabel = recurringPeriodOptions.find(
     (opt) => opt.value === formData.recurring_period
   )?.label || 'Month';
@@ -205,6 +220,10 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
   const selectedStatusLabel = statusOptions.find(
     (opt) => opt.value === formData.status
   )?.label || 'Disabled';
+
+  const selectedCurrencyLabel = currencyOptions.find(
+    (opt) => opt.value === formData.currency
+  )?.label || 'USD';
 
   return (
     <div className={styles.overlay} onClick={handleClose}>
@@ -431,6 +450,69 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
                 required
               />
               {errors.expiryTime && <span className={styles.errorMessage}>{errors.expiryTime}</span>}
+            </div>
+          </div>
+
+          {/* Third row: Currency and Amount */}
+          <div className={styles.rowTwo}>
+            <div className={styles.fieldGroup}>
+              <label htmlFor="currency" className={styles.label}>
+                currency <span className={styles.required}>*</span>
+              </label>
+              <div className={styles.dropdownContainer}>
+                <button
+                  type="button"
+                  id="currency"
+                  className={`${styles.dropdownButton} ${errors.currency ? styles.inputError : ''} ${isCurrencyDropdownOpen ? styles.dropdownButtonOpen : ''}`}
+                  onClick={() => {
+                    setIsCurrencyDropdownOpen(!isCurrencyDropdownOpen);
+                    setIsRecurringPeriodDropdownOpen(false);
+                    setIsStatusDropdownOpen(false);
+                  }}
+                  aria-haspopup="listbox"
+                  aria-expanded={isCurrencyDropdownOpen}
+                >
+                  <span>{selectedCurrencyLabel}</span>
+                  <DropdownIcon isOpen={isCurrencyDropdownOpen} />
+                </button>
+                {isCurrencyDropdownOpen && (
+                  <div className={styles.dropdownList} role="listbox">
+                    {currencyOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={`${styles.dropdownOption} ${formData.currency === option.value ? styles.dropdownOptionSelected : ''}`}
+                        onClick={() => {
+                          handleChange('currency', option.value);
+                          setIsCurrencyDropdownOpen(false);
+                        }}
+                        role="option"
+                        aria-selected={formData.currency === option.value}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label htmlFor="amount" className={styles.label}>
+                amount <span className={styles.required}>*</span>
+              </label>
+              <input
+                id="amount"
+                type="number"
+                className={`${styles.input} ${errors.amount ? styles.inputError : ''}`}
+                value={formData.amount}
+                onChange={(e) => handleChange('amount', parseFloat(e.target.value) || 0)}
+                placeholder="Enter amount"
+                min="0"
+                step="0.01"
+                required
+              />
+              {errors.amount && <span className={styles.errorMessage}>{errors.amount}</span>}
             </div>
           </div>
 

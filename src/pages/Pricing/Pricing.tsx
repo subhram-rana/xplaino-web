@@ -34,22 +34,26 @@ export const Pricing: React.FC = () => {
 
   const formatPriceDisplay = (pricing: PricingResponse): string => {
     const period = pricing.recurring_period.toLowerCase();
-    const count = pricing.recurring_period_count;
+    const amount = pricing.amount;
+    const currency = pricing.currency;
     
-    if (count === 0) {
-      return 'Starts at $0 per month/user';
+    // Get currency symbol
+    const currencySymbol = currency === 'USD' ? '$' : currency;
+    
+    if (amount === 0) {
+      return `Starts at ${currencySymbol}0 per month/user`;
     }
     
     if (period === 'year') {
-      // If count is in thousands, show with 'k' suffix
-      if (count >= 1000) {
-        const thousands = count / 1000;
-        return `Starts at $${thousands}k per year`;
+      // If amount is in thousands, show with 'k' suffix
+      if (amount >= 1000) {
+        const thousands = amount / 1000;
+        return `Starts at ${currencySymbol}${thousands}k per year`;
       }
-      return `Starts at $${count.toLocaleString()} per year`;
+      return `Starts at ${currencySymbol}${amount.toLocaleString()} per year`;
     }
     
-    return `Starts at $${count} per month/user`;
+    return `Starts at ${currencySymbol}${amount} per month/user`;
   };
 
   const parseFeatures = (featuresString: string): string[] => {

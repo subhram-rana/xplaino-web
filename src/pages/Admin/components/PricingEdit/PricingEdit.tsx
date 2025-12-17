@@ -36,6 +36,8 @@ export const PricingEdit: React.FC = () => {
     expiryDate: '',
     expiryTime: '',
     status: 'DISABLED' as 'ENABLED' | 'DISABLED',
+    currency: 'USD' as 'USD',
+    amount: 0,
   });
   // Store original form values to compare for changes
   const [originalFormData, setOriginalFormData] = useState({
@@ -45,8 +47,11 @@ export const PricingEdit: React.FC = () => {
     expiryDate: '',
     expiryTime: '',
     status: 'DISABLED' as 'ENABLED' | 'DISABLED',
+    currency: 'USD' as 'USD',
+    amount: 0,
   });
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState(false);
 
   // Redirect non-admin users
   if (!isLoggedIn || (user?.role !== 'ADMIN' && user?.role !== 'SUPER_ADMIN')) {
@@ -66,6 +71,8 @@ export const PricingEdit: React.FC = () => {
         expiryDate: expiryDate.toISOString().split('T')[0],
         expiryTime: expiryDate.toTimeString().slice(0, 5),
         status: pricing.status as 'ENABLED' | 'DISABLED',
+        currency: (pricing.currency as 'USD') || 'USD',
+        amount: pricing.amount || 0,
       };
 
       setFormData(initialFormData);
@@ -79,22 +86,24 @@ export const PricingEdit: React.FC = () => {
       const target = event.target as HTMLElement;
       if (!target.closest(`.${styles.dropdownContainer}`)) {
         setIsStatusDropdownOpen(false);
+        setIsCurrencyDropdownOpen(false);
       }
     };
 
-    if (isStatusDropdownOpen) {
+    if (isStatusDropdownOpen || isCurrencyDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isStatusDropdownOpen]);
+  }, [isStatusDropdownOpen, isCurrencyDropdownOpen]);
 
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
+      return date.toLocaleDateString('en-IN', {
+        timeZone: 'Asia/Kolkata',
         year: 'numeric',
         month: 'short',
         day: 'numeric',
@@ -122,9 +131,12 @@ export const PricingEdit: React.FC = () => {
         expiryDate: expiryDate.toISOString().split('T')[0],
         expiryTime: expiryDate.toTimeString().slice(0, 5),
         status: pricing.status as 'ENABLED' | 'DISABLED',
+        currency: (pricing.currency as 'USD') || 'USD',
+        amount: pricing.amount || 0,
       });
     }
     setIsEditMode(false);
+    setIsCurrencyDropdownOpen(false);
   };
 
   const handleUpdate = async () => {
@@ -156,6 +168,14 @@ export const PricingEdit: React.FC = () => {
 
       if (formData.status !== originalFormData.status) {
         updateData.status = formData.status;
+      }
+
+      if (formData.currency !== originalFormData.currency) {
+        updateData.currency = formData.currency;
+      }
+
+      if (formData.amount !== originalFormData.amount) {
+        updateData.amount = formData.amount;
       }
 
       // Only call API if there are changes
@@ -210,6 +230,10 @@ export const PricingEdit: React.FC = () => {
     { value: 'ENABLED', label: 'Enabled' },
   ];
 
+  const currencyOptions: { value: 'USD'; label: string }[] = [
+    { value: 'USD', label: 'USD' },
+  ];
+
   if (!pricing) {
     return (
       <div className={styles.pricingEdit}>
@@ -256,6 +280,65 @@ export const PricingEdit: React.FC = () => {
           <div className={styles.field}>
             <span className={styles.label}>Recurring Period Count</span>
             <span className={styles.value}>{pricing.recurring_period_count}</span>
+          </div>
+        </div>
+
+        <div className={styles.fieldRow}>
+          <div className={styles.field}>
+            <span className={styles.label}>Currency</span>
+            {isEditMode ? (
+              <div className={styles.dropdownContainer}>
+                <button
+                  type="button"
+                  className={`${styles.dropdownButton} ${isCurrencyDropdownOpen ? styles.dropdownButtonOpen : ''}`}
+                  onClick={() => {
+                    setIsCurrencyDropdownOpen(!isCurrencyDropdownOpen);
+                    setIsStatusDropdownOpen(false);
+                  }}
+                  aria-haspopup="listbox"
+                  aria-expanded={isCurrencyDropdownOpen}
+                >
+                  <span>{formData.currency}</span>
+                  <DropdownIcon isOpen={isCurrencyDropdownOpen} />
+                </button>
+                {isCurrencyDropdownOpen && (
+                  <div className={styles.dropdownList} role="listbox">
+                    {currencyOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={`${styles.dropdownOption} ${formData.currency === option.value ? styles.dropdownOptionSelected : ''}`}
+                        onClick={() => {
+                          setFormData({ ...formData, currency: option.value });
+                          setIsCurrencyDropdownOpen(false);
+                        }}
+                        role="option"
+                        aria-selected={formData.currency === option.value}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <span className={styles.value}>{pricing.currency}</span>
+            )}
+          </div>
+          <div className={styles.field}>
+            <span className={styles.label}>Amount</span>
+            {isEditMode ? (
+              <input
+                type="number"
+                className={styles.input}
+                value={formData.amount}
+                onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
+                min="0"
+                step="0.01"
+              />
+            ) : (
+              <span className={styles.value}>{pricing.amount}</span>
+            )}
           </div>
         </div>
 
