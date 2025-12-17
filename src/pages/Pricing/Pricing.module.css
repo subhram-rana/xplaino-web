@@ -21,13 +21,16 @@
 }
 
 .cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .card {
+  flex: 0 1 340px;
+  max-width: 380px;
   background: white;
   border-radius: 30px;
   padding: 1.5rem;
@@ -223,12 +226,6 @@
 }
 
 /* Responsive design */
-@media (max-width: 968px) {
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: 640px) {
   .pricing {
     padding: 2rem 1rem;
@@ -240,11 +237,12 @@
   }
 
   .cards {
-    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
   .card {
+    flex: 1 1 100%;
+    max-width: 100%;
     padding: 1.25rem;
     border-radius: 30px;
   }

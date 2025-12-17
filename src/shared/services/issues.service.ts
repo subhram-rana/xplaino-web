@@ -5,7 +5,7 @@
  */
 
 import { authConfig } from '@/config/auth.config';
-import type { GetMyIssuesResponse, IssueResponse, ReportIssueRequest } from '@/shared/types/issues.types';
+import type { GetMyIssuesResponse, GetAllIssuesResponse, GetAllIssuesFilters, IssueResponse, ReportIssueRequest, UpdateIssueRequest } from '@/shared/types/issues.types';
 
 /**
  * Get all issues for the authenticated user
@@ -83,6 +83,87 @@ export async function reportIssue(
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ detail: 'Failed to report issue' }));
     throw new Error(errorData.detail?.error_message || errorData.detail || `Failed to report issue with status ${response.status}`);
+  }
+
+  const data: IssueResponse = await response.json();
+  return data;
+}
+
+/**
+ * Get all issues (Admin only)
+ * Requires ADMIN or SUPER_ADMIN role
+ */
+export async function getAllIssues(
+  accessToken: string,
+  filters?: GetAllIssuesFilters
+): Promise<GetAllIssuesResponse> {
+  const params = new URLSearchParams();
+  
+  if (filters?.ticket_id) {
+    params.append('ticket_id', filters.ticket_id);
+  }
+  if (filters?.type) {
+    params.append('type', filters.type);
+  }
+  if (filters?.status) {
+    params.append('status', filters.status);
+  }
+  if (filters?.closed_by) {
+    params.append('closed_by', filters.closed_by);
+  }
+  if (filters?.offset !== undefined) {
+    params.append('offset', filters.offset.toString());
+  }
+  if (filters?.limit !== undefined) {
+    params.append('limit', filters.limit.toString());
+  }
+  
+  const queryString = params.toString();
+  const url = `${authConfig.catenBaseUrl}/api/issue/all${queryString ? `?${queryString}` : ''}`;
+  
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+      'X-Source': 'XPLAINO_WEB',
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to fetch all issues' }));
+    throw new Error(errorData.detail?.error_message || errorData.detail || `Failed to fetch all issues with status ${response.status}`);
+  }
+
+  const data: GetAllIssuesResponse = await response.json();
+  return data;
+}
+
+/**
+ * Update an issue (Admin only)
+ * Requires ADMIN or SUPER_ADMIN role
+ */
+export async function updateIssue(
+  accessToken: string,
+  issueId: string,
+  body: UpdateIssueRequest
+): Promise<IssueResponse> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/issue/${issueId}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+      body: JSON.stringify(body),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to update issue' }));
+    throw new Error(errorData.detail?.error_message || errorData.detail || `Failed to update issue with status ${response.status}`);
   }
 
   const data: IssueResponse = await response.json();

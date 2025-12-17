@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Admin.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { AdminPricing } from './components/AdminPricing';
+import { AdminTickets } from './components/AdminTickets';
 import { Toast } from '@/shared/components/Toast';
 
 type AdminSection = 'user' | 'pricing' | 'ticket' | 'subscription';
@@ -64,8 +65,9 @@ export const Admin: React.FC = () => {
     switch (activeSection) {
       case 'pricing':
         return <AdminPricing accessToken={accessToken} />;
-      case 'user':
       case 'ticket':
+        return <AdminTickets accessToken={accessToken} />;
+      case 'user':
       case 'subscription':
         return (
           <div className={styles.comingSoon}>

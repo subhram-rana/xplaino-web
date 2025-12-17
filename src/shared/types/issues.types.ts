@@ -12,6 +12,13 @@ export enum IssueType {
   OTHERS = 'OTHERS',
 }
 
+export enum IssueStatus {
+  OPEN = 'OPEN',
+  WORK_IN_PROGRESS = 'WORK_IN_PROGRESS',
+  DISCARDED = 'DISCARDED',
+  RESOLVED = 'RESOLVED',
+}
+
 export interface ReportIssueRequest {
   type: IssueType;
   heading?: string | null;
@@ -49,5 +56,26 @@ export interface IssueResponse {
 
 export interface GetMyIssuesResponse {
   issues: IssueResponse[];
+}
+
+export interface GetAllIssuesResponse {
+  issues: IssueResponse[];
+  total: number;
+  offset: number;
+  limit: number;
+  has_next: boolean;
+}
+
+export interface GetAllIssuesFilters {
+  ticket_id?: string;
+  type?: string;
+  status?: string;
+  closed_by?: string;
+  offset?: number;
+  limit?: number;
+}
+
+export interface UpdateIssueRequest {
+  status: IssueStatus;
 }
 
