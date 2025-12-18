@@ -4,9 +4,10 @@ import styles from './Admin.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { AdminPricing } from './components/AdminPricing';
 import { AdminTickets } from './components/AdminTickets';
+import { AdminDomains } from './components/AdminDomains';
 import { Toast } from '@/shared/components/Toast';
 
-type AdminSection = 'user' | 'pricing' | 'ticket' | 'subscription';
+type AdminSection = 'user' | 'pricing' | 'ticket' | 'subscription' | 'domain';
 
 interface LocationState {
   activeSection?: AdminSection;
@@ -59,6 +60,7 @@ export const Admin: React.FC = () => {
     { key: 'pricing', label: 'Pricing' },
     { key: 'ticket', label: 'Ticket' },
     { key: 'subscription', label: 'Subscription' },
+    { key: 'domain', label: 'Domain' },
   ];
 
   const renderContent = () => {
@@ -67,6 +69,8 @@ export const Admin: React.FC = () => {
         return <AdminPricing accessToken={accessToken} />;
       case 'ticket':
         return <AdminTickets accessToken={accessToken} />;
+      case 'domain':
+        return <AdminDomains accessToken={accessToken} />;
       case 'user':
       case 'subscription':
         return (

@@ -20,6 +20,7 @@ import { Pricing } from '@/pages/Pricing';
 import { Admin } from '@/pages/Admin';
 import { PricingEdit } from '@/pages/Admin/components/PricingEdit';
 import { AdminIssueDetail } from '@/pages/Admin/components/AdminIssueDetail';
+import { DomainEdit } from '@/pages/Admin/components/AdminDomains';
 import { authConfig } from '@/config/auth.config';
 import { AuthProvider } from '@/shared/hooks/AuthContext';
 
@@ -52,6 +53,7 @@ export const App: React.FC = () => {
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/pricing/:pricingId" element={<PricingEdit />} />
               <Route path="/admin/issue/:ticketId" element={<AdminIssueDetail />} />
+              <Route path="/admin/domain/:domainId" element={<DomainEdit />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </PageContent>
