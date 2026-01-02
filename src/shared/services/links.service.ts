@@ -1,0 +1,40 @@
+/**
+ * Links service
+ * 
+ * Handles API calls for saved links operations
+ */
+
+import { authConfig } from '@/config/auth.config';
+import type { GetAllSavedLinksResponse } from '@/shared/types/links.types';
+
+/**
+ * Get all saved links with folders and pagination
+ */
+export async function getAllSavedLinksByFolderId(
+  accessToken: string,
+  folderId: string | null = null,
+  offset: number = 0,
+  limit: number = 20
+): Promise<GetAllSavedLinksResponse> {
+  const folderIdParam = folderId ? `&folder_id=${folderId}` : '';
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/saved-link/?offset=${offset}&limit=${limit}${folderIdParam}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to fetch saved links' }));
+    throw new Error(errorData.detail || `Failed to fetch saved links with status ${response.status}`);
+  }
+
+  const data: GetAllSavedLinksResponse = await response.json();
+  return data;
+}
+

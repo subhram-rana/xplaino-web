@@ -4,13 +4,24 @@
  * Matches the API models from the Caten backend
  */
 
+export interface UserInfo {
+  id: string;
+  name: string;
+  email: string;
+  role?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  picture?: string | null;
+}
+
 export interface SavedWord {
   id: string;
   word: string;
+  contextualMeaning?: string | null;
   sourceUrl: string;
-  userId: string;
+  folderId: string;
+  user: UserInfo;
   createdAt: string;
-  contextual_meaning?: string;
 }
 
 export interface GetSavedWordsResponse {
