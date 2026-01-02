@@ -1,41 +1,406 @@
 .dashboard {
   min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 2rem 1rem;
   background-color: white;
   width: 100%;
 }
 
 .container {
-  text-align: center;
-  max-width: 600px;
+  max-width: 1200px;
   width: 100%;
+  margin: 0 auto;
 }
 
-.title {
-  font-family: 'Inter', sans-serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--purple);
-  margin-bottom: 1rem;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 
-.subtitle {
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.refreshButton {
+  padding: 0.625rem;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
-  color: #6b7280;
+  color: var(--purple);
+  background: white;
+  border: 2px solid var(--purple);
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: var(--purple);
+  color: white;
+}
+
+.refreshButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.refreshButton .spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.viewToggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.viewButton {
+  padding: 0.625rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  color: #666;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
+}
+
+.viewButton:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+.viewButtonActive {
+  background: var(--purple);
+  color: white;
+  border-color: var(--purple);
+}
+
+.createFolderButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background: var(--purple);
+  border: 2px solid var(--purple);
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 44px;
+}
+
+.createFolderButton:hover {
+  background: #6b46c1;
+  border-color: #6b46c1;
+}
+
+.createFolderButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  color: #666;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.emptyHeading {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 0.5rem 0;
+}
+
+.emptyMessage {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: #666;
   margin: 0;
 }
 
+/* List View */
+.listView {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--very-light-purple);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: #f5f0ff;
+}
+
+.table thead tr th {
+  padding: 1rem;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sortButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.sortButton:hover {
+  color: var(--purple);
+}
+
+.sortButtonActive {
+  color: var(--purple);
+}
+
+.sortIcons {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-left: 0.25rem;
+}
+
+.sortIcons svg {
+  width: 12px;
+  height: 12px;
+  line-height: 1;
+}
+
+.sortIconActive {
+  color: var(--purple);
+}
+
+.sortIconInactive {
+  color: #999;
+  opacity: 0.5;
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--very-light-purple);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+  background: #faf5ff;
+}
+
+.tableRowSelected {
+  background: #f5f0ff;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRow td {
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: #333;
+}
+
+.folderNameCell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.folderNameCell svg {
+  color: var(--purple);
+  flex-shrink: 0;
+}
+
+/* Grid View */
+.gridView {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.folderCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1rem;
+  background: var(--very-light-purple);
+  border: 2px solid transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.folderCard:hover {
+  border-color: var(--purple);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(149, 39, 245, 0.15);
+}
+
+.folderCardSelected {
+  border-color: var(--purple);
+  background: #f5f0ff;
+}
+
+.folderCard svg {
+  color: var(--purple);
+}
+
+.folderCardName {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Tab Container */
+.tabContainer {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.tabs {
+  display: flex;
+  width: 100%;
+  border-bottom: 2px solid var(--very-light-purple);
+  gap: 0;
+}
+
+.tab {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease;
+  margin-bottom: -2px;
+}
+
+.tab:hover {
+  color: var(--purple);
+}
+
+.tabActive {
+  color: var(--purple);
+  border-bottom-color: var(--purple);
+}
+
+.tabContent {
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: #333;
+  min-height: 200px;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-  .title {
-    font-size: 2rem;
+  .dashboard {
+    padding: 1.5rem 1rem;
   }
 
-  .subtitle {
-    font-size: 1rem;
+  .header {
+    flex-wrap: wrap;
+  }
+
+  .table {
+    font-size: 0.875rem;
+  }
+
+  .table thead tr th,
+  .tableRow td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .gridView {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .folderCard {
+    padding: 1rem 0.75rem;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    flex: 1 1 50%;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .tabContent {
+    padding: 1.5rem 1rem;
   }
 }
 

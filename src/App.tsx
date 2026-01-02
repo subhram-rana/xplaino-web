@@ -22,6 +22,7 @@ import { AdminDomainsPage } from '@/pages/Admin/AdminDomainsPage';
 import { AdminUsersPage } from '@/pages/Admin/AdminUsersPage';
 import { AdminSubscriptionPage } from '@/pages/Admin/AdminSubscriptionPage';
 import { UserDashboard } from '@/pages/UserDashboard';
+import { FolderBookmark } from '@/pages/UserDashboard/FolderBookmark';
 import { UserAccount } from '@/pages/UserAccount';
 import { UserSubscription } from '@/pages/UserSubscription';
 import { AdminDashboard } from '@/pages/AdminDashboard';
@@ -134,6 +135,14 @@ export const App: React.FC = () => {
                 element={
                   <UserProtectedRoute>
                     <UserDashboard />
+                  </UserProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/user/dashboard/bookmark/:folderId" 
+                element={
+                  <UserProtectedRoute>
+                    <FolderBookmark />
                   </UserProtectedRoute>
                 } 
               />
