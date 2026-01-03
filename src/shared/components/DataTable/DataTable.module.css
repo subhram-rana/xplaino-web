@@ -2,8 +2,6 @@
 .tableContainer {
   background: white;
   border-radius: 0;
-  border-top: 1px solid var(--very-light-purple);
-  border-bottom: 1px solid var(--very-light-purple);
   overflow: hidden;
   margin-top: 1rem;
 }
@@ -45,6 +43,10 @@
 .table tbody tr {
   border-bottom: 1px solid var(--very-light-purple);
   transition: background-color 0.2s ease;
+}
+
+.table tbody tr:first-child {
+  border-top: none;
 }
 
 .table tbody tr:hover {
