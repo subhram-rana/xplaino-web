@@ -197,64 +197,8 @@
   color: #666;
 }
 
-/* Table Styles */
-.tableContainer {
-  background: white;
-  border-radius: 0;
-  border-top: 1px solid var(--very-light-purple);
-  border-bottom: 1px solid var(--very-light-purple);
-  overflow: hidden;
-  margin-top: 1rem;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table thead {
-  background: #f5f0ff;
-}
-
-.table thead tr th {
-  padding: 1rem;
-  text-align: center;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #333;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.table tbody tr {
-  border-bottom: 1px solid var(--very-light-purple);
-  transition: background-color 0.2s ease;
-}
-
-.table tbody tr:hover {
-  background: #faf5ff;
-}
-
-.table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.table tbody td {
-  padding: 1rem;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9375rem;
-  color: #333;
-  text-align: center;
-  vertical-align: middle;
-}
-
-.noData {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-  font-style: italic;
-}
+/* Table-specific styles (tab-specific cell styles remain below) */
+/* Base table styles are now in DataTable.module.css */
 
 .urlLink {
   color: var(--purple);
@@ -263,9 +207,7 @@
   transition: color 0.2s ease;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 0.25rem;
-  text-align: center;
 }
 
 .urlLink:hover {
@@ -273,31 +215,15 @@
   text-decoration: underline;
 }
 
-.nameColumnHeader {
-  max-width: 250px;
-  width: 250px;
-}
-
 .nameColumn {
   max-width: 250px;
   width: 250px;
   word-wrap: break-word;
-  text-align: center;
-}
-
-.urlColumnHeader {
-  max-width: 400px;
-  width: 400px;
 }
 
 .urlColumn {
   max-width: 400px;
   width: 400px;
-}
-
-.typeColumnHeader {
-  min-width: 120px;
-  width: auto;
 }
 
 .typeCell {
@@ -326,11 +252,37 @@
   width: 100%;
   line-height: 1.5;
   word-wrap: break-word;
-  text-align: center;
+  text-align: left;
   display: block;
   padding: 0;
   box-sizing: border-box;
   margin: 0;
+}
+
+.contentCellWithCopy {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.contentCellClickable {
+  flex: 1;
+  cursor: pointer;
+  line-height: 1.5;
+  word-wrap: break-word;
+  transition: color 0.2s ease;
+}
+
+.contentCellClickable:hover {
+  color: var(--purple);
+}
+
+.urlCellWithCopy {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .tableControls {
@@ -343,7 +295,7 @@
 .columnHeaderWithIcon {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.5rem;
 }
 
@@ -970,6 +922,353 @@
 .sourceLink svg {
   width: 16px;
   height: 16px;
+}
+
+/* Table Header with Button */
+.tableHeaderWithButton {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.addButton {
+  background: var(--purple);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.addButton:hover {
+  background: #6b46c1;
+}
+
+/* Paragraph Modal */
+.paragraphModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeInOverlay 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.paragraphModalOverlayClosing {
+  animation: fadeOutOverlay 0.3s ease forwards;
+}
+
+.paragraphModal {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 800px;
+  background: white;
+  border-radius: 30px;
+  overflow: hidden;
+  animation: scaleIn 0.3s ease;
+  box-shadow: 0 8px 24px rgba(149, 39, 245, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.paragraphModalClosing {
+  animation: scaleOut 0.3s ease forwards;
+}
+
+.paragraphModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-bottom: 1px solid var(--very-light-purple);
+  flex-shrink: 0;
+}
+
+.paragraphModalTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #333;
+  flex: 1;
+}
+
+.paragraphModalIcons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.paragraphModalSource {
+  color: var(--purple);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.paragraphModalSource:hover {
+  background: #f5f0ff;
+  color: #6b46c1;
+}
+
+.paragraphModalSource svg {
+  width: 18px;
+  height: 18px;
+}
+
+.paragraphModalCopy {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.paragraphModalCopy:hover {
+  background: #f5f0ff;
+  color: var(--purple);
+}
+
+.paragraphModalCopy svg {
+  width: 18px;
+  height: 18px;
+}
+
+.paragraphModalClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.paragraphModalClose:hover {
+  background: #f5f0ff;
+  color: var(--purple);
+}
+
+.paragraphModalClose svg {
+  width: 20px;
+  height: 20px;
+}
+
+.paragraphModalContent {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  max-height: calc(90vh - 80px);
+}
+
+.paragraphModalText {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Add Link Modal */
+.addLinkModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeInOverlay 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.addLinkModalOverlayClosing {
+  animation: fadeOutOverlay 0.3s ease forwards;
+}
+
+.addLinkModal {
+  position: relative;
+  max-width: 90vw;
+  width: 500px;
+  background: white;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(149, 39, 245, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: scaleIn 0.3s ease;
+}
+
+.addLinkModalClosing {
+  animation: scaleOut 0.3s ease forwards;
+}
+
+.addLinkModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+}
+
+.addLinkModalTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.addLinkModalClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.addLinkModalClose:hover {
+  background: #f5f0ff;
+  color: var(--purple);
+}
+
+.addLinkModalClose svg {
+  width: 20px;
+  height: 20px;
+}
+
+.addLinkModalBody {
+  padding: 0 1.5rem 1rem;
+}
+
+.addLinkFormGroup {
+  margin-bottom: 1rem;
+}
+
+.addLinkFormGroup:last-of-type {
+  margin-bottom: 0;
+}
+
+.addLinkLabel {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.375rem;
+}
+
+.required {
+  color: #dc2626;
+}
+
+.addLinkInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--very-light-purple);
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: #333;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.addLinkInput:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+
+.addLinkInput::placeholder {
+  color: #999;
+}
+
+.addLinkModalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 1.5rem 1.25rem;
+}
+
+.addLinkCancelButton {
+  background: white;
+  border: 1px solid var(--very-light-purple);
+  color: #666;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addLinkCancelButton:hover {
+  background: #f5f0ff;
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+.addLinkSaveButton {
+  background: var(--purple);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.addLinkSaveButton:hover:not(:disabled) {
+  background: #6b46c1;
+}
+
+.addLinkSaveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Responsive design */

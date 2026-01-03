@@ -5,7 +5,15 @@
  */
 
 import { authConfig } from '@/config/auth.config';
-import type { GetAllSavedLinksResponse } from '@/shared/types/links.types';
+import type { GetAllSavedLinksResponse, SavedLink } from '@/shared/types/links.types';
+
+export interface SaveLinkRequest {
+  url: string;
+  name?: string | null;
+  folder_id: string | null;
+  summary?: string | null;
+  metadata?: Record<string, any> | null;
+}
 
 /**
  * Get all saved links with folders and pagination
@@ -35,6 +43,36 @@ export async function getAllSavedLinksByFolderId(
   }
 
   const data: GetAllSavedLinksResponse = await response.json();
+  return data;
+}
+
+/**
+ * Save a new link
+ */
+export async function saveLink(
+  accessToken: string,
+  body: SaveLinkRequest
+): Promise<SavedLink> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/saved-link/`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+      body: JSON.stringify(body),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to save link' }));
+    const errorMessage = errorData.detail?.error_message || errorData.detail || `Failed to save link with status ${response.status}`;
+    throw new Error(errorMessage);
+  }
+
+  const data: SavedLink = await response.json();
   return data;
 }
 

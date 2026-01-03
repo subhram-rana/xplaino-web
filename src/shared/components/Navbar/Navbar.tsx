@@ -284,16 +284,6 @@ export const Navbar: React.FC = () => {
                       >
                         My Issues
                       </div>
-                      <div 
-                        className={styles.popoverItem}
-                        onClick={() => {
-                          navigate('/user/subscription');
-                          setIsProfilePopoverOpen(false);
-                        }}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        Subscription
-                      </div>
                       <button 
                         className={styles.popoverLogoutButton} 
                         onClick={handleLogout}

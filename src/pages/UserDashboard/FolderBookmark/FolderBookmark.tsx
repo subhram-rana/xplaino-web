@@ -5,7 +5,7 @@ import { SiYoutube, SiLinkedin, SiX, SiReddit, SiFacebook, SiInstagram } from 'r
 import styles from './FolderBookmark.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { getAllSavedParagraphs } from '@/shared/services/paragraphs.service';
-import { getAllSavedLinksByFolderId } from '@/shared/services/links.service';
+import { getAllSavedLinksByFolderId, saveLink } from '@/shared/services/links.service';
 import { getSavedWordsByFolderId } from '@/shared/services/words.service';
 import { getAllSavedImagesByFolderId } from '@/shared/services/images.service';
 import type { GetAllSavedParagraphsResponse } from '@/shared/types/paragraphs.types';
@@ -14,6 +14,10 @@ import type { GetSavedWordsResponse } from '@/shared/types/words.types';
 import type { GetAllSavedImagesResponse } from '@/shared/types/images.types';
 import { FolderIcon } from '@/shared/components/FolderIcon';
 import { Toast } from '@/shared/components/Toast';
+import { DataTable, type Column } from '@/shared/components/DataTable';
+import type { SavedParagraph } from '@/shared/types/paragraphs.types';
+import type { SavedLink } from '@/shared/types/links.types';
+import type { SavedWord } from '@/shared/types/words.types';
 
 /**
  * FolderBookmark - Folder detail page with tabbed content
@@ -58,9 +62,18 @@ export const FolderBookmark: React.FC = () => {
   
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
   const [copiedWordId, setCopiedWordId] = useState<string | null>(null);
+  const [copiedParagraphId, setCopiedParagraphId] = useState<string | null>(null);
+  const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<{ url: string; name: string | null; sourceUrl: string; id?: string; createdAt?: string } | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isImageModalClosing, setIsImageModalClosing] = useState(false);
+  const [selectedParagraph, setSelectedParagraph] = useState<SavedParagraph | null>(null);
+  const [isParagraphModalOpen, setIsParagraphModalOpen] = useState(false);
+  const [isParagraphModalClosing, setIsParagraphModalClosing] = useState(false);
+  const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false);
+  const [isAddLinkModalClosing, setIsAddLinkModalClosing] = useState(false);
+  const [addLinkForm, setAddLinkForm] = useState({ name: '', url: '' });
+  const [isSavingLink, setIsSavingLink] = useState(false);
   const [isNameColumnVisible, setIsNameColumnVisible] = useState(true);
   const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
   const [hoveredInfoId, setHoveredInfoId] = useState<string | null>(null);
@@ -372,6 +385,32 @@ export const FolderBookmark: React.FC = () => {
     }, 300); // Match animation duration
   }, []);
 
+  // Handle opening paragraph modal
+  const handleOpenParagraphModal = (para: SavedParagraph) => {
+    setSelectedParagraph(para);
+    setIsParagraphModalOpen(true);
+  };
+
+  // Handle closing paragraph modal with animation
+  const handleCloseParagraphModal = useCallback(() => {
+    setIsParagraphModalClosing(true);
+    setTimeout(() => {
+      setIsParagraphModalOpen(false);
+      setIsParagraphModalClosing(false);
+      setSelectedParagraph(null);
+    }, 300);
+  }, []);
+
+  // Handle closing add link modal with animation
+  const handleCloseAddLinkModal = useCallback(() => {
+    setIsAddLinkModalClosing(true);
+    setTimeout(() => {
+      setIsAddLinkModalOpen(false);
+      setIsAddLinkModalClosing(false);
+      setAddLinkForm({ name: '', url: '' });
+    }, 300);
+  }, []);
+
   // Handle ESC key to close image modal and prevent body scroll
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
@@ -399,6 +438,62 @@ export const FolderBookmark: React.FC = () => {
       document.removeEventListener('keydown', handleEscKey);
     };
   }, [isImageModalOpen, isImageModalClosing, handleCloseImageModal]);
+
+  // Handle ESC key to close paragraph modal and prevent body scroll
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isParagraphModalOpen && !isParagraphModalClosing) {
+        handleCloseParagraphModal();
+      }
+    };
+
+    if (isParagraphModalOpen) {
+      // Calculate scrollbar width
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      // Prevent body scroll and compensate for scrollbar
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      document.addEventListener('keydown', handleEscKey);
+    } else {
+      // Restore body scroll and remove padding
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [isParagraphModalOpen, isParagraphModalClosing, handleCloseParagraphModal]);
+
+  // Handle ESC key to close add link modal and prevent body scroll
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isAddLinkModalOpen && !isAddLinkModalClosing) {
+        handleCloseAddLinkModal();
+      }
+    };
+
+    if (isAddLinkModalOpen) {
+      // Calculate scrollbar width
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      // Prevent body scroll and compensate for scrollbar
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      document.addEventListener('keydown', handleEscKey);
+    } else {
+      // Restore body scroll and remove padding
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [isAddLinkModalOpen, isAddLinkModalClosing, handleCloseAddLinkModal]);
 
   // Refresh handlers
   const handleRefreshParagraphs = async () => {
@@ -533,6 +628,54 @@ export const FolderBookmark: React.FC = () => {
     setTimeout(() => setCopiedWordId(null), 2000);
   };
 
+  const handleCopyParagraph = (content: string, paragraphId: string) => {
+    navigator.clipboard.writeText(content);
+    setCopiedParagraphId(paragraphId);
+    setTimeout(() => setCopiedParagraphId(null), 2000);
+  };
+
+  const handleCopyLink = (url: string, linkId: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedLinkId(linkId);
+    setTimeout(() => setCopiedLinkId(null), 2000);
+  };
+
+  // Handle saving link
+  const handleSaveLink = async () => {
+    if (!addLinkForm.url.trim()) {
+      setToast({ message: 'URL is required', type: 'error' });
+      return;
+    }
+
+    if (!accessToken || !folderId) {
+      setToast({ message: 'Authentication required', type: 'error' });
+      return;
+    }
+
+    setIsSavingLink(true);
+    try {
+      await saveLink(accessToken, {
+        url: addLinkForm.url.trim(),
+        name: addLinkForm.name.trim() || null,
+        folder_id: folderId,
+        summary: null,
+        metadata: null,
+      });
+      setToast({ message: 'Link saved successfully', type: 'success' });
+      handleCloseAddLinkModal();
+      // Refresh links data
+      await fetchLinks(true);
+    } catch (error) {
+      console.error('Error saving link:', error);
+      setToast({ 
+        message: error instanceof Error ? error.message : 'Failed to save link',
+        type: 'error' 
+      });
+    } finally {
+      setIsSavingLink(false);
+    }
+  };
+
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
@@ -569,6 +712,7 @@ export const FolderBookmark: React.FC = () => {
     }
   };
 
+
   // Render content based on active tab
   const renderTabContent = () => {
     switch (activeTab) {
@@ -582,6 +726,102 @@ export const FolderBookmark: React.FC = () => {
         if (!paragraphsData) {
           return <div className={styles.emptyState}>No data available</div>;
         }
+        // Paragraph table columns
+        const paragraphColumns: Column<SavedParagraph>[] = [
+          {
+            key: 'name',
+            header: 'Name',
+            align: 'left',
+            width: '300px',
+            hidden: !isNameColumnVisible,
+            headerRender: () => (
+              <div className={styles.columnHeaderWithIcon}>
+                <span>Name</span>
+                {isNameColumnVisible && (
+                  <button
+                    className={styles.eyeToggleButtonHeader}
+                    onClick={() => setIsNameColumnVisible(false)}
+                    title="Hide name column"
+                    aria-label="Hide name column"
+                  >
+                    <FiEyeOff />
+                  </button>
+                )}
+              </div>
+            ),
+            render: (para) => para.name || '',
+          },
+          {
+            key: 'content',
+            header: 'Content',
+            align: 'left',
+            className: styles.contentColumn,
+            render: (para) => (
+              <div className={styles.contentCellWithCopy}>
+                <button
+                  className={styles.copyButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopyParagraph(para.content, para.id);
+                  }}
+                  title="Copy content"
+                >
+                  {copiedParagraphId === para.id ? <FiCheck /> : <FiCopy />}
+                </button>
+                <div 
+                  className={styles.contentCellClickable}
+                  onClick={() => handleOpenParagraphModal(para)}
+                >
+                  {para.content.length > 150
+                    ? `${para.content.substring(0, 150)}...`
+                    : para.content}
+                </div>
+              </div>
+            ),
+          },
+          {
+            key: 'source',
+            header: 'Source',
+            align: 'right',
+            render: (para) => {
+              const paraId = para.id;
+              const isHovered = hoveredRowId === paraId;
+              return (
+                <div className={styles.sourceCell}>
+                  {para.source_url ? (
+                    <a
+                      href={para.source_url}
+                      onClick={(e) => handleSourceLinkClick(e, para.source_url, para.content)}
+                      className={styles.iconLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={para.source_url}
+                    >
+                      <FiExternalLink />
+                    </a>
+                  ) : (
+                    <span className={styles.noSource}>—</span>
+                  )}
+                  <div
+                    ref={(el) => {
+                      if (el) {
+                        infoIconRefs.current[paraId] = el;
+                      }
+                    }}
+                    className={`${styles.infoIconContainer} ${isHovered ? styles.infoIconVisible : styles.infoIconHidden}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleInfoIconClick(paraId, formatDate(para.created_at), para.source_url || 'No source', e);
+                    }}
+                  >
+                    <FiInfo className={styles.infoIcon} />
+                  </div>
+                </div>
+              );
+            },
+          },
+        ];
+
         return (
           <>
             {/* Sub-folders */}
@@ -620,92 +860,24 @@ export const FolderBookmark: React.FC = () => {
                     </button>
                   </div>
                 )}
-                <div className={styles.tableContainer}>
-                  <table className={styles.table}>
-                    <thead>
-                      <tr>
-                        <th className={isNameColumnVisible ? '' : styles.hiddenColumn}>
-                          <div className={styles.columnHeaderWithIcon}>
-                            <span>Name</span>
-                            {isNameColumnVisible && (
-                              <button
-                                className={styles.eyeToggleButtonHeader}
-                                onClick={() => setIsNameColumnVisible(false)}
-                                title="Hide name column"
-                                aria-label="Hide name column"
-                              >
-                                <FiEyeOff />
-                              </button>
-                            )}
-                          </div>
-                        </th>
-                        <th>Content</th>
-                        <th>Source</th>
-                      </tr>
-                    </thead>
-                  <tbody>
-                  {paragraphsData.saved_paragraphs.map((para) => (
-                      <tr 
-                        key={para.id}
-                        onMouseEnter={() => setHoveredRowId(para.id)}
-                        onMouseLeave={() => {
-                          setHoveredRowId(null);
-                          if (hoveredInfoId !== para.id) {
-                            setHoveredInfoId(null);
-                            setTooltipPosition(null);
-                            setTooltipData(null);
-                          }
-                        }}
-                      >
-                        <td className={isNameColumnVisible ? '' : styles.hiddenColumn}>
-                          {para.name || ''}
-                        </td>
-                        <td className={styles.contentColumn}>
-                          <div className={styles.contentCell}>
-                            {para.content.length > 150
-                              ? `${para.content.substring(0, 150)}...`
-                              : para.content}
-                      </div>
-                        </td>
-                        <td>
-                          <div className={styles.sourceCell}>
-                            {para.source_url ? (
-                        <a
-                          href={para.source_url}
-                          onClick={(e) => handleSourceLinkClick(e, para.source_url, para.content)}
-                                className={styles.iconLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                                title={para.source_url}
-                              >
-                                <FiExternalLink />
-                              </a>
-                            ) : (
-                              <span className={styles.noSource}>—</span>
-                            )}
-                            {hoveredRowId === para.id && (
-                              <div 
-                                ref={(el) => {
-                                  if (el) {
-                                    infoIconRefs.current[para.id] = el;
-                                  }
-                                }}
-                                className={`${styles.infoIconContainer} ${hoveredRowId === para.id ? styles.infoIconVisible : styles.infoIconHidden}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleInfoIconClick(para.id, formatDate(para.created_at), para.source_url || 'No source', e);
-                                }}
-                              >
-                                <FiInfo className={styles.infoIcon} />
-                              </div>
-                      )}
-                    </div>
-                          </td>
-                        </tr>
-                  ))}
-                    </tbody>
-                  </table>
-                </div>
+                <DataTable
+                  columns={paragraphColumns}
+                  data={paragraphsData.saved_paragraphs}
+                  emptyMessage="No paragraphs found"
+                  rowKey={(para) => para.id}
+                  onRowHover={(para) => {
+                    if (para) {
+                      setHoveredRowId(para.id);
+                    } else {
+                      setHoveredRowId(null);
+                      if (hoveredInfoId && !infoIconRefs.current[hoveredInfoId]) {
+                        setHoveredInfoId(null);
+                        setTooltipPosition(null);
+                        setTooltipData(null);
+                      }
+                    }
+                  }}
+                />
                 {paragraphsLoadingMore && (
                   <div className={styles.loadingMore}>Loading more...</div>
                 )}
@@ -726,73 +898,106 @@ export const FolderBookmark: React.FC = () => {
         if (!linksData) {
           return <div className={styles.emptyState}>No data available</div>;
         }
+
+        // Link table columns
+        const linkColumns: Column<SavedLink>[] = [
+          {
+            key: 'name',
+            header: 'Name',
+            align: 'left',
+            width: '250px',
+            className: styles.nameColumn,
+            render: (link) => link.name || '',
+          },
+          {
+            key: 'url',
+            header: 'URL',
+            align: 'left',
+            width: '400px',
+            className: styles.urlColumn,
+            render: (link) => (
+              <div className={styles.urlCellWithCopy}>
+                <button
+                  className={styles.copyButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopyLink(link.url, link.id);
+                  }}
+                  title="Copy URL"
+                >
+                  {copiedLinkId === link.id ? <FiCheck /> : <FiCopy />}
+                </button>
+                <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.urlLink}>
+                  {link.url}
+                </a>
+              </div>
+            ),
+          },
+          {
+            key: 'type',
+            header: 'Type',
+            align: 'center',
+            render: (link) => {
+              const linkId = link.id;
+              const isHovered = hoveredRowId === linkId;
+              return (
+                <div className={styles.typeCell}>
+                  <div className={styles.typeIconWrapper}>
+                    {getTypeIcon(link.type)}
+                  </div>
+                  <div
+                    ref={(el) => {
+                      if (el) {
+                        infoIconRefs.current[linkId] = el;
+                      }
+                    }}
+                    className={`${styles.infoIconContainer} ${isHovered ? styles.infoIconVisible : styles.infoIconHidden}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleInfoIconClick(linkId, formatDate(link.created_at), link.url || 'No source', e);
+                    }}
+                  >
+                    <FiInfo className={styles.infoIcon} />
+                  </div>
+                </div>
+              );
+            },
+          },
+        ];
+
         return (
-          <div className={styles.tableContainer}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th className={styles.nameColumnHeader}>Name</th>
-                  <th className={styles.urlColumnHeader}>URL</th>
-                  <th className={styles.typeColumnHeader}>Type</th>
-                </tr>
-              </thead>
-              <tbody>
-                {linksData.saved_links.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className={styles.noData}>No links found</td>
-                  </tr>
-                ) : (
-                  linksData.saved_links.map((link) => (
-                    <tr 
-                      key={link.id}
-                      onMouseEnter={() => setHoveredRowId(link.id)}
-                      onMouseLeave={() => {
-                        setHoveredRowId(null);
-                        if (hoveredInfoId !== link.id) {
-                          setHoveredInfoId(null);
-                          setTooltipPosition(null);
-                          setTooltipData(null);
-                        }
-                      }}
-                    >
-                      <td className={styles.nameColumn}>
-                        {link.name || ''}
-                      </td>
-                      <td className={styles.urlColumn}>
-                        <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.urlLink}>
-                          {link.url}
-                        </a>
-                      </td>
-                      <td>
-                        <div className={styles.typeCell}>
-                          <div className={styles.typeIconWrapper}>
-                            {getTypeIcon(link.type)}
-                          </div>
-                          <div 
-                            ref={(el) => {
-                              if (el) {
-                                infoIconRefs.current[link.id] = el;
-                              }
-                            }}
-                            className={`${styles.infoIconContainer} ${hoveredRowId === link.id ? styles.infoIconVisible : styles.infoIconHidden}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleInfoIconClick(link.id, formatDate(link.created_at), link.url || 'No source', e);
-                            }}
-                          >
-                            <FiInfo className={styles.infoIcon} />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <>
+            <div className={styles.tableHeaderWithButton}>
+              <button
+                className={styles.addButton}
+                onClick={() => setIsAddLinkModalOpen(true)}
+                title="Add new link"
+              >
+                Add link
+              </button>
+            </div>
+            <DataTable
+              columns={linkColumns}
+              data={linksData.saved_links}
+              emptyMessage="No links found"
+              rowKey={(link) => link.id}
+              onRowHover={(link) => {
+                if (link) {
+                  setHoveredRowId(link.id);
+                } else {
+                  setHoveredRowId(null);
+                  if (hoveredInfoId && !infoIconRefs.current[hoveredInfoId]) {
+                    setHoveredInfoId(null);
+                    setTooltipPosition(null);
+                    setTooltipData(null);
+                  }
+                }
+              }}
+            />
             {linksLoadingMore && (
               <div className={styles.loadingMore}>Loading more...</div>
             )}
-          </div>
+          </>
         );
 
       case 'word':
@@ -805,88 +1010,98 @@ export const FolderBookmark: React.FC = () => {
         if (!wordsData) {
           return <div className={styles.emptyState}>No data available</div>;
         }
-        return (
-          <div className={styles.tableContainer}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Word</th>
-                  <th>Meaning</th>
-                  <th>Source</th>
-                </tr>
-              </thead>
-              <tbody>
-                {wordsData.words.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className={styles.noData}>No words found</td>
-                  </tr>
-                ) : (
-                  wordsData.words.map((word) => (
-                    <tr 
-                      key={word.id}
-                      onMouseEnter={() => setHoveredRowId(word.id)}
-                      onMouseLeave={() => {
-                        setHoveredRowId(null);
-                        if (hoveredInfoId !== word.id) {
-                          setHoveredInfoId(null);
-                          setTooltipPosition(null);
-                          setTooltipData(null);
-                        }
-                      }}
+
+        // Word table columns
+        const wordColumns: Column<SavedWord>[] = [
+          {
+            key: 'word',
+            header: 'Word',
+            align: 'left',
+            render: (word) => (
+              <div className={styles.wordCell}>
+                <button
+                  className={styles.copyButton}
+                  onClick={() => handleCopyWord(word.word, word.id)}
+                  title="Copy word"
+                >
+                  {copiedWordId === word.id ? <FiCheck /> : <FiCopy />}
+                </button>
+                <span>{word.word}</span>
+              </div>
+            ),
+          },
+          {
+            key: 'meaning',
+            header: 'Meaning',
+            align: 'left',
+            render: (word) => word.contextualMeaning || 'No meaning available',
+          },
+          {
+            key: 'source',
+            header: 'Source',
+            align: 'right',
+            render: (word) => {
+              const wordId = word.id;
+              const isHovered = hoveredRowId === wordId;
+              return (
+                <div className={styles.sourceCell}>
+                  {word.sourceUrl ? (
+                    <a 
+                      href={word.sourceUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className={styles.iconLink}
+                      title={word.sourceUrl}
                     >
-                      <td>
-                        <div className={styles.wordCell}>
-                          <button
-                            className={styles.copyButton}
-                            onClick={() => handleCopyWord(word.word, word.id)}
-                            title="Copy word"
-                          >
-                            {copiedWordId === word.id ? <FiCheck /> : <FiCopy />}
-                          </button>
-                          <span>{word.word}</span>
-                        </div>
-                      </td>
-                      <td>{word.contextualMeaning || 'No meaning available'}</td>
-                      <td>
-                        <div className={styles.sourceCell}>
-                          {word.sourceUrl ? (
-                            <a 
-                              href={word.sourceUrl} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className={styles.iconLink}
-                              title={word.sourceUrl}
-                            >
-                              <FiExternalLink />
-                            </a>
-                          ) : (
-                            <span className={styles.noSource}>—</span>
-                          )}
-                          <div 
-                            ref={(el) => {
-                              if (el) {
-                                infoIconRefs.current[word.id] = el;
-                              }
-                            }}
-                            className={`${styles.infoIconContainer} ${hoveredRowId === word.id ? styles.infoIconVisible : styles.infoIconHidden}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleInfoIconClick(word.id, formatDate(word.createdAt), word.sourceUrl || 'No source', e);
-                            }}
-                          >
-                            <FiInfo className={styles.infoIcon} />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                      <FiExternalLink />
+                    </a>
+                  ) : (
+                    <span className={styles.noSource}>—</span>
+                  )}
+                  <div 
+                    ref={(el) => {
+                      if (el) {
+                        infoIconRefs.current[wordId] = el;
+                      }
+                    }}
+                    className={`${styles.infoIconContainer} ${isHovered ? styles.infoIconVisible : styles.infoIconHidden}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleInfoIconClick(wordId, formatDate(word.createdAt), word.sourceUrl || 'No source', e);
+                    }}
+                  >
+                    <FiInfo className={styles.infoIcon} />
+                  </div>
+                </div>
+              );
+            },
+          },
+        ];
+
+        return (
+          <>
+            <DataTable
+              columns={wordColumns}
+              data={wordsData.words}
+              emptyMessage="No words found"
+              rowKey={(word) => word.id}
+              onRowHover={(word) => {
+                if (word) {
+                  setHoveredRowId(word.id);
+                } else {
+                  setHoveredRowId(null);
+                  if (hoveredInfoId && !infoIconRefs.current[hoveredInfoId]) {
+                    setHoveredInfoId(null);
+                    setTooltipPosition(null);
+                    setTooltipData(null);
+                  }
+                }
+              }}
+            />
             {wordsLoadingMore && (
               <div className={styles.loadingMore}>Loading more...</div>
             )}
-          </div>
+          </>
         );
 
       case 'image':
@@ -1207,6 +1422,131 @@ export const FolderBookmark: React.FC = () => {
         >
           <div>Bookmark time: {tooltipData.bookmarkTime}</div>
           <div>Source: {tooltipData.source}</div>
+        </div>
+      )}
+
+      {/* Paragraph Content Modal */}
+      {isParagraphModalOpen && selectedParagraph && (
+        <div 
+          className={`${styles.paragraphModalOverlay} ${isParagraphModalClosing ? styles.paragraphModalOverlayClosing : ''}`}
+          onClick={handleCloseParagraphModal}
+        >
+          <div 
+            className={`${styles.paragraphModal} ${isParagraphModalClosing ? styles.paragraphModalClosing : ''}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.paragraphModalHeader}>
+              <div className={styles.paragraphModalTitle}>
+                {selectedParagraph.name || 'Paragraph Content'}
+              </div>
+              <div className={styles.paragraphModalIcons}>
+                {selectedParagraph.source_url && (
+                  <a
+                    href={selectedParagraph.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.paragraphModalSource}
+                    title={selectedParagraph.source_url}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FiExternalLink />
+                  </a>
+                )}
+                <button
+                  className={styles.paragraphModalCopy}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopyParagraph(selectedParagraph.content, selectedParagraph.id);
+                  }}
+                  title="Copy paragraph"
+                >
+                  {copiedParagraphId === selectedParagraph.id ? <FiCheck /> : <FiCopy />}
+                </button>
+                <button
+                  className={styles.paragraphModalClose}
+                  onClick={handleCloseParagraphModal}
+                  aria-label="Close"
+                >
+                  <FiX />
+                </button>
+              </div>
+            </div>
+            <div className={styles.paragraphModalContent}>
+              <div className={styles.paragraphModalText}>
+                {selectedParagraph.content}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Link Modal */}
+      {isAddLinkModalOpen && (
+        <div 
+          className={`${styles.addLinkModalOverlay} ${isAddLinkModalClosing ? styles.addLinkModalOverlayClosing : ''}`}
+          onClick={handleCloseAddLinkModal}
+        >
+          <div 
+            className={`${styles.addLinkModal} ${isAddLinkModalClosing ? styles.addLinkModalClosing : ''}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.addLinkModalHeader}>
+              <h2 className={styles.addLinkModalTitle}>Add New Link</h2>
+              <button
+                className={styles.addLinkModalClose}
+                onClick={handleCloseAddLinkModal}
+                aria-label="Close"
+              >
+                <FiX />
+              </button>
+            </div>
+            <div className={styles.addLinkModalBody}>
+              <div className={styles.addLinkFormGroup}>
+                <label htmlFor="link-name" className={styles.addLinkLabel}>
+                  Name (Optional)
+                </label>
+                <input
+                  id="link-name"
+                  type="text"
+                  className={styles.addLinkInput}
+                  placeholder="Enter link name"
+                  value={addLinkForm.name}
+                  onChange={(e) => setAddLinkForm({ ...addLinkForm, name: e.target.value })}
+                  maxLength={100}
+                />
+              </div>
+              <div className={styles.addLinkFormGroup}>
+                <label htmlFor="link-url" className={styles.addLinkLabel}>
+                  URL <span className={styles.required}>*</span>
+                </label>
+                <input
+                  id="link-url"
+                  type="url"
+                  className={styles.addLinkInput}
+                  placeholder="https://example.com"
+                  value={addLinkForm.url}
+                  onChange={(e) => setAddLinkForm({ ...addLinkForm, url: e.target.value })}
+                  maxLength={1024}
+                  required
+                />
+              </div>
+            </div>
+            <div className={styles.addLinkModalFooter}>
+              <button
+                className={styles.addLinkCancelButton}
+                onClick={handleCloseAddLinkModal}
+              >
+                Cancel
+              </button>
+              <button
+                className={styles.addLinkSaveButton}
+                onClick={handleSaveLink}
+                disabled={isSavingLink || !addLinkForm.url.trim()}
+              >
+                {isSavingLink ? 'Saving...' : 'Save'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

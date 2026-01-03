@@ -1,0 +1,86 @@
+/* Table Container */
+.tableContainer {
+  background: white;
+  border-radius: 0;
+  border-top: 1px solid var(--very-light-purple);
+  border-bottom: 1px solid var(--very-light-purple);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Header Styles */
+.table thead {
+  background: #f5f0ff;
+}
+
+.table thead tr th {
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Alignment Classes for Headers */
+.table thead tr th.alignLeft {
+  text-align: left;
+}
+
+.table thead tr th.alignCenter {
+  text-align: center;
+}
+
+.table thead tr th.alignRight {
+  text-align: right;
+}
+
+/* Body Styles */
+.table tbody tr {
+  border-bottom: 1px solid var(--very-light-purple);
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background: #faf5ff;
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table tbody td {
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: #333;
+  vertical-align: middle;
+}
+
+/* Alignment Classes for Cells */
+.table tbody td.alignLeft {
+  text-align: left;
+}
+
+.table tbody td.alignCenter {
+  text-align: center;
+}
+
+.table tbody td.alignRight {
+  text-align: right;
+}
+
+/* Empty State */
+.noData {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+

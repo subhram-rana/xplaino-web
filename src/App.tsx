@@ -21,7 +21,6 @@ import { AdminSubscriptionPage } from '@/pages/Admin/AdminSubscriptionPage';
 import { UserDashboard } from '@/pages/UserDashboard';
 import { FolderBookmark } from '@/pages/UserDashboard/FolderBookmark';
 import { UserAccount } from '@/pages/UserAccount';
-import { UserSubscription } from '@/pages/UserSubscription';
 import { AdminDashboard } from '@/pages/AdminDashboard';
 import { PricingEdit } from '@/pages/Admin/components/PricingEdit';
 import { AdminIssueDetail } from '@/pages/Admin/components/AdminIssueDetail';
@@ -124,14 +123,6 @@ export const App: React.FC = () => {
                 element={
                   <UserProtectedRoute>
                     <UserAccount />
-                  </UserProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/user/subscription" 
-                element={
-                  <UserProtectedRoute>
-                    <UserSubscription />
                   </UserProtectedRoute>
                 } 
               />
