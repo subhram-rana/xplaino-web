@@ -1,2 +1,0 @@
-export { MyParagraphs } from './MyParagraphs';
-

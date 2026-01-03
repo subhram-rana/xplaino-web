@@ -126,6 +126,7 @@ export const UserDashboard: React.FC = () => {
   return (
     <div className={styles.dashboard}>
       <div className={styles.container}>
+        <h2 className={styles.heading}>My bookmarks</h2>
         <div className={styles.header}>
           <div className={styles.headerLeft}>
             <div className={styles.viewToggle}>

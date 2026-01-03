@@ -12,9 +12,6 @@ import { IssueDetail } from '@/pages/IssueDetail';
 import { TermsAndConditions } from '@/pages/TermsAndConditions';
 import { PrivacyPolicy } from '@/pages/PrivacyPolicy';
 import { RefundPolicy } from '@/pages/RefundPolicy';
-import { MyWords } from '@/pages/MyLearnings/Words';
-import { MyParagraphs } from '@/pages/MyLearnings/Paragraphs';
-import { MyPages } from '@/pages/MyLearnings/Pages';
 import { Pricing } from '@/pages/Pricing';
 import { AdminPricingPage } from '@/pages/Admin/AdminPricingPage';
 import { AdminTicketsPage } from '@/pages/Admin/AdminTicketsPage';
@@ -103,30 +100,6 @@ export const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <RefundPolicy />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/my-words" 
-                element={
-                  <ProtectedRoute>
-                    <MyWords />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/my-paragraphs" 
-                element={
-                  <ProtectedRoute>
-                    <MyParagraphs />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/my-pages" 
-                element={
-                  <ProtectedRoute>
-                    <MyPages />
                   </ProtectedRoute>
                 } 
               />

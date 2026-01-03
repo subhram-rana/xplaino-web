@@ -159,6 +159,15 @@
   margin: 0;
 }
 
+.heading {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+  text-align: center;
+  margin: 0 0 2rem 0;
+}
+
 /* List View */
 .listView {
   background: white;

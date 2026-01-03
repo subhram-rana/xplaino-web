@@ -15,7 +15,7 @@ interface VideoModalProps {
  * @param props - Component props
  * @returns JSX element
  */
-export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, title, sourceElement, onClose }) => {
+export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, title, onClose }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);

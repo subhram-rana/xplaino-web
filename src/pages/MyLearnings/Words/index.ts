@@ -1,2 +1,0 @@
-export { MyWords } from './MyWords';
-

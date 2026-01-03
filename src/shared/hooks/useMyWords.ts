@@ -59,8 +59,6 @@ export function useMyWords(): UseMyWordsReturn {
         await deleteSavedWord(accessToken, wordId);
         // If we're on the last page and it becomes empty, go to previous page
         setState((prev) => {
-          const currentPageStart = prev.offset;
-          const currentPageEnd = prev.offset + prev.limit;
           const remainingWords = prev.words.length;
 
           // If current page is empty and we're not on the first page, go to previous page

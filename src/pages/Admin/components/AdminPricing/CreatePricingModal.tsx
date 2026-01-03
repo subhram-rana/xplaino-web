@@ -191,14 +191,6 @@ export const CreatePricingModal: React.FC<CreatePricingModalProps> = ({
     return `${year}-${month}-${day}`;
   };
 
-  // Get current time in local format for time input
-  const getCurrentTime = (): string => {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
-  };
-
   const recurringPeriodOptions: { value: 'MONTH' | 'YEAR'; label: string }[] = [
     { value: 'MONTH', label: 'Month' },
     { value: 'YEAR', label: 'Year' },

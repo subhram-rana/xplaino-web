@@ -15,9 +15,6 @@ import {
   getAuthFromStorage,
   clearAuthFromStorage,
 } from '@/shared/services/auth.service';
-import { useMyWords } from './useMyWords';
-import { useMyParagraphs } from './useMyParagraphs';
-import { useMyPages } from './useMyPages';
 
 interface AuthContextValue {
   isLoggedIn: boolean;
@@ -33,45 +30,6 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 interface AuthProviderProps {
   children: ReactNode;
 }
-
-// Internal component to handle words state reset on logout
-const WordsStateManager: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
-  const { resetWords } = useMyWords();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      resetWords();
-    }
-  }, [isLoggedIn, resetWords]);
-
-  return null;
-};
-
-// Internal component to handle paragraphs state reset on logout
-const ParagraphsStateManager: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
-  const { resetParagraphs } = useMyParagraphs();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      resetParagraphs();
-    }
-  }, [isLoggedIn, resetParagraphs]);
-
-  return null;
-};
-
-// Internal component to handle pages state reset on logout
-const PagesStateManager: React.FC<{ isLoggedIn: boolean }> = ({ isLoggedIn }) => {
-  const { resetPages } = useMyPages();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      resetPages();
-    }
-  }, [isLoggedIn, resetPages]);
-
-  return null;
-};
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState | null>(null);
@@ -155,9 +113,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      <WordsStateManager isLoggedIn={isLoggedIn} />
-      <ParagraphsStateManager isLoggedIn={isLoggedIn} />
-      <PagesStateManager isLoggedIn={isLoggedIn} />
       {children}
     </AuthContext.Provider>
   );
