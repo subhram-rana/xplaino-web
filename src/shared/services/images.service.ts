@@ -37,3 +37,55 @@ export async function getAllSavedImagesByFolderId(
   return data;
 }
 
+/**
+ * Delete a saved image by ID
+ */
+export async function deleteSavedImage(
+  accessToken: string,
+  imageId: string
+): Promise<void> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/saved-image/${imageId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to delete saved image' }));
+    throw new Error(errorData.detail || `Failed to delete saved image with status ${response.status}`);
+  }
+}
+
+/**
+ * Move a saved image to a folder
+ */
+export async function moveSavedImageToFolder(
+  accessToken: string,
+  imageId: string,
+  folderId: string | null
+): Promise<void> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/saved-image/${imageId}/move-to-folder`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+      body: JSON.stringify({ newFolderId: folderId }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to move saved image' }));
+    throw new Error(errorData.detail || `Failed to move saved image with status ${response.status}`);
+  }
+}
+

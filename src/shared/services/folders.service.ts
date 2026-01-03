@@ -70,3 +70,28 @@ export async function createFolder(
   return data;
 }
 
+/**
+ * Delete a folder by ID
+ */
+export async function deleteFolder(
+  accessToken: string,
+  folderId: string
+): Promise<void> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/folders/${folderId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to delete folder' }));
+    throw new Error(errorData.detail || `Failed to delete folder with status ${response.status}`);
+  }
+}
+

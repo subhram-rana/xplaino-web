@@ -231,6 +231,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  position: relative;
 }
 
 .typeIconWrapper {
@@ -495,6 +496,20 @@
   border-top: 1px solid var(--very-light-purple);
 }
 
+.imageCardActions {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+}
+
+.actionIconsOnImage {
+  background: white;
+  border-radius: 8px;
+  padding: 0.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .iconLink {
   color: var(--purple);
   text-decoration: none;
@@ -529,6 +544,10 @@
   justify-content: center;
   gap: 0.5rem;
   position: relative;
+}
+
+.actionIconsInCell {
+  margin-left: 0.5rem;
 }
 
 .infoIconContainer {

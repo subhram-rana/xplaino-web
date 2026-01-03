@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { FiRefreshCw, FiList, FiGrid, FiArrowUp, FiArrowDown, FiPlus } from 'react-icons/fi';
 import styles from './UserDashboard.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
-import { getAllFolders, createFolder } from '@/shared/services/folders.service';
+import { getAllFolders, createFolder, deleteFolder } from '@/shared/services/folders.service';
 import type { FolderWithSubFolders } from '@/shared/types/folders.types';
 import { FolderIcon } from '@/shared/components/FolderIcon';
 import { Toast } from '@/shared/components/Toast';
 import { CreateFolderModal } from '@/shared/components/CreateFolderModal';
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
+import { DataTable, type Column } from '@/shared/components/DataTable';
+import { ActionIcons } from '@/shared/components/ActionIcons';
 
 /**
  * UserDashboard - User dashboard with folder management
@@ -24,6 +27,8 @@ export const UserDashboard: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [deleteConfirmFolderId, setDeleteConfirmFolderId] = useState<string | null>(null);
+  const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 
   // Flatten hierarchical folder structure
   const flattenFolders = (folderList: FolderWithSubFolders[]): FolderWithSubFolders[] => {
@@ -96,6 +101,38 @@ export const UserDashboard: React.FC = () => {
       const errorMessage = error instanceof Error ? error.message : 'Failed to create folder';
       setToast({ message: errorMessage, type: 'error' });
       throw error; // Re-throw to let modal handle it
+    }
+  };
+
+  const handleDeleteClick = (folderId: string) => {
+    setDeleteConfirmFolderId(folderId);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirmFolderId || !accessToken) return;
+
+    try {
+      await deleteFolder(accessToken, deleteConfirmFolderId);
+      
+      // Remove folder from state (handle nested structure)
+      const removeFolderById = (folderList: FolderWithSubFolders[], id: string): FolderWithSubFolders[] => {
+        return folderList
+          .filter(folder => folder.id !== id)
+          .map(folder => ({
+            ...folder,
+            subFolders: removeFolderById(folder.subFolders || [], id)
+          }));
+      };
+      
+      setFolders(prevFolders => removeFolderById(prevFolders, deleteConfirmFolderId));
+      setToast({ message: 'Folder deleted successfully', type: 'success' });
+      setDeleteConfirmFolderId(null);
+    } catch (error) {
+      console.error('Error deleting folder:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete folder';
+      setToast({ message: errorMessage, type: 'error' });
+      // Close the confirmation modal on error
+      setDeleteConfirmFolderId(null);
     }
   };
 
@@ -177,11 +214,28 @@ export const UserDashboard: React.FC = () => {
           <>
             {viewMode === 'list' ? (
               <div className={styles.listView}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Folder Name</th>
-                      <th>
+                <DataTable
+                  columns={[
+                    {
+                      key: 'name',
+                      header: 'Folder Name',
+                      align: 'left',
+                      render: (folder) => (
+                        <div 
+                          className={styles.folderNameCell}
+                          onClick={() => handleFolderClick(folder)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <FolderIcon size={20} />
+                          <span>{folder.name}</span>
+                        </div>
+                      ),
+                    },
+                    {
+                      key: 'created_at',
+                      header: 'Created At',
+                      align: 'left',
+                      headerRender: () => (
                         <button
                           className={`${styles.sortButton} ${sortBy === 'created_at' ? styles.sortButtonActive : ''}`}
                           onClick={() => handleSort('created_at')}
@@ -192,8 +246,14 @@ export const UserDashboard: React.FC = () => {
                             <FiArrowDown className={sortBy === 'created_at' && sortOrder === 'desc' ? styles.sortIconActive : styles.sortIconInactive} />
                           </span>
                         </button>
-                      </th>
-                      <th>
+                      ),
+                      render: (folder) => formatDate(folder.created_at),
+                    },
+                    {
+                      key: 'updated_at',
+                      header: 'Updated At',
+                      align: 'left',
+                      headerRender: () => (
                         <button
                           className={`${styles.sortButton} ${sortBy === 'updated_at' ? styles.sortButtonActive : ''}`}
                           onClick={() => handleSort('updated_at')}
@@ -204,28 +264,38 @@ export const UserDashboard: React.FC = () => {
                             <FiArrowDown className={sortBy === 'updated_at' && sortOrder === 'desc' ? styles.sortIconActive : styles.sortIconInactive} />
                           </span>
                         </button>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sortedFolders.map((folder) => (
-                      <tr
-                        key={folder.id}
-                        className={styles.tableRow}
-                        onClick={() => handleFolderClick(folder)}
-                      >
-                        <td>
-                          <div className={styles.folderNameCell}>
-                            <FolderIcon size={20} />
-                            <span>{folder.name}</span>
-                          </div>
-                        </td>
-                        <td>{formatDate(folder.created_at)}</td>
-                        <td>{formatDate(folder.updated_at)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                      ),
+                      render: (folder) => formatDate(folder.updated_at),
+                    },
+                    {
+                      key: 'actions',
+                      header: '',
+                      align: 'right',
+                      render: (folder) => {
+                        const isHovered = hoveredRowId === folder.id;
+                        return (
+                          <ActionIcons
+                            onDelete={() => handleDeleteClick(folder.id)}
+                            onMove={() => {}}
+                            isVisible={isHovered}
+                            className={styles.actionIconsInCell}
+                            showMove={false}
+                          />
+                        );
+                      },
+                    },
+                  ]}
+                  data={sortedFolders}
+                  emptyMessage="No folders found"
+                  rowKey={(folder) => folder.id}
+                  onRowHover={(folder) => {
+                    if (folder) {
+                      setHoveredRowId(folder.id);
+                    } else {
+                      setHoveredRowId(null);
+                    }
+                  }}
+                />
               </div>
             ) : (
               <div className={styles.gridView}>
@@ -234,7 +304,22 @@ export const UserDashboard: React.FC = () => {
                     key={folder.id}
                     className={styles.folderCard}
                     onClick={() => handleFolderClick(folder)}
+                    onMouseEnter={() => setHoveredRowId(folder.id)}
+                    onMouseLeave={() => setHoveredRowId(null)}
                   >
+                    {hoveredRowId === folder.id && (
+                      <div 
+                        className={styles.folderCardActions}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ActionIcons
+                          onDelete={() => handleDeleteClick(folder.id)}
+                          onMove={() => {}}
+                          isVisible={true}
+                          showMove={false}
+                        />
+                      </div>
+                    )}
                     <FolderIcon size={32} />
                     <span className={styles.folderCardName}>{folder.name}</span>
                   </div>
@@ -256,6 +341,17 @@ export const UserDashboard: React.FC = () => {
           onClose={() => setIsCreateModalOpen(false)}
           onCreate={handleCreateFolder}
         />
+        {deleteConfirmFolderId && (
+          <ConfirmDialog
+            isOpen={true}
+            title="Confirm Delete"
+            message="All the words, paragraphs, images and links will be auto deleted. Are you sure?"
+            confirmText="I understand, delete folder"
+            cancelText="Cancel"
+            onConfirm={handleDeleteConfirm}
+            onCancel={() => setDeleteConfirmFolderId(null)}
+          />
+        )}
       </div>
     </div>
   );

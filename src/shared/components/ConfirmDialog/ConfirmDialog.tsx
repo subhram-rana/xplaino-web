@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import styles from './ConfirmDialog.module.css';
 
 export interface ConfirmDialogProps {
@@ -20,18 +20,42 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  if (!isOpen) return null;
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsClosing(false);
+    }
+  }, [isOpen]);
+
+  if (!isOpen && !isClosing) return null;
+
+  const handleCancel = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onCancel();
+    }, 300);
+  };
+
+  const handleConfirm = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onConfirm();
+    }, 300);
+  };
 
   return (
-    <div className={styles.overlay} onClick={onCancel}>
-      <div className={styles.dialog} onClick={(e) => e.stopPropagation()}>
+    <div className={`${styles.overlay} ${isClosing ? styles.closing : ''}`} onClick={handleCancel}>
+      <div className={`${styles.dialog} ${isClosing ? styles.closing : ''}`} onClick={(e) => e.stopPropagation()}>
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.message}>{message}</p>
         <div className={styles.buttons}>
-          <button className={styles.cancelButton} onClick={onCancel}>
+          <button className={styles.cancelButton} onClick={handleCancel}>
             {cancelText}
           </button>
-          <button className={styles.confirmButton} onClick={onConfirm}>
+          <button className={styles.confirmButton} onClick={handleConfirm}>
             {confirmText}
           </button>
         </div>

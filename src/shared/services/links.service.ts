@@ -76,3 +76,58 @@ export async function saveLink(
   return data;
 }
 
+/**
+ * Delete a saved link by ID
+ */
+export async function deleteSavedLink(
+  accessToken: string,
+  linkId: string
+): Promise<void> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/saved-link/${linkId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to delete saved link' }));
+    throw new Error(errorData.detail || `Failed to delete saved link with status ${response.status}`);
+  }
+}
+
+/**
+ * Move a saved link to a folder
+ */
+export async function moveSavedLinkToFolder(
+  accessToken: string,
+  linkId: string,
+  folderId: string | null
+): Promise<SavedLink> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/saved-link/${linkId}/move-to-folder`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+      body: JSON.stringify({ targetFolderId: folderId }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to move saved link' }));
+    throw new Error(errorData.detail || `Failed to move saved link with status ${response.status}`);
+  }
+
+  const data: SavedLink = await response.json();
+  return data;
+}
+

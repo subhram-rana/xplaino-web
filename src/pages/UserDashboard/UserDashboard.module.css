@@ -171,8 +171,9 @@
 /* List View */
 .listView {
   background: white;
-  border-radius: 20px;
-  border: 1px solid var(--very-light-purple);
+  border-radius: 0;
+  border-top: 1px solid var(--very-light-purple);
+  border-bottom: 1px solid var(--very-light-purple);
   overflow: hidden;
   margin-bottom: 2rem;
 }
@@ -299,6 +300,7 @@
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
 }
 
 .folderCard:hover {
@@ -314,6 +316,11 @@
 
 .folderCard svg {
   color: var(--purple);
+  transition: none;
+}
+
+.folderCard:hover svg {
+  color: var(--purple);
 }
 
 .folderCardName {
@@ -323,6 +330,20 @@
   color: #333;
   text-align: center;
   word-break: break-word;
+}
+
+/* Action Icons in Table Cell */
+.actionIconsInCell {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Folder Card Actions (Grid View) */
+.folderCardActions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
 }
 
 /* Tab Container */

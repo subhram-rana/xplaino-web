@@ -4,10 +4,11 @@ import { FiArrowLeft, FiRefreshCw, FiExternalLink, FiCopy, FiCheck, FiInfo, FiX,
 import { SiYoutube, SiLinkedin, SiX, SiReddit, SiFacebook, SiInstagram } from 'react-icons/si';
 import styles from './FolderBookmark.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
-import { getAllSavedParagraphs } from '@/shared/services/paragraphs.service';
-import { getAllSavedLinksByFolderId, saveLink } from '@/shared/services/links.service';
-import { getSavedWordsByFolderId } from '@/shared/services/words.service';
-import { getAllSavedImagesByFolderId } from '@/shared/services/images.service';
+import { getAllSavedParagraphs, deleteSavedParagraph, moveSavedParagraphToFolder } from '@/shared/services/paragraphs.service';
+import { getAllSavedLinksByFolderId, saveLink, deleteSavedLink, moveSavedLinkToFolder } from '@/shared/services/links.service';
+import { getSavedWordsByFolderId, deleteSavedWord, moveSavedWordToFolder } from '@/shared/services/words.service';
+import { getAllSavedImagesByFolderId, deleteSavedImage, moveSavedImageToFolder } from '@/shared/services/images.service';
+import { getAllFolders } from '@/shared/services/folders.service';
 import type { GetAllSavedParagraphsResponse } from '@/shared/types/paragraphs.types';
 import type { GetAllSavedLinksResponse } from '@/shared/types/links.types';
 import type { GetSavedWordsResponse } from '@/shared/types/words.types';
@@ -15,9 +16,13 @@ import type { GetAllSavedImagesResponse } from '@/shared/types/images.types';
 import { FolderIcon } from '@/shared/components/FolderIcon';
 import { Toast } from '@/shared/components/Toast';
 import { DataTable, type Column } from '@/shared/components/DataTable';
+import { ActionIcons } from '@/shared/components/ActionIcons';
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
+import { FolderSelectionModal } from '@/shared/components/FolderSelectionModal';
 import type { SavedParagraph } from '@/shared/types/paragraphs.types';
 import type { SavedLink } from '@/shared/types/links.types';
 import type { SavedWord } from '@/shared/types/words.types';
+import type { FolderWithSubFolders } from '@/shared/types/folders.types';
 
 /**
  * FolderBookmark - Folder detail page with tabbed content
@@ -76,6 +81,13 @@ export const FolderBookmark: React.FC = () => {
   const [isSavingLink, setIsSavingLink] = useState(false);
   const [isNameColumnVisible, setIsNameColumnVisible] = useState(true);
   const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
+  
+  // Delete and move state
+  const [deleteConfirm, setDeleteConfirm] = useState<{ type: 'paragraph' | 'link' | 'word' | 'image'; id: string; name?: string } | null>(null);
+  const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
+  const [moveItem, setMoveItem] = useState<{ type: 'paragraph' | 'link' | 'word' | 'image'; id: string; currentFolderId?: string | null } | null>(null);
+  const [folders, setFolders] = useState<FolderWithSubFolders[]>([]);
+  const [foldersLoading, setFoldersLoading] = useState(false);
   const [hoveredInfoId, setHoveredInfoId] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
   const [tooltipData, setTooltipData] = useState<{ bookmarkTime: string; source: string } | null>(null);
@@ -676,6 +688,108 @@ export const FolderBookmark: React.FC = () => {
     }
   };
 
+  // Delete handlers
+  const handleDeleteClick = (type: 'paragraph' | 'link' | 'word' | 'image', id: string, name?: string) => {
+    setDeleteConfirm({ type, id, name });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirm || !accessToken) return;
+
+    try {
+      switch (deleteConfirm.type) {
+        case 'paragraph':
+          await deleteSavedParagraph(accessToken, deleteConfirm.id);
+          setToast({ message: 'Paragraph deleted successfully', type: 'success' });
+          await fetchParagraphs(true);
+          break;
+        case 'link':
+          await deleteSavedLink(accessToken, deleteConfirm.id);
+          setToast({ message: 'Link deleted successfully', type: 'success' });
+          await fetchLinks(true);
+          break;
+        case 'word':
+          await deleteSavedWord(accessToken, deleteConfirm.id);
+          setToast({ message: 'Word deleted successfully', type: 'success' });
+          await fetchWords(true);
+          break;
+        case 'image':
+          await deleteSavedImage(accessToken, deleteConfirm.id);
+          setToast({ message: 'Image deleted successfully', type: 'success' });
+          await fetchImages(true);
+          break;
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      setToast({ 
+        message: error instanceof Error ? error.message : 'Failed to delete item',
+        type: 'error' 
+      });
+    } finally {
+      setDeleteConfirm(null);
+    }
+  };
+
+  // Move handlers
+  const handleMoveClick = async (type: 'paragraph' | 'link' | 'word' | 'image', id: string, currentFolderId?: string | null) => {
+    if (!accessToken) return;
+    
+    setMoveItem({ type, id, currentFolderId });
+    setIsFolderModalOpen(true);
+    setFoldersLoading(true);
+    
+    try {
+      const foldersData = await getAllFolders(accessToken);
+      setFolders(foldersData.folders);
+    } catch (error) {
+      console.error('Error fetching folders:', error);
+      setToast({ 
+        message: error instanceof Error ? error.message : 'Failed to fetch folders',
+        type: 'error' 
+      });
+    } finally {
+      setFoldersLoading(false);
+    }
+  };
+
+  const handleFolderSelect = async (folderId: string | null) => {
+    if (!moveItem || !accessToken) return;
+
+    try {
+      switch (moveItem.type) {
+        case 'paragraph':
+          await moveSavedParagraphToFolder(accessToken, moveItem.id, folderId);
+          setToast({ message: 'Paragraph moved successfully', type: 'success' });
+          await fetchParagraphs(true);
+          break;
+        case 'link':
+          await moveSavedLinkToFolder(accessToken, moveItem.id, folderId);
+          setToast({ message: 'Link moved successfully', type: 'success' });
+          await fetchLinks(true);
+          break;
+        case 'word':
+          await moveSavedWordToFolder(accessToken, moveItem.id, folderId);
+          setToast({ message: 'Word moved successfully', type: 'success' });
+          await fetchWords(true);
+          break;
+        case 'image':
+          await moveSavedImageToFolder(accessToken, moveItem.id, folderId);
+          setToast({ message: 'Image moved successfully', type: 'success' });
+          await fetchImages(true);
+          break;
+      }
+    } catch (error) {
+      console.error('Error moving item:', error);
+      setToast({ 
+        message: error instanceof Error ? error.message : 'Failed to move item',
+        type: 'error' 
+      });
+    } finally {
+      setMoveItem(null);
+      setIsFolderModalOpen(false);
+    }
+  };
+
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
@@ -735,19 +849,19 @@ export const FolderBookmark: React.FC = () => {
             width: '300px',
             hidden: !isNameColumnVisible,
             headerRender: () => (
-              <div className={styles.columnHeaderWithIcon}>
-                <span>Name</span>
-                {isNameColumnVisible && (
-                  <button
-                    className={styles.eyeToggleButtonHeader}
-                    onClick={() => setIsNameColumnVisible(false)}
-                    title="Hide name column"
-                    aria-label="Hide name column"
-                  >
-                    <FiEyeOff />
-                  </button>
-                )}
-              </div>
+                          <div className={styles.columnHeaderWithIcon}>
+                            <span>Name</span>
+                            {isNameColumnVisible && (
+                              <button
+                                className={styles.eyeToggleButtonHeader}
+                                onClick={() => setIsNameColumnVisible(false)}
+                                title="Hide name column"
+                                aria-label="Hide name column"
+                              >
+                                <FiEyeOff />
+                              </button>
+                            )}
+                          </div>
             ),
             render: (para) => para.name || '',
           },
@@ -772,51 +886,57 @@ export const FolderBookmark: React.FC = () => {
                   className={styles.contentCellClickable}
                   onClick={() => handleOpenParagraphModal(para)}
                 >
-                  {para.content.length > 150
-                    ? `${para.content.substring(0, 150)}...`
-                    : para.content}
-                </div>
+                            {para.content.length > 150
+                              ? `${para.content.substring(0, 150)}...`
+                              : para.content}
+                      </div>
               </div>
             ),
           },
           {
             key: 'source',
             header: 'Source',
-            align: 'right',
+            align: 'left',
             render: (para) => {
               const paraId = para.id;
               const isHovered = hoveredRowId === paraId;
               return (
-                <div className={styles.sourceCell}>
-                  {para.source_url ? (
-                    <a
-                      href={para.source_url}
-                      onClick={(e) => handleSourceLinkClick(e, para.source_url, para.content)}
-                      className={styles.iconLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title={para.source_url}
-                    >
-                      <FiExternalLink />
-                    </a>
-                  ) : (
-                    <span className={styles.noSource}>—</span>
-                  )}
-                  <div
-                    ref={(el) => {
-                      if (el) {
+                          <div className={styles.sourceCell}>
+                            {para.source_url ? (
+                        <a
+                          href={para.source_url}
+                          onClick={(e) => handleSourceLinkClick(e, para.source_url, para.content)}
+                                className={styles.iconLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                                title={para.source_url}
+                              >
+                                <FiExternalLink />
+                              </a>
+                            ) : (
+                              <span className={styles.noSource}>—</span>
+                            )}
+                              <div 
+                                ref={(el) => {
+                                  if (el) {
                         infoIconRefs.current[paraId] = el;
-                      }
-                    }}
+                                  }
+                                }}
                     className={`${styles.infoIconContainer} ${isHovered ? styles.infoIconVisible : styles.infoIconHidden}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
+                                onClick={(e) => {
+                                  e.stopPropagation();
                       handleInfoIconClick(paraId, formatDate(para.created_at), para.source_url || 'No source', e);
-                    }}
-                  >
-                    <FiInfo className={styles.infoIcon} />
-                  </div>
-                </div>
+                                }}
+                              >
+                                <FiInfo className={styles.infoIcon} />
+                              </div>
+                  <ActionIcons
+                    onDelete={() => handleDeleteClick('paragraph', para.id, para.name || undefined)}
+                    onMove={() => handleMoveClick('paragraph', para.id, para.folder_id)}
+                    isVisible={isHovered}
+                    className={styles.actionIconsInCell}
+                  />
+                    </div>
               );
             },
           },
@@ -915,51 +1035,78 @@ export const FolderBookmark: React.FC = () => {
             align: 'left',
             width: '400px',
             className: styles.urlColumn,
-            render: (link) => (
-              <div className={styles.urlCellWithCopy}>
-                <button
-                  className={styles.copyButton}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCopyLink(link.url, link.id);
-                  }}
-                  title="Copy URL"
-                >
-                  {copiedLinkId === link.id ? <FiCheck /> : <FiCopy />}
-                </button>
-                <a href={link.url} target="_blank" rel="noopener noreferrer" className={styles.urlLink}>
-                  {link.url}
-                </a>
-              </div>
-            ),
+            render: (link) => {
+              // Ensure URL has protocol for proper external navigation
+              const getFullUrl = (url: string): string => {
+                if (!url) return '#';
+                if (url.startsWith('http://') || url.startsWith('https://')) {
+                  return url;
+                }
+                return `https://${url}`;
+              };
+
+              const fullUrl = getFullUrl(link.url);
+
+              return (
+                <div className={styles.urlCellWithCopy}>
+                  <button
+                    className={styles.copyButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyLink(link.url, link.id);
+                    }}
+                    title="Copy URL"
+                  >
+                    {copiedLinkId === link.id ? <FiCheck /> : <FiCopy />}
+                  </button>
+                  <a 
+                    href={fullUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className={styles.urlLink}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    {link.url}
+                  </a>
+                </div>
+              );
+            },
           },
           {
             key: 'type',
             header: 'Type',
-            align: 'center',
+            align: 'left',
             render: (link) => {
               const linkId = link.id;
               const isHovered = hoveredRowId === linkId;
               return (
-                <div className={styles.typeCell}>
-                  <div className={styles.typeIconWrapper}>
-                    {getTypeIcon(link.type)}
-                  </div>
-                  <div
-                    ref={(el) => {
-                      if (el) {
+                        <div className={styles.typeCell}>
+                          <div className={styles.typeIconWrapper}>
+                            {getTypeIcon(link.type)}
+                          </div>
+                          <div 
+                            ref={(el) => {
+                              if (el) {
                         infoIconRefs.current[linkId] = el;
-                      }
-                    }}
+                              }
+                            }}
                     className={`${styles.infoIconContainer} ${isHovered ? styles.infoIconVisible : styles.infoIconHidden}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
+                            onClick={(e) => {
+                              e.stopPropagation();
                       handleInfoIconClick(linkId, formatDate(link.created_at), link.url || 'No source', e);
-                    }}
-                  >
-                    <FiInfo className={styles.infoIcon} />
-                  </div>
-                </div>
+                            }}
+                          >
+                            <FiInfo className={styles.infoIcon} />
+                          </div>
+                  <ActionIcons
+                    onDelete={() => handleDeleteClick('link', link.id, link.name || undefined)}
+                    onMove={() => handleMoveClick('link', link.id, link.folder_id)}
+                    isVisible={isHovered}
+                    className={styles.actionIconsInCell}
+                  />
+                        </div>
               );
             },
           },
@@ -1018,16 +1165,16 @@ export const FolderBookmark: React.FC = () => {
             header: 'Word',
             align: 'left',
             render: (word) => (
-              <div className={styles.wordCell}>
-                <button
-                  className={styles.copyButton}
-                  onClick={() => handleCopyWord(word.word, word.id)}
-                  title="Copy word"
-                >
-                  {copiedWordId === word.id ? <FiCheck /> : <FiCopy />}
-                </button>
-                <span>{word.word}</span>
-              </div>
+                        <div className={styles.wordCell}>
+                          <button
+                            className={styles.copyButton}
+                            onClick={() => handleCopyWord(word.word, word.id)}
+                            title="Copy word"
+                          >
+                            {copiedWordId === word.id ? <FiCheck /> : <FiCopy />}
+                          </button>
+                          <span>{word.word}</span>
+                        </div>
             ),
           },
           {
@@ -1039,7 +1186,7 @@ export const FolderBookmark: React.FC = () => {
           {
             key: 'source',
             header: 'Source',
-            align: 'right',
+            align: 'left',
             render: (word) => {
               const wordId = word.id;
               const isHovered = hoveredRowId === wordId;
@@ -1072,6 +1219,12 @@ export const FolderBookmark: React.FC = () => {
                   >
                     <FiInfo className={styles.infoIcon} />
                   </div>
+                  <ActionIcons
+                    onDelete={() => handleDeleteClick('word', word.id)}
+                    onMove={() => handleMoveClick('word', word.id, word.folderId)}
+                    isVisible={isHovered}
+                    className={styles.actionIconsInCell}
+                  />
                 </div>
               );
             },
@@ -1181,6 +1334,15 @@ export const FolderBookmark: React.FC = () => {
                           }}
                         >
                           <FiInfo className={styles.infoIcon} />
+                        </div>
+                        {/* Action icons on bottom right (shown on hover) */}
+                        <div className={styles.imageCardActions}>
+                          <ActionIcons
+                            onDelete={() => handleDeleteClick('image', image.id, image.name || undefined)}
+                            onMove={() => handleMoveClick('image', image.id, image.folderId)}
+                            isVisible={hoveredRowId === image.id}
+                            className={styles.actionIconsOnImage}
+                          />
                         </div>
                       </div>
                       {image.name && (
@@ -1503,7 +1665,7 @@ export const FolderBookmark: React.FC = () => {
             <div className={styles.addLinkModalBody}>
               <div className={styles.addLinkFormGroup}>
                 <label htmlFor="link-name" className={styles.addLinkLabel}>
-                  Name (Optional)
+                  Name
                 </label>
                 <input
                   id="link-name"
@@ -1548,6 +1710,38 @@ export const FolderBookmark: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {deleteConfirm && (
+        <ConfirmDialog
+          isOpen={true}
+          title="Confirm Delete"
+          message={
+            deleteConfirm.name
+              ? `Are you sure you want to delete "${deleteConfirm.name}"? This action cannot be undone.`
+              : 'Are you sure you want to delete this item? This action cannot be undone.'
+          }
+          confirmText="Delete"
+          cancelText="Cancel"
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setDeleteConfirm(null)}
+        />
+      )}
+
+      {/* Folder Selection Modal */}
+      {isFolderModalOpen && moveItem && (
+        <FolderSelectionModal
+          isOpen={isFolderModalOpen}
+          onClose={() => {
+            setIsFolderModalOpen(false);
+            setMoveItem(null);
+          }}
+          onSelect={handleFolderSelect}
+          folders={folders}
+          isLoading={foldersLoading}
+          currentFolderId={moveItem.currentFolderId}
+        />
       )}
     </div>
   );

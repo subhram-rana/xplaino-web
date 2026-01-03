@@ -91,3 +91,30 @@ export async function deleteSavedWord(
   }
 }
 
+/**
+ * Move a saved word to a folder
+ */
+export async function moveSavedWordToFolder(
+  accessToken: string,
+  wordId: string,
+  folderId: string | null
+): Promise<void> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/saved-words/${wordId}/move-to-folder`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+      body: JSON.stringify({ targetFolderId: folderId }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to move saved word' }));
+    throw new Error(errorData.detail || `Failed to move saved word with status ${response.status}`);
+  }
+}
+

@@ -1,0 +1,57 @@
+.actionIcons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.actionIcons.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.actionIcons.visible {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.deleteButton,
+.moveButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.deleteButton {
+  color: #ef4444;
+}
+
+.deleteButton:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.moveButton {
+  color: var(--purple);
+}
+
+.moveButton:hover {
+  background: #f5f0ff;
+  color: #6b46c1;
+}
+
+.deleteButton svg,
+.moveButton svg {
+  width: 18px;
+  height: 18px;
+}
+

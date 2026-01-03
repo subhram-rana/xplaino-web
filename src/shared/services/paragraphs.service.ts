@@ -121,3 +121,33 @@ export async function deleteFolder(
   }
 }
 
+/**
+ * Move a saved paragraph to a folder
+ * 
+ * Note: The API expects targetFolderId to be a string UUID. Passing null (for root) 
+ * will result in a validation error as the API requires a valid folder ID.
+ */
+export async function moveSavedParagraphToFolder(
+  accessToken: string,
+  paragraphId: string,
+  folderId: string | null
+): Promise<void> {
+  const response = await fetch(
+    `${authConfig.catenBaseUrl}/api/saved-paragraph/${paragraphId}/move-to-folder`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Source': 'XPLAINO_WEB',
+      },
+      body: JSON.stringify({ targetFolderId: folderId }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to move saved paragraph' }));
+    throw new Error(errorData.detail || `Failed to move saved paragraph with status ${response.status}`);
+  }
+}
+
