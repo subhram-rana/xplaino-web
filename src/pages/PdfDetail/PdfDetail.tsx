@@ -101,11 +101,13 @@ export const PdfDetail: React.FC = () => {
   // Render HTML content safely
   const renderHtmlContent = (htmlContent: string, pageNo: number) => {
     return (
-      <div
-        key={`page-${pageNo}`}
-        className={styles.pageContainer}
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      />
+      <div key={`page-${pageNo}`} className={styles.pageWrapper}>
+        <div className={styles.pageNumber}>Page {pageNo}</div>
+        <div
+          className={styles.pageContainer}
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        />
+      </div>
     );
   };
 
@@ -115,61 +117,67 @@ export const PdfDetail: React.FC = () => {
 
   if (isLoading && pages.length === 0) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading PDF...</div>
+      <div className={styles.wrapper}>
+        <div className={styles.container}>
+          <div className={styles.loading}>Loading PDF...</div>
+        </div>
       </div>
     );
   }
 
   if (pages.length === 0 && !isLoading) {
     return (
-      <div className={styles.container}>
-        <button className={styles.backButton} onClick={handleGoBack}>
-          <FiArrowLeft />
-          <span>Back to PDFs</span>
-        </button>
-        <div className={styles.emptyState}>
-          <h2 className={styles.emptyHeading}>No pages found</h2>
-          <p className={styles.emptyMessage}>This PDF doesn't have any pages yet.</p>
+      <div className={styles.wrapper}>
+        <div className={styles.container}>
+          <button className={styles.backButton} onClick={handleGoBack}>
+            <FiArrowLeft />
+            <span>Back to PDFs</span>
+          </button>
+          <div className={styles.emptyState}>
+            <h2 className={styles.emptyHeading}>No pages found</h2>
+            <p className={styles.emptyMessage}>This PDF doesn't have any pages yet.</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container} ref={containerRef}>
-      <div className={styles.header}>
-        <button className={styles.backButton} onClick={handleGoBack}>
-          <FiArrowLeft />
-          <span>Back to PDFs</span>
-        </button>
-        {total > 0 && (
-          <div className={styles.pageInfo}>
-            Showing {pages.length} of {total} pages
-          </div>
+    <div className={styles.wrapper}>
+      <div className={styles.container} ref={containerRef}>
+        <div className={styles.header}>
+          <button className={styles.backButton} onClick={handleGoBack}>
+            <FiArrowLeft />
+            <span>Back to PDFs</span>
+          </button>
+          {total > 0 && (
+            <div className={styles.pageInfo}>
+              Showing {pages.length} of {total} pages
+            </div>
+          )}
+        </div>
+
+        <div className={styles.content}>
+          {pages.map((page) => renderHtmlContent(page.html_content, page.page_no))}
+          
+          {/* Load more trigger */}
+          {hasNext && (
+            <div ref={loadMoreTriggerRef} className={styles.loadMoreTrigger}>
+              {isLoadingMore && (
+                <div className={styles.loadingMore}>Loading more pages...</div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
         )}
       </div>
-
-      <div className={styles.content}>
-        {pages.map((page) => renderHtmlContent(page.html_content, page.page_no))}
-        
-        {/* Load more trigger */}
-        {hasNext && (
-          <div ref={loadMoreTriggerRef} className={styles.loadMoreTrigger}>
-            {isLoadingMore && (
-              <div className={styles.loadingMore}>Loading more pages...</div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 };
