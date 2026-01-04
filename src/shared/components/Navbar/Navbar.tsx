@@ -48,7 +48,7 @@ export const Navbar: React.FC = () => {
       navigate('/admin/dashboard');
       closeMenu();
     } else {
-      navigate('/user/dashboard');
+      navigate('/user/dashboard/bookmark');
       closeMenu();
     }
   };
@@ -133,7 +133,7 @@ export const Navbar: React.FC = () => {
         } else if (user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') {
           navigate('/admin/dashboard');
         } else {
-          navigate('/user/dashboard');
+          navigate('/user/dashboard/bookmark');
         }
       }, 300);
     }
@@ -149,7 +149,7 @@ export const Navbar: React.FC = () => {
     if (user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') {
       return isActiveRoute('/admin/dashboard');
     }
-    return isActiveRoute('/user/dashboard');
+    return isActiveRoute('/user/dashboard/bookmark') || isActiveRoute('/user/dashboard');
   };
 
   return (
@@ -284,7 +284,7 @@ export const Navbar: React.FC = () => {
                       <div 
                         className={styles.popoverItem}
                         onClick={() => {
-                          navigate('/user/dashboard');
+                          navigate('/user/dashboard/bookmark');
                           setIsProfilePopoverOpen(false);
                         }}
                         style={{ cursor: 'pointer' }}

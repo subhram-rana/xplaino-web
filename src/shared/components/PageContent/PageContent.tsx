@@ -17,11 +17,12 @@ export const PageContent: React.FC<PageContentProps> = ({ children }) => {
   const isHomePage = location.pathname === '/';
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isUserAccountRoute = location.pathname.startsWith('/user/account');
+  const isUserDashboardRoute = location.pathname.startsWith('/user/dashboard');
   
   return (
     <main 
       key={location.pathname}
-      className={`${isHomePage ? styles.pageContentFullWidth : styles.pageContent} ${!isAdminRoute && !isUserAccountRoute ? styles.fadeIn : ''}`}
+      className={`${isHomePage ? styles.pageContentFullWidth : styles.pageContent} ${!isAdminRoute && !isUserAccountRoute && !isUserDashboardRoute ? styles.fadeIn : ''}`}
     >
       {children}
     </main>

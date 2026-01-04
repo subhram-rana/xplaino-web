@@ -1545,7 +1545,7 @@ export const FolderBookmark: React.FC = () => {
         <div className={styles.headerRow}>
           <button 
             className={styles.backButton}
-            onClick={() => navigate('/user/dashboard')}
+            onClick={() => navigate('/user/dashboard/bookmark')}
           >
             <FiArrowLeft />
             <span>Back to Dashboard</span>

@@ -1,0 +1,2 @@
+export { MyBookmarksPage } from './MyBookmarksPage';
+

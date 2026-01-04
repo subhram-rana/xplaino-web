@@ -16,8 +16,10 @@ import { Pricing } from '@/pages/Pricing';
 import { AdminPricingPage } from '@/pages/Admin/AdminPricingPage';
 import { AdminTicketsPage } from '@/pages/Admin/AdminTicketsPage';
 import { AdminDomainsPage } from '@/pages/Admin/AdminDomainsPage';
-import { UserDashboard } from '@/pages/UserDashboard';
-import { FolderBookmark } from '@/pages/UserDashboard/FolderBookmark';
+import { UserDashboardLayout } from '@/pages/UserDashboard/UserDashboardLayout';
+import { MyBookmarksPage } from '@/pages/UserDashboard/MyBookmarksPage';
+import { PdfPage } from '@/pages/UserDashboard/PdfPage';
+import { FolderBookmarkPage } from '@/pages/UserDashboard/FolderBookmarkPage';
 import { UserAccount } from '@/pages/UserAccount';
 import { AdminDashboard } from '@/pages/AdminDashboard';
 import { PricingEdit } from '@/pages/Admin/components/PricingEdit';
@@ -104,18 +106,31 @@ export const App: React.FC = () => {
                 path="/user/dashboard" 
                 element={
                   <UserProtectedRoute>
-                    <UserDashboard />
+                    <Navigate to="/user/dashboard/bookmark" replace />
                   </UserProtectedRoute>
                 } 
               />
               <Route 
-                path="/user/dashboard/bookmark/:folderId" 
+                path="/user/dashboard/*" 
                 element={
                   <UserProtectedRoute>
-                    <FolderBookmark />
+                    <UserDashboardLayout />
                   </UserProtectedRoute>
-                } 
-              />
+                }
+              >
+                <Route 
+                  path="bookmark" 
+                  element={<MyBookmarksPage />} 
+                />
+                <Route 
+                  path="bookmark/:folderId" 
+                  element={<FolderBookmarkPage />} 
+                />
+                <Route 
+                  path="pdf" 
+                  element={<PdfPage />} 
+                />
+              </Route>
               <Route 
                 path="/user/account" 
                 element={
