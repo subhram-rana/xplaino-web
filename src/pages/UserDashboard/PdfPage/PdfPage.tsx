@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FiRefreshCw, FiPlus } from 'react-icons/fi';
 import styles from './PdfPage.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
@@ -19,7 +18,6 @@ import { PdfActionIcons } from './components/PdfActionIcons';
  */
 export const PdfPage: React.FC = () => {
   const { accessToken } = useAuth();
-  const navigate = useNavigate();
   const [pdfs, setPdfs] = useState<PdfResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -155,7 +153,8 @@ export const PdfPage: React.FC = () => {
   };
 
   const handleBook = (pdfId: string) => {
-    navigate(`/pdf/${pdfId}`);
+    const url = `${window.location.origin}/pdf/${pdfId}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const columns: Column<PdfResponse>[] = [

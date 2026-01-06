@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { FiArrowLeft } from 'react-icons/fi';
+import { useParams } from 'react-router-dom';
 import styles from './PdfDetail.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { getHtmlPagesByPdfId } from '@/shared/services/pdf.service';
@@ -15,7 +14,6 @@ import { Toast } from '@/shared/components/Toast';
  */
 export const PdfDetail: React.FC = () => {
   const { pdfId } = useParams<{ pdfId: string }>();
-  const navigate = useNavigate();
   const { accessToken } = useAuth();
   const [pages, setPages] = useState<PdfHtmlPageResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -111,9 +109,6 @@ export const PdfDetail: React.FC = () => {
     );
   };
 
-  const handleGoBack = () => {
-    navigate('/user/dashboard/pdf');
-  };
 
   if (isLoading && pages.length === 0) {
     return (
@@ -129,10 +124,6 @@ export const PdfDetail: React.FC = () => {
     return (
       <div className={styles.wrapper}>
         <div className={styles.container}>
-          <button className={styles.backButton} onClick={handleGoBack}>
-            <FiArrowLeft />
-            <span>Back to PDFs</span>
-          </button>
           <div className={styles.emptyState}>
             <h2 className={styles.emptyHeading}>No pages found</h2>
             <p className={styles.emptyMessage}>This PDF doesn't have any pages yet.</p>
@@ -146,10 +137,6 @@ export const PdfDetail: React.FC = () => {
     <div className={styles.wrapper}>
       <div className={styles.container} ref={containerRef}>
         <div className={styles.header}>
-          <button className={styles.backButton} onClick={handleGoBack}>
-            <FiArrowLeft />
-            <span>Back to PDFs</span>
-          </button>
           {total > 0 && (
             <div className={styles.pageInfo}>
               Showing {pages.length} of {total} pages
