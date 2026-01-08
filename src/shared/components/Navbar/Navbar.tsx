@@ -7,12 +7,16 @@ import { FiLogOut } from 'react-icons/fi';
 import { LoginModal } from '@/shared/components/LoginModal';
 import { Toast } from '@/shared/components/Toast';
 
+interface NavbarProps {
+  showMiniCoupon?: boolean;
+}
+
 /**
  * Navbar - Main navigation component with logo, brand name, and navigation links
  * 
  * @returns JSX element
  */
-export const Navbar: React.FC = () => {
+export const Navbar: React.FC<NavbarProps> = ({ showMiniCoupon }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfilePopoverOpen, setIsProfilePopoverOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -155,14 +159,30 @@ export const Navbar: React.FC = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
-        <Link to="/" className={styles.brand}>
-          <img 
-            src={logoImage} 
-            alt="Xplaino Logo" 
-            className={styles.logo}
-          />
-          <span className={styles.brandName}>Xplaino</span>
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <Link to="/" className={styles.brand}>
+            <img 
+              src={logoImage} 
+              alt="Xplaino Logo" 
+              className={styles.logo}
+            />
+            <span className={styles.brandName}>Xplaino</span>
+          </Link>
+          {showMiniCoupon && (
+            <button
+              type="button"
+              className={styles.miniCouponBadge}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate('/pricing');
+              }}
+            >
+              <span className={styles.miniCouponLabel}>Deal</span>
+              <span className={styles.miniCouponText}>View offer</span>
+            </button>
+          )}
+        </div>
         
         <button 
           className={styles.menuToggle}

@@ -375,6 +375,46 @@
   letter-spacing: 0.02em;
 }
 
+.miniCouponBadge {
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #f97316, #facc15);
+  color: #1f2933;
+  font-family: 'Inter', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.25);
+  animation: miniPulse 1.6s ease-in-out infinite;
+}
+
+.miniCouponLabel {
+  opacity: 0.9;
+}
+
+.miniCouponText {
+  padding-left: 0.35rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+@keyframes miniPulse {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.25);
+  }
+  50% {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.9), 0 6px 14px rgba(250, 204, 21, 0.6);
+  }
+}
+
 .navLinks {
   display: flex;
   gap: 2rem;

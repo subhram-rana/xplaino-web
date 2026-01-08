@@ -99,6 +99,10 @@ export const PdfPage: React.FC = () => {
       // Add new PDF to the beginning of the list
       setPdfs(prevPdfs => [newPdf, ...prevPdfs]);
       setToast({ message: 'PDF uploaded and converted successfully!', type: 'success' });
+      
+      // Open PDF detail page in new tab (same URL as clicking the green book icon)
+      const url = `${window.location.origin}/pdf/${newPdf.id}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error('Error uploading PDF:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to upload PDF';

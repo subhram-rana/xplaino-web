@@ -24,6 +24,14 @@
   position: relative;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
 .backButton {
   display: flex;
   align-items: center;
@@ -65,6 +73,37 @@
   flex-shrink: 0;
   width: 1px;
   visibility: hidden;
+}
+
+.refreshAllButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  background: #ffffff;
+  border-radius: 999px;
+  border: 1px solid var(--very-light-purple);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--purple);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refreshAllButton:hover:not(:disabled) {
+  background: #f5f0ff;
+  border-color: var(--purple);
+}
+
+.refreshAllButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.refreshAllButton svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* Tab Container */
@@ -144,7 +183,7 @@
   height: 16px;
 }
 
-.refreshButton .spin {
+.spin {
   animation: spin 1s linear infinite;
 }
 

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Navbar } from '@/shared/components/Navbar';
+import { HighlightedCoupon } from '@/shared/components/HighlightedCoupon';
 import { PageContent } from '@/shared/components/PageContent';
 import { Footer } from '@/shared/components/Footer';
 import { Home } from '@/pages/Home';
@@ -40,12 +41,15 @@ import { UserProtectedRoute } from '@/shared/components/UserProtectedRoute';
  * @returns JSX element
  */
 export const App: React.FC = () => {
+  const [showMiniCoupon, setShowMiniCoupon] = useState(false);
+
   return (
     <GoogleOAuthProvider clientId={authConfig.googleClientId}>
       <BrowserRouter>
         <AuthProvider>
-          <Navbar />
+          <Navbar showMiniCoupon={showMiniCoupon} />
           <PageContent>
+            <HighlightedCoupon onDismiss={() => setShowMiniCoupon(true)} />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/pricing" element={<Pricing />} />

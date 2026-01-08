@@ -67,7 +67,7 @@ export const FolderBookmark: React.FC = () => {
   
   // Track which tabs have loaded data
   const [loadedTabs, setLoadedTabs] = useState<Set<string>>(new Set());
-  const [refreshingTab, setRefreshingTab] = useState<string | null>(null);
+  const [isRefreshingAll, setIsRefreshingAll] = useState(false);
   
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
   const [copiedWordId, setCopiedWordId] = useState<string | null>(null);
@@ -575,62 +575,51 @@ export const FolderBookmark: React.FC = () => {
     };
   }, [isAddLinkModalOpen, isAddLinkModalClosing, handleCloseAddLinkModal]);
 
-  // Refresh handlers
-  const handleRefreshParagraphs = async () => {
-    setActiveTab('paragraph');
-    setRefreshingTab('paragraph');
+  // Global refresh handler - refreshes all tabs without changing the active tab
+  const handleRefreshAll = useCallback(async () => {
+    if (!accessToken || !folderId || isRefreshingAll) return;
+
+    setIsRefreshingAll(true);
+
+    // Reset pagination flags so fresh data starts from the beginning
     setParagraphsHasMore(false);
-    try {
-      await fetchParagraphs(true);
-      setToast({ message: 'Paragraphs refreshed successfully', type: 'success' });
-    } catch (error) {
-      setToast({ message: 'Failed to refresh paragraphs', type: 'error' });
-    } finally {
-      setRefreshingTab(null);
-    }
-  };
-
-  const handleRefreshLinks = async () => {
-    setActiveTab('link');
-    setRefreshingTab('link');
     setLinksHasMore(false);
-    try {
-      await fetchLinks(true);
-      setToast({ message: 'Links refreshed successfully', type: 'success' });
-    } catch (error) {
-      setToast({ message: 'Failed to refresh links', type: 'error' });
-    } finally {
-      setRefreshingTab(null);
-    }
-  };
-
-  const handleRefreshWords = async () => {
-    setActiveTab('word');
-    setRefreshingTab('word');
     setWordsHasMore(false);
-    try {
-      await fetchWords(true);
-      setToast({ message: 'Words refreshed successfully', type: 'success' });
-    } catch (error) {
-      setToast({ message: 'Failed to refresh words', type: 'error' });
-    } finally {
-      setRefreshingTab(null);
-    }
-  };
-
-  const handleRefreshImages = async () => {
-    setActiveTab('image');
-    setRefreshingTab('image');
     setImagesHasMore(false);
+
     try {
-      await fetchImages(true);
-      setToast({ message: 'Images refreshed successfully', type: 'success' });
-    } catch (error) {
-      setToast({ message: 'Failed to refresh images', type: 'error' });
+      const results = await Promise.allSettled([
+        fetchParagraphs(true),
+        fetchLinks(true),
+        fetchWords(true),
+        fetchImages(true),
+      ]);
+
+      const allRejected = results.every((r) => r.status === 'rejected');
+
+      if (allRejected) {
+        setToast({
+          message: 'Failed to refresh data. Please try again.',
+          type: 'error',
+        });
+      } else {
+        setToast({
+          message: 'All tabs refreshed successfully',
+          type: 'success',
+        });
+      }
     } finally {
-      setRefreshingTab(null);
+      setIsRefreshingAll(false);
     }
-  };
+  }, [
+    accessToken,
+    folderId,
+    isRefreshingAll,
+    fetchParagraphs,
+    fetchLinks,
+    fetchWords,
+    fetchImages,
+  ]);
 
   // Scroll detection for infinite scroll (using window scroll)
   useEffect(() => {
@@ -1918,25 +1907,8 @@ export const FolderBookmark: React.FC = () => {
     }
   };
 
-  const getRefreshHandler = (tab: string) => {
-    switch (tab) {
-      case 'paragraph': return handleRefreshParagraphs;
-      case 'link': return handleRefreshLinks;
-      case 'word': return handleRefreshWords;
-      case 'image': return handleRefreshImages;
-      default: return () => {};
-    }
-  };
-
-  const isLoading = (tab: string) => {
-    switch (tab) {
-      case 'paragraph': return paragraphsLoading;
-      case 'link': return linksLoading;
-      case 'word': return wordsLoading;
-      case 'image': return imagesLoading;
-      default: return false;
-    }
-  };
+  const anyTabLoading =
+    paragraphsLoading || linksLoading || wordsLoading || imagesLoading;
 
   return (
     <div className={styles.folderBookmark}>
@@ -1950,7 +1922,19 @@ export const FolderBookmark: React.FC = () => {
             <span>Back to Dashboard</span>
           </button>
           <h1 className={styles.heading}>{folderName}</h1>
-          <div className={styles.headerSpacer}></div>
+          <div className={styles.headerActions}>
+            <button
+              className={styles.refreshAllButton}
+              onClick={handleRefreshAll}
+              disabled={isRefreshingAll || anyTabLoading}
+              title="Refresh all tabs"
+            >
+              <FiRefreshCw
+                className={isRefreshingAll ? styles.spin : ''}
+              />
+              <span>Refresh all</span>
+            </button>
+          </div>
         </div>
 
         <div className={styles.tabContainer}>
@@ -1961,19 +1945,6 @@ export const FolderBookmark: React.FC = () => {
                 onClick={() => setActiveTab('paragraph')}
               >
                 <span>Paragraphs</span>
-                {activeTab === 'paragraph' && (
-              <button
-                className={styles.refreshButton}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      getRefreshHandler('paragraph')();
-                    }}
-                disabled={isLoading('paragraph') || refreshingTab === 'paragraph'}
-                title="Refresh paragraphs"
-              >
-                <FiRefreshCw className={refreshingTab === 'paragraph' ? styles.spin : ''} />
-                  </button>
-                )}
               </button>
             </div>
             <div className={styles.tabWrapper}>
@@ -1982,19 +1953,6 @@ export const FolderBookmark: React.FC = () => {
                 onClick={() => setActiveTab('link')}
               >
                 <span>Links</span>
-                {activeTab === 'link' && (
-              <button
-                className={styles.refreshButton}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      getRefreshHandler('link')();
-                    }}
-                disabled={isLoading('link') || refreshingTab === 'link'}
-                title="Refresh links"
-              >
-                <FiRefreshCw className={refreshingTab === 'link' ? styles.spin : ''} />
-                  </button>
-                )}
               </button>
             </div>
             <div className={styles.tabWrapper}>
@@ -2003,19 +1961,6 @@ export const FolderBookmark: React.FC = () => {
                 onClick={() => setActiveTab('word')}
               >
                 <span>Words</span>
-                {activeTab === 'word' && (
-              <button
-                className={styles.refreshButton}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      getRefreshHandler('word')();
-                    }}
-                disabled={isLoading('word') || refreshingTab === 'word'}
-                title="Refresh words"
-              >
-                <FiRefreshCw className={refreshingTab === 'word' ? styles.spin : ''} />
-                  </button>
-                )}
               </button>
             </div>
             <div className={styles.tabWrapper}>
@@ -2024,19 +1969,6 @@ export const FolderBookmark: React.FC = () => {
                 onClick={() => setActiveTab('image')}
               >
                 <span>Images</span>
-                {activeTab === 'image' && (
-              <button
-                className={styles.refreshButton}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      getRefreshHandler('image')();
-                    }}
-                disabled={isLoading('image') || refreshingTab === 'image'}
-                title="Refresh images"
-              >
-                <FiRefreshCw className={refreshingTab === 'image' ? styles.spin : ''} />
-                  </button>
-                )}
               </button>
             </div>
           </div>

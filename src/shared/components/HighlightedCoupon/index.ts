@@ -1,0 +1,2 @@
+export { HighlightedCoupon } from './HighlightedCoupon';
+
