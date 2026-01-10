@@ -230,12 +230,12 @@
 }
 
 .cardActive {
-  background: rgba(149, 39, 245, 0.08);
+  background: var(--teal-rgba-10);
 }
 
 .cardActive:hover {
-  border-color: rgba(149, 39, 245, 0.2);
-  box-shadow: 0 4px 16px rgba(149, 39, 245, 0.2);
+  border-color: var(--teal-rgba-20);
+  box-shadow: 0 8px 24px var(--shadow-black-20);
 }
 
 .cardLive {

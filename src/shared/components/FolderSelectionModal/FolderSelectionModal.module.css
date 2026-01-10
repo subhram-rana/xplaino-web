@@ -26,7 +26,7 @@
   background: white;
   border-radius: 30px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(149, 39, 245, 0.2);
+  box-shadow: 0 8px 24px var(--shadow-black-20);
   display: flex;
   flex-direction: column;
   animation: scaleIn 0.3s ease;
@@ -65,7 +65,7 @@
 }
 
 .closeButton:hover {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
   color: var(--purple);
 }
 
@@ -109,11 +109,11 @@
 }
 
 .folderItem:hover {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
 }
 
 .folderItem.selected {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
   border-color: var(--purple);
 }
 
@@ -157,7 +157,7 @@
 }
 
 .cancelButton:hover {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
   border-color: var(--purple);
   color: var(--purple);
 }
@@ -176,7 +176,7 @@
 }
 
 .saveButton:hover:not(:disabled) {
-  background: #6b46c1;
+  background: var(--teal);
 }
 
 .saveButton:disabled {

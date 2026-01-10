@@ -5,7 +5,7 @@
 
 .button {
   padding: 0.5rem 1.25rem;
-  background: var(--purple, #9527F5);
+  background: var(--teal);
   color: white;
   border: none;
   border-radius: 9999px; /* Pill shape */
@@ -20,7 +20,7 @@
 }
 
 .button:hover {
-  background: var(--darker-purple, #8607f5);
+  background: var(--teal-dark);
   transform: scale(1.02);
 }
 
@@ -32,9 +32,9 @@
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
-  background: white;
+  background: var(--bg-white);
   border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(149, 39, 245, 0.3);
+  box-shadow: 0 4px 12px var(--shadow-black-15);
   min-width: 180px;
   padding: 0.5rem 0;
   z-index: 1000;
@@ -48,7 +48,7 @@
   padding: 0.75rem 1.25rem;
   background: transparent;
   border: none;
-  color: var(--purple, #9527F5);
+  color: var(--teal);
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
@@ -59,7 +59,7 @@
 }
 
 .dropdownItem:hover {
-  background: var(--very-light-purple, #eaddf8);
+  background: var(--teal-lighter);
 }
 
 .dropdownItem:first-child {

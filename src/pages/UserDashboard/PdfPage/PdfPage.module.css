@@ -28,7 +28,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   color: var(--purple);
-  background: white;
+  background: var(--bg-white);
   border: 2px solid var(--purple);
   border-radius: var(--button-border-radius);
   cursor: pointer;
@@ -81,8 +81,8 @@
 }
 
 .uploadButton:hover:not(:disabled) {
-  background: #6b46c1;
-  border-color: #6b46c1;
+  background: var(--teal);
+  border-color: var(--teal);
 }
 
 .uploadButton:disabled {
@@ -104,7 +104,7 @@
   padding: 3rem;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .emptyState {
@@ -116,14 +116,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .emptyMessage {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: #666;
+  color: var(--text-tertiary);
   margin: 0;
 }
 
@@ -131,14 +131,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   text-align: center;
   margin: 0 0 2rem 0;
 }
 
 /* List View */
 .listView {
-  background: white;
+  background: var(--bg-white);
   border-radius: 0;
   overflow: hidden;
   margin-bottom: 2rem;
@@ -147,7 +147,7 @@
 .fileName {
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 /* Action Icons in Table Cell */

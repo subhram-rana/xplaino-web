@@ -59,7 +59,7 @@
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
   border-radius: 10px;
-  z-index: 1000;
+  z-index: 10000;
   max-height: 200px;
   overflow-y: auto;
   margin-top: 4px;
@@ -75,12 +75,12 @@
 }
 
 .dropdownItem:hover {
-  background: rgba(149, 39, 245, 0.1);
+  background: var(--teal-lighter);
 }
 
 .dropdownItem.selected {
-  background: rgba(149, 39, 245, 0.15);
-  color: var(--purple);
+  background: var(--teal-lighter);
+  color: var(--teal);
   font-weight: 500;
 }
 

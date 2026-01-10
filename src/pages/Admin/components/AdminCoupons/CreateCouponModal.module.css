@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--bg-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,7 +22,7 @@
 }
 
 .modal {
-  background: white;
+  background: var(--bg-white);
   border-radius: 30px;
   padding: 1.5rem;
   max-width: 600px;
@@ -30,7 +30,7 @@
   max-height: 90vh;
   overflow-y: auto;
   overflow-x: hidden;
-  box-shadow: 0 8px 24px rgba(149, 39, 245, 0.3);
+  box-shadow: 0 8px 24px var(--shadow-black-20);
   animation: scaleIn 0.2s ease-out;
   position: relative;
 }
@@ -50,7 +50,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
 }
 
@@ -76,7 +76,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
@@ -90,9 +90,9 @@
   padding: 0.625rem 0.75rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
-  color: #333;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   transition: border-color 0.2s ease;
   width: 100%;
@@ -142,8 +142,8 @@
   left: 0;
   right: 0;
   margin-top: 0.5rem;
-  background: white;
-  border: 2px solid #ddd;
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10001;
@@ -157,7 +157,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
   background: none;
   border: none;
   text-align: left;
@@ -166,7 +166,7 @@
 }
 
 .dropdownOption:hover {
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
   color: var(--purple);
 }
 
@@ -216,8 +216,8 @@
 }
 
 .cancelButton {
-  background: white;
-  color: #333;
+  background: var(--bg-white);
+  color: var(--text-secondary);
   border-color: #ddd;
 }
 

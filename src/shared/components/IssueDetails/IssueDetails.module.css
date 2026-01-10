@@ -11,7 +11,7 @@
 }
 
 .content {
-  background: white;
+  background: var(--bg-white);
   border-radius: 0;
   padding: 1.5rem;
   border-bottom: 1px solid var(--very-light-purple);
@@ -82,19 +82,19 @@
 .statusDropdownButtonOPEN {
   background: #fef3c7;
   color: #92400e;
-  border-color: #fde68a;
+  border-color: var(--yellow-border);
 }
 
 .statusDropdownButtonWORK_IN_PROGRESS {
   background: #dbeafe;
   color: #1e40af;
-  border-color: #bfdbfe;
+  border-color: var(--blue-border);
 }
 
 .statusDropdownButtonDISCARDED {
   background: #f3f4f6;
   color: #374151;
-  border-color: #d1d5db;
+  border-color: var(--gray-300);
 }
 
 .statusDropdownButtonRESOLVED {
@@ -108,7 +108,7 @@
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  background: white;
+  background: var(--bg-white);
   border: 2px solid #ddd;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -133,7 +133,7 @@
 }
 
 .statusOption:hover {
-  background-color: #f5f0ff;
+  background-color: var(--teal-lighter);
 }
 
 .statusOptionSelected {
@@ -257,7 +257,7 @@
 }
 
 .copyButton:hover {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
 }
 
 .copyButton:active {
@@ -282,7 +282,7 @@
   color: #10b981;
   font-weight: 500;
   white-space: nowrap;
-  background: white;
+  background: var(--bg-white);
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -350,7 +350,7 @@
   color: var(--purple);
   text-decoration: none;
   padding: 0.5rem 0.75rem;
-  background-color: #f5f0ff;
+  background-color: var(--teal-lighter);
   border: 1px solid var(--very-light-purple);
   border-radius: 8px;
   transition: background-color 0.2s ease;
@@ -431,7 +431,7 @@
   display: flex;
   justify-content: flex-end;
   padding: 1.5rem 0;
-  background: white;
+  background: var(--bg-white);
 }
 
 .updateButton {

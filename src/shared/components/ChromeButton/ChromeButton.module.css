@@ -12,7 +12,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
   width: fit-content;
-  box-shadow: 0 8px 32px rgba(149, 39, 245, 0.2), 0 4px 20px rgba(149, 39, 245, 0.1);
+  box-shadow: 0 8px 24px var(--shadow-black-20);
   animation: breathe 2s ease-in-out infinite;
   transform-origin: center;
   margin: 0;

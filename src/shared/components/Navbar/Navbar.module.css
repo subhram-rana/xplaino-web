@@ -1,7 +1,7 @@
 .navbar {
   background-color: var(--purple);
   padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--shadow-black-10);
   position: relative;
   z-index: 1000;
 }
@@ -31,7 +31,7 @@
 
 .loginButton {
   padding: 0.5rem 1.5rem;
-  background-color: white;
+  background-color: var(--bg-white);
   color: var(--purple);
   text-decoration: none;
   font-size: 1rem;
@@ -44,12 +44,12 @@
 }
 
 .loginButton:hover {
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
   color: var(--purple);
 }
 
 .loginButton:active {
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
   color: var(--purple);
   transform: scale(0.98);
 }
@@ -88,7 +88,7 @@
 
 .profilePicture:hover {
   transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px var(--shadow-black-20);
 }
 
 .profilePicturePlaceholder {
@@ -100,7 +100,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
   color: var(--purple);
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
@@ -111,11 +111,11 @@
 
 .profilePicturePlaceholder:hover {
   transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px var(--shadow-black-20);
 }
 
 .adminBadge {
-  background-color: #fbbf24;
+  background-color: var(--yellow);
   color: white;
   font-family: 'Inter', sans-serif;
   font-size: 0.625rem;
@@ -130,7 +130,7 @@
 }
 
 .superAdminBadge {
-  background-color: #ef4444;
+  background-color: var(--red);
 }
 
 .logoutButton {
@@ -148,12 +148,12 @@
 }
 
 .logoutButton:hover {
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
   color: var(--purple);
 }
 
 .logoutButton:active {
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
   color: var(--purple);
   transform: scale(0.98);
 }
@@ -177,7 +177,7 @@
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
-  background-color: white;
+  background-color: var(--bg-white);
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   min-width: 200px;
@@ -212,7 +212,7 @@
 }
 
 .popoverItem:hover {
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
 }
 
 .popoverLogoutButton {
@@ -223,24 +223,24 @@
   padding: 0.75rem 1.25rem;
   background-color: transparent;
   border: none;
-  color: #ef4444;
+  color: var(--red);
   font-size: 0.95rem;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--shadow-black-10);
   margin-top: 0;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
 }
 
 .popoverLogoutButton:hover {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: var(--light-red);
 }
 
 .popoverLogoutButton:active {
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: var(--light-red);
 }
 
 .popoverLogoutButton:disabled {
@@ -255,7 +255,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--bg-overlay);
   z-index: 9998;
   display: flex;
   align-items: center;
@@ -381,7 +381,7 @@
   border-radius: 999px;
   border: 2px solid rgba(255, 255, 255, 0.9);
   background: linear-gradient(135deg, #f97316, #facc15);
-  color: #1f2933;
+  color: var(--text-dark);
   font-family: 'Inter', sans-serif;
   display: inline-flex;
   align-items: center;
@@ -401,7 +401,7 @@
 
 .miniCouponText {
   padding-left: 0.35rem;
-  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  border-left: 1px solid var(--shadow-black-10);
 }
 
 @keyframes miniPulse {
@@ -411,7 +411,7 @@
   }
   50% {
     transform: translateY(-1px);
-    box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.9), 0 6px 14px rgba(250, 204, 21, 0.6);
+    box-shadow: 0 0 0 1px var(--yellow), 0 6px 14px var(--yellow);
   }
 }
 
@@ -474,7 +474,7 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: white;
+  background-color: var(--bg-white);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   min-width: 180px;
@@ -519,7 +519,7 @@
 }
 
 .dropdownItem:hover {
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
   color: var(--purple);
 }
 
@@ -562,7 +562,7 @@
 .line {
   width: 100%;
   height: 3px;
-  background-color: white;
+  background-color: var(--bg-white);
   border-radius: 2px;
   transition: all 0.3s ease;
   transform-origin: center;
@@ -613,7 +613,7 @@
     flex-direction: column;
     gap: 0;
     padding: 1rem 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px var(--shadow-black-10);
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
@@ -751,7 +751,7 @@
   }
 
   .popoverLogoutButton {
-    color: #ef4444;
+    color: var(--red);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
     justify-content: flex-start;

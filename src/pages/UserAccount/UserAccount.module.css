@@ -83,7 +83,7 @@
 }
 
 .tabActive {
-  background-color: #f3f0ff;
+  background-color: var(--teal-lighter);
 }
 
 .tabIcon {

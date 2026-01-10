@@ -32,12 +32,12 @@
 }
 
 .deleteButton {
-  color: #ef4444;
+  color: var(--red);
 }
 
 .deleteButton:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
+  background: var(--light-red);
+  color: var(--red-dark);
 }
 
 .moveButton {
@@ -45,8 +45,8 @@
 }
 
 .moveButton:hover {
-  background: #f5f0ff;
-  color: #6b46c1;
+  background: var(--teal-lighter);
+  color: var(--teal);
 }
 
 .deleteButton svg,

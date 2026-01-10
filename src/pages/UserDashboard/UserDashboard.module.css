@@ -29,7 +29,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   color: var(--purple);
-  background: white;
+  background: var(--bg-white);
   border: 2px solid var(--purple);
   border-radius: var(--button-border-radius);
   cursor: pointer;
@@ -73,9 +73,9 @@
   padding: 0.625rem;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
-  color: #666;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-tertiary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -115,8 +115,8 @@
 }
 
 .createFolderButton:hover {
-  background: #6b46c1;
-  border-color: #6b46c1;
+  background: var(--teal);
+  border-color: var(--teal);
 }
 
 .createFolderButton svg {
@@ -129,7 +129,7 @@
   padding: 3rem;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .emptyState {
@@ -141,14 +141,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .emptyMessage {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: #666;
+  color: var(--text-tertiary);
   margin: 0;
 }
 
@@ -156,14 +156,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   text-align: center;
   margin: 0 0 2rem 0;
 }
 
 /* List View */
 .listView {
-  background: white;
+  background: var(--bg-white);
   border-radius: 0;
   overflow: hidden;
   margin-bottom: 2rem;
@@ -175,7 +175,7 @@
 }
 
 .table thead {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
 }
 
 .table thead tr th {
@@ -247,7 +247,7 @@
 }
 
 .tableRowSelected {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
 }
 
 .tableRow:last-child {
@@ -297,12 +297,12 @@
 .folderCard:hover {
   border-color: var(--purple);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(149, 39, 245, 0.15);
+  box-shadow: 0 8px 24px var(--shadow-black-20);
 }
 
 .folderCardSelected {
   border-color: var(--purple);
-  background: #f5f0ff;
+  background: var(--teal-lighter);
 }
 
 .folderCard svg {
@@ -356,7 +356,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  color: #666;
+  color: var(--text-tertiary);
   background: none;
   border: none;
   border-bottom: 3px solid transparent;

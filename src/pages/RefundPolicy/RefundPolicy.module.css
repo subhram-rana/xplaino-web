@@ -76,7 +76,7 @@
 }
 
 .policyStatement {
-  background: linear-gradient(135deg, #f5f0ff 0%, #ede5ff 100%);
+  background: linear-gradient(135deg, var(--teal-lighter) 0%, #ede5ff 100%);
   border: 2px solid var(--purple);
   border-radius: 16px;
   padding: 2rem;

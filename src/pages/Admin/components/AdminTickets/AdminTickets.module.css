@@ -336,7 +336,7 @@
 
 .issueCard:hover {
   background: #faf5ff;
-  box-shadow: 0 2px 6px rgba(149, 39, 245, 0.15);
+  box-shadow: 0 8px 24px var(--shadow-black-20);
 }
 
 .issueHeader {
@@ -388,7 +388,7 @@
 }
 
 .copyButton:hover {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
 }
 
 .copyButton:active {
@@ -554,7 +554,7 @@
   color: var(--purple);
   text-decoration: none;
   padding: 0.25rem 0.5rem;
-  background-color: #f5f0ff;
+  background-color: var(--teal-lighter);
   border: 1px solid var(--very-light-purple);
   border-radius: 8px;
   transition: background-color 0.2s ease;

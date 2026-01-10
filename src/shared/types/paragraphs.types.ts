@@ -107,4 +107,3 @@ export interface AskAIErrorResponse {
  * Union type for all possible SSE response types
  */
 export type AskAISSEResponse = AskAIStreamChunk | AskAICompleteResponse | AskAIErrorResponse;
-

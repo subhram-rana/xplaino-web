@@ -169,7 +169,7 @@
 }
 
 .dropdownOption:hover {
-  background-color: var(--very-light-purple);
+  background-color: var(--teal-lighter);
   color: var(--purple);
 }
 

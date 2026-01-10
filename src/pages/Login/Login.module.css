@@ -14,9 +14,9 @@
 }
 
 .loginContainer {
-  background-color: white;
+  background-color: var(--bg-white);
   border-radius: 30px;
-  box-shadow: 0 4px 20px rgba(149, 39, 245, 0.3), 0 8px 32px rgba(149, 39, 245, 0.2);
+  box-shadow: 0 4px 20px var(--shadow-black-15), 0 8px 32px var(--shadow-black-20);
   padding: 3rem;
   max-width: 400px;
   width: 100%;

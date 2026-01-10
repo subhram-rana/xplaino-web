@@ -1,21 +1,144 @@
 :root {
-  /* Purple color variants */
-  --very-light-purple: #eaddf8;
-  --medium-purple: #BF7EFA;
-  --purple: #9527F5;
-  --darker-purple: #8607f5;
+  /* ============================================
+     PRIMARY COLORS - TEAL THEME
+     ============================================ */
+  --teal: #0d8070;
+  --teal-light: #14b8a6;
+  --teal-lighter: #e0f7f4;
+  --teal-dark: #0a5d52;
+  
+  /* Legacy purple names (mapped to teal for backward compatibility) */
+  --purple: #0d8070;
+  --very-light-purple: #e0f7f4;
+  --medium-purple: #14b8a6;
+  --darker-purple: #0a5d52;
 
-  /* Green color variants */
+  /* ============================================
+     GRAY SCALE
+     ============================================ */
+  --gray-900: #1A202C;
+  --gray-800: #2D3748;
+  --gray-700: #4A5568;
+  --gray-600: #666;
+  --gray-500: #999;
+  --gray-400: #A0AEC0;
+  --gray-300: #CBD5E0;
+  --gray-200: #E2E8F0;
+  --gray-100: #F7FAFC;
+  --gray-50: #f9f9f9;
+
+  /* ============================================
+     BASE COLORS
+     ============================================ */
+  --white: #ffffff;
+  --black: #000000;
+
+  /* ============================================
+     SEMANTIC COLORS - SUCCESS (GREEN)
+     ============================================ */
   --light-green: #D1FAE5;
   --medium-green: #34D399;
   --green: #10B981;
+  --green-dark: #16a34a;
+  --green-light-bg: #dcfce7;
+  --green-success: #22c55e;
 
-  /* Red color variants */
+  /* ============================================
+     SEMANTIC COLORS - ERROR (RED)
+     ============================================ */
   --light-red: #FEE2E2;
   --medium-red: #F87171;
   --red: #EF4444;
+  --red-dark: #DC2626;
+  --red-darker: #991b1b;
+  --red-error: #dc2626;
 
-  /* Button border radius */
+  /* ============================================
+     SEMANTIC COLORS - WARNING (YELLOW/AMBER)
+     ============================================ */
+  --yellow-light: #fef3c7;
+  --yellow: #fbbf24;
+  --yellow-dark: #92400e;
+  --yellow-border: #fde68a;
+
+  /* ============================================
+     SEMANTIC COLORS - INFO (BLUE)
+     ============================================ */
+  --blue-light: #dbeafe;
+  --blue: #1e40af;
+  --blue-border: #bfdbfe;
+  --blue-indigo: #4f46e5;
+  --blue-indigo-light: #6366f1;
+
+  /* ============================================
+     TEXT COLORS
+     ============================================ */
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-tertiary: #666666;
+  --text-quaternary: #999999;
+  --text-dark: #1A202C;
+  --text-medium: #4A5568;
+  --text-light: #A0AEC0;
+
+  /* ============================================
+     BACKGROUND COLORS
+     ============================================ */
+  --bg-white: #ffffff;
+  --bg-light: #f5f5f5;
+  --bg-lighter: #f9f9f9;
+  --bg-gray: #f3f4f6;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+  --bg-overlay-light: rgba(0, 0, 0, 0.05);
+
+  /* ============================================
+     BORDER COLORS
+     ============================================ */
+  --border-light: #e0e0e0;
+  --border-medium: #ddd;
+  --border-dark: #ccc;
+  --border-gray: #e5e7eb;
+  --border-default: #E2E8F0;
+
+  /* ============================================
+     SHADOW COLORS (RGBA)
+     ============================================ */
+  --teal-rgba-10: rgba(13, 128, 112, 0.1);
+  --teal-rgba-15: rgba(13, 128, 112, 0.15);
+  --teal-rgba-20: rgba(13, 128, 112, 0.2);
+  --teal-rgba-25: rgba(13, 128, 112, 0.25);
+  --teal-rgba-30: rgba(13, 128, 112, 0.3);
+  --teal-rgba-40: rgba(13, 128, 112, 0.4);
+  --teal-rgba-50: rgba(13, 128, 112, 0.5);
+  --teal-rgba-60: rgba(13, 128, 112, 0.6);
+  
+  --shadow-black-10: rgba(0, 0, 0, 0.1);
+  --shadow-black-15: rgba(0, 0, 0, 0.15);
+  --shadow-black-18: rgba(0, 0, 0, 0.18);
+  --shadow-black-20: rgba(0, 0, 0, 0.2);
+  --shadow-black-25: rgba(0, 0, 0, 0.25);
+  --shadow-black-30: rgba(0, 0, 0, 0.3);
+  --shadow-black-50: rgba(0, 0, 0, 0.5);
+
+  --white-rgba-10: rgba(255, 255, 255, 0.1);
+  --white-rgba-20: rgba(255, 255, 255, 0.2);
+  --white-rgba-32: rgba(255, 255, 255, 0.32);
+  --white-rgba-35: rgba(255, 255, 255, 0.35);
+  --white-rgba-40: rgba(255, 255, 255, 0.4);
+  --white-rgba-50: rgba(255, 255, 255, 0.5);
+  --white-rgba-95: rgba(255, 255, 255, 0.95);
+
+  /* ============================================
+     OTHER COLORS
+     ============================================ */
+  --purple-alt: #6b46c1; /* Used in some places, mapped to teal */
+  --purple-light-bg: #f5f0ff; /* Light purple background, mapped to light teal */
+  --purple-others: #e9d5ff; /* For issue type badge */
+  --purple-others-text: #6b21a8; /* For issue type badge text */
+
+  /* ============================================
+     UTILITIES
+     ============================================ */
   --button-border-radius: 10px;
 }
 

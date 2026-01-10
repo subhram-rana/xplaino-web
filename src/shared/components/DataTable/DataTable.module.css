@@ -13,7 +13,7 @@
 
 /* Header Styles */
 .table thead {
-  background: #f5f0ff;
+  background: var(--teal-lighter);
 }
 
 .table thead tr th {

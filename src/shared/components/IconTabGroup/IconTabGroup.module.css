@@ -6,7 +6,7 @@
   border-radius: 11px;
   background: transparent;
   gap: 0;
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--border-default);
 }
 
 .tabSlider {
@@ -44,7 +44,7 @@
 }
 
 .tab:hover {
-  background: rgba(149, 39, 245, 0.1);
+  background: var(--teal-rgba-10);
 }
 
 .tab.active {
