@@ -30,6 +30,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
   showMove = true,
 }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isPopoverClosing, setIsPopoverClosing] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState<{ top: number; right: number } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -75,7 +76,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
         buttonRef.current &&
         !buttonRef.current.contains(event.target as Node)
       ) {
-        setIsPopoverOpen(false);
+        handleClosePopover();
       }
     };
 
@@ -86,43 +87,59 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isPopoverOpen]);
+  }, [isPopoverOpen, isPopoverClosing]);
+
+  const handleClosePopover = () => {
+    if (isPopoverOpen && !isPopoverClosing) {
+      setIsPopoverClosing(true);
+      setTimeout(() => {
+        setIsPopoverOpen(false);
+        setIsPopoverClosing(false);
+        setPopoverPosition(null);
+      }, 200); // Match animation duration
+    }
+  };
 
   // Close popover on scroll
   useEffect(() => {
     if (isPopoverOpen) {
       const handleScroll = () => {
-        setIsPopoverOpen(false);
+        handleClosePopover();
       };
       window.addEventListener('scroll', handleScroll, true);
       return () => {
         window.removeEventListener('scroll', handleScroll, true);
       };
     }
-  }, [isPopoverOpen]);
+  }, [isPopoverOpen, isPopoverClosing]);
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsPopoverOpen(!isPopoverOpen);
+    if (isPopoverOpen) {
+      handleClosePopover();
+    } else {
+      setIsPopoverOpen(true);
+      setIsPopoverClosing(false);
+    }
   };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsPopoverOpen(false);
+    handleClosePopover();
     onDelete();
   };
 
   const handleMoveClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsPopoverOpen(false);
+    handleClosePopover();
     if (onMove) {
       onMove();
     }
   };
 
-  const popoverContent = isPopoverOpen && popoverPosition ? (
+  const popoverContent = (isPopoverOpen || isPopoverClosing) && popoverPosition ? (
     <div
-      className={`${styles.popover} ${styles.popoverOpen}`}
+      className={`${styles.popover} ${isPopoverOpen && !isPopoverClosing ? styles.popoverOpen : ''} ${isPopoverClosing ? styles.popoverClosing : ''}`}
       style={{
         position: 'fixed',
         top: `${popoverPosition.top}px`,

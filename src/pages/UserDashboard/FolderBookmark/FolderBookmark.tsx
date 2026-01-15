@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { FiArrowLeft, FiRefreshCw, FiExternalLink, FiCopy, FiCheck, FiInfo, FiX, FiGlobe, FiEye, FiEyeOff, FiBook, FiPlus } from 'react-icons/fi';
+import { FiArrowLeft, FiRefreshCw, FiExternalLink, FiCopy, FiCheck, FiInfo, FiX, FiGlobe, FiEye, FiEyeOff, FiBook, FiBookOpen, FiPlus, FiChevronDown } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import { SiYoutube, SiLinkedin, SiX, SiReddit, SiFacebook, SiInstagram } from 'react-icons/si';
 import styles from './FolderBookmark.module.css';
@@ -123,6 +123,12 @@ export const FolderBookmark: React.FC = () => {
   
   // User language preference
   const [userNativeLanguage, setUserNativeLanguage] = useState<string | null>(null);
+  
+  // Link type filter state
+  const [selectedLinkTypes, setSelectedLinkTypes] = useState<Set<string>>(new Set());
+  const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
+  const [isTypeFilterClosing, setIsTypeFilterClosing] = useState(false);
+  const typeFilterRef = useRef<HTMLDivElement>(null);
 
   const handleInfoIconClick = useCallback((id: string, bookmarkTime: string, source: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -405,6 +411,41 @@ export const FolderBookmark: React.FC = () => {
       }
     };
   }, []);
+
+  const handleCloseTypeFilter = useCallback(() => {
+    if (isTypeFilterOpen && !isTypeFilterClosing) {
+      setIsTypeFilterClosing(true);
+      setTimeout(() => {
+        setIsTypeFilterOpen(false);
+        setIsTypeFilterClosing(false);
+      }, 200); // Match animation duration
+    }
+  }, [isTypeFilterOpen, isTypeFilterClosing]);
+
+  const handleToggleTypeFilter = useCallback(() => {
+    if (isTypeFilterOpen) {
+      handleCloseTypeFilter();
+    } else {
+      setIsTypeFilterOpen(true);
+      setIsTypeFilterClosing(false);
+    }
+  }, [isTypeFilterOpen, handleCloseTypeFilter]);
+
+  // Close type filter dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (typeFilterRef.current && !typeFilterRef.current.contains(event.target as Node)) {
+        handleCloseTypeFilter();
+      }
+    };
+
+    if (isTypeFilterOpen && activeTab === 'link') {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isTypeFilterOpen, activeTab, handleCloseTypeFilter]);
 
   // Close tooltip when clicking outside
   useEffect(() => {
@@ -1300,7 +1341,7 @@ export const FolderBookmark: React.FC = () => {
                             )}
                           </div>
             ),
-            render: (para) => para.name || '',
+            render: (para) => para.name || <span className={styles.noSummary}>—</span>,
           },
           {
             key: 'content',
@@ -1540,19 +1581,6 @@ export const FolderBookmark: React.FC = () => {
                   >
                     {link.url}
                   </a>
-                  {link.summary && (
-                    <button
-                      className={styles.summaryIconButton}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenSummaryModal(link);
-                      }}
-                      title="View summary"
-                      aria-label="View summary"
-                    >
-                      <FiBook />
-                    </button>
-                  )}
                 </div>
               );
             },
@@ -1562,27 +1590,53 @@ export const FolderBookmark: React.FC = () => {
             header: 'Type',
             align: 'left',
             render: (link) => {
+              return (
+                <div className={styles.typeCell}>
+                  <div className={styles.typeIconWrapper}>
+                    {getTypeIcon(link.type)}
+                  </div>
+                </div>
+              );
+            },
+          },
+          {
+            key: 'summary',
+            header: 'Summary',
+            align: 'center',
+            render: (link) => {
               const linkId = link.id;
               const isHovered = hoveredRowId === linkId;
               return (
-                        <div className={styles.typeCell}>
-                          <div className={styles.typeIconWrapper}>
-                            {getTypeIcon(link.type)}
-                          </div>
-                          <div 
-                            ref={(el) => {
-                              if (el) {
+                <div className={styles.summaryCell}>
+                  {link.summary ? (
+                    <button
+                      className={styles.summaryIconButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenSummaryModal(link);
+                      }}
+                      title="View summary"
+                      aria-label="View summary"
+                    >
+                      <FiBookOpen className={styles.summaryIcon} />
+                    </button>
+                  ) : (
+                    <span className={styles.noSummary}>—</span>
+                  )}
+                  <div 
+                    ref={(el) => {
+                      if (el) {
                         infoIconRefs.current[linkId] = el;
-                              }
-                            }}
+                      }
+                    }}
                     className={`${styles.infoIconContainer} ${isHovered ? styles.infoIconVisible : styles.infoIconHidden}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleInfoIconClick(linkId, formatDate(link.created_at), link.url || 'No source', e);
-                            }}
-                          >
-                            <FiInfo className={styles.infoIcon} />
-                          </div>
+                    }}
+                  >
+                    <FiInfo className={styles.infoIcon} />
+                  </div>
                   <ActionMenu
                     onDelete={() => handleDeleteClick('link', link.id, link.name || undefined)}
                     onMove={() => handleMoveClick('link', link.id, link.folder_id)}
@@ -1590,15 +1644,61 @@ export const FolderBookmark: React.FC = () => {
                     className={styles.actionIconsInCell}
                     showMove={true}
                   />
-                        </div>
+                </div>
               );
             },
           },
         ];
 
+        // Get unique link types for filter
+        const uniqueTypes = Array.from(new Set(linksData.saved_links.map(link => link.type.toUpperCase()))).sort();
+        const linkTypes = ['WEBPAGE', 'YOUTUBE', 'LINKEDIN', 'TWITTER', 'REDDIT', 'FACEBOOK', 'INSTAGRAM'];
+        const availableTypes = linkTypes.filter(type => uniqueTypes.includes(type));
+        
+        // Filter links based on selected types
+        const filteredLinks = selectedLinkTypes.size === 0 
+          ? linksData.saved_links 
+          : linksData.saved_links.filter(link => selectedLinkTypes.has(link.type.toUpperCase()));
+
+        const handleTypeFilterToggle = (type: string) => {
+          setSelectedLinkTypes(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(type)) {
+              newSet.delete(type);
+            } else {
+              newSet.add(type);
+            }
+            return newSet;
+          });
+        };
+
         return (
           <>
             <div className={styles.tableHeaderWithButton}>
+              <div className={styles.typeFilterContainer} ref={typeFilterRef}>
+                <button
+                  className={styles.typeFilterButton}
+                  onClick={handleToggleTypeFilter}
+                  title="Filter by type"
+                >
+                  <span>Filter types</span>
+                  <FiChevronDown className={`${styles.filterChevron} ${isTypeFilterOpen ? styles.filterChevronOpen : ''}`} />
+                </button>
+                {(isTypeFilterOpen || isTypeFilterClosing) && (
+                  <div className={`${styles.typeFilterDropdown} ${isTypeFilterClosing ? styles.typeFilterDropdownClosing : ''}`}>
+                    {availableTypes.map((type) => (
+                      <label key={type} className={styles.typeFilterOption}>
+                        <input
+                          type="checkbox"
+                          checked={selectedLinkTypes.has(type)}
+                          onChange={() => handleTypeFilterToggle(type)}
+                        />
+                        <span>{type.charAt(0) + type.slice(1).toLowerCase()}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button
                 className={styles.addButton}
                 onClick={() => setIsAddLinkModalOpen(true)}
@@ -1611,7 +1711,7 @@ export const FolderBookmark: React.FC = () => {
             <div className={styles.linkTableWrapper}>
               <DataTable
                 columns={linkColumns}
-                data={linksData.saved_links}
+                data={filteredLinks}
                 emptyMessage="No links found"
                 rowKey={(link) => link.id}
                 onRowHover={(link) => {
@@ -1940,28 +2040,28 @@ export const FolderBookmark: React.FC = () => {
             <span>Back to Dashboard</span>
           </button>
           <h1 className={styles.heading}>{folderName}</h1>
-        </div>
-        <div className={styles.refreshButtonContainer}>
-          <button
-            className={`${styles.refreshAllButton} ${showRefreshSuccess ? styles.refreshAllButtonSuccess : ''}`}
-            onClick={handleRefreshAll}
-            disabled={isRefreshingAll || anyTabLoading}
-            title="Refresh all tabs"
-          >
-            {showRefreshSuccess ? (
-              <>
-                <FiCheck />
-                <span>Data fetched</span>
-              </>
-            ) : (
-              <>
-                <FiRefreshCw
-                  className={isRefreshingAll ? styles.spin : ''}
-                />
-                <span>Refresh all</span>
-              </>
-            )}
-          </button>
+          <div className={styles.headerActions}>
+            <button
+              className={`${styles.refreshAllButton} ${showRefreshSuccess ? styles.refreshAllButtonSuccess : ''}`}
+              onClick={handleRefreshAll}
+              disabled={isRefreshingAll || anyTabLoading}
+              title="Refresh all tabs"
+            >
+              {showRefreshSuccess ? (
+                <>
+                  <FiCheck />
+                  <span>Data fetched</span>
+                </>
+              ) : (
+                <>
+                  <FiRefreshCw
+                    className={isRefreshingAll ? styles.spin : ''}
+                  />
+                  <span>Refresh all</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         <div className={styles.tabContainer}>

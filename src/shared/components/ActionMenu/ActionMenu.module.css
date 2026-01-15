@@ -53,13 +53,39 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
-  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+  animation: popoverFadeIn 0.2s ease forwards;
 }
 
 .popoverOpen {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+.popoverClosing {
+  animation: popoverFadeOut 0.2s ease forwards;
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popoverFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 .popoverButton {
