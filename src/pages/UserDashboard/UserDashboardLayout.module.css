@@ -21,9 +21,13 @@
   transition: none !important;
   animation: none !important;
   will-change: auto;
-  /* Ensure stable positioning */
-  position: relative;
+  /* Make sidebar sticky to prevent scrolling */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
   contain: layout style paint;
+  overflow-y: auto;
+  max-height: 100vh;
 }
 
 .sidebarTitle {
@@ -89,7 +93,6 @@
 .content {
   flex: 1;
   padding: 2rem;
-  overflow-y: auto;
   background: white;
   position: relative;
   min-height: calc(100vh - 80px);
