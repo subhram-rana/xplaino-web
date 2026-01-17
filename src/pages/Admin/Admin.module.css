@@ -9,8 +9,8 @@
 
 .sidebar {
   width: 250px;
-  background-color: #f8f9fa;
-  border-right: 1px solid #e0e0e0;
+  background-color: var(--bg-white);
+  border-right: 1px solid var(--border-light);
   padding: 2rem 0;
   flex-shrink: 0;
   min-height: calc(100vh - 80px);
@@ -37,7 +37,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
   background: none;
   border: none;
   border-radius: 8px;
@@ -49,25 +49,25 @@
 }
 
 .sidebarButton:hover {
-  background-color: #e9ecef;
+  background-color: var(--button-hover-bg);
   color: var(--teal);
 }
 
 .sidebarButtonActive {
   background-color: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .sidebarButtonActive:hover {
   background-color: var(--teal-dark);
-  color: white;
+  color: #ffffff;
 }
 
 .content {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
-  background: white;
+  background: var(--bg-white);
 }
 
 .comingSoon {
@@ -83,14 +83,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 2rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
 }
 
 .comingSoon p {
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
-  color: #666;
+  color: var(--text-tertiary);
   margin: 0;
 }
 
@@ -106,7 +106,7 @@
   .sidebar {
     width: 100%;
     border-right: none;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border-light);
     padding: 1rem 0;
     min-height: auto;
   }
@@ -142,4 +142,3 @@
     margin-bottom: -2rem;
   }
 }
-

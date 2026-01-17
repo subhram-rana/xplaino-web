@@ -17,7 +17,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #666;
+  color: var(--text-tertiary);
   background: none;
   border: none;
   cursor: pointer;
@@ -32,7 +32,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -42,7 +42,7 @@
   padding: 3rem;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .error {
@@ -50,7 +50,7 @@
 }
 
 .card {
-  background: white;
+  background: var(--bg-white);
   border-radius: 30px;
   padding: 2rem;
 }
@@ -76,7 +76,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #666;
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -84,16 +84,16 @@
 .value {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .input {
   padding: 0.625rem 0.875rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
-  color: #333;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   transition: border-color 0.2s ease;
   width: 100%;
@@ -125,9 +125,9 @@
   padding: 0.625rem 0.875rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
-  color: #333;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   cursor: pointer;
   text-align: left;
@@ -149,10 +149,10 @@
   left: 0;
   right: 0;
   margin-top: 0.5rem;
-  background: white;
-  border: 2px solid #ddd;
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--shadow-black-15);
   z-index: 100;
   overflow: hidden;
 }
@@ -164,7 +164,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
   background: none;
   border: none;
   text-align: left;
@@ -184,12 +184,12 @@
 
 .dropdownOptionSelected {
   background-color: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .dropdownOptionSelected:hover {
   background-color: var(--teal-dark);
-  color: white;
+  color: #ffffff;
 }
 
 .statusBadge {
@@ -232,7 +232,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--red);
-  background: white;
+  background: var(--bg-white);
   border: 2px solid var(--red);
   border-radius: var(--button-border-radius);
   cursor: pointer;
@@ -255,7 +255,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: #ffffff;
   background: var(--teal);
   border: 2px solid var(--teal);
   border-radius: var(--button-border-radius);
@@ -280,9 +280,9 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  color: #333;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -329,4 +329,3 @@
     width: 100%;
   }
 }
-

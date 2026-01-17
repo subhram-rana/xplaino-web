@@ -22,7 +22,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   color: var(--teal);
-  background: white;
+  background: var(--bg-white);
   border: 2px solid var(--teal);
   border-radius: var(--button-border-radius);
   cursor: pointer;
@@ -36,7 +36,7 @@
 
 .refreshButton:hover:not(:disabled) {
   background: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .refreshButton:disabled {
@@ -62,7 +62,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: #ffffff;
   background: var(--teal);
   border: 2px solid var(--teal);
   border-radius: var(--button-border-radius);
@@ -89,9 +89,9 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  color: #333;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   cursor: pointer;
   display: flex;
@@ -112,10 +112,10 @@
   top: 100%;
   left: 0;
   margin-top: 0.5rem;
-  background: white;
-  border: 2px solid #ddd;
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--shadow-black-15);
   min-width: 120px;
   z-index: 100;
   overflow: hidden;
@@ -128,7 +128,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
   background: none;
   border: none;
   text-align: left;
@@ -143,19 +143,19 @@
 
 .filterOptionSelected {
   background-color: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .filterOptionSelected:hover {
   background-color: var(--teal-dark);
-  color: white;
+  color: #ffffff;
 }
 
 .tabs {
   display: inline-flex;
   gap: 0.5rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border-light);
 }
 
 .tab {
@@ -163,7 +163,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  color: #666;
+  color: var(--text-tertiary);
   background: none;
   border: none;
   border-bottom: 3px solid transparent;
@@ -186,7 +186,7 @@
   padding: 3rem;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .emptyState {
@@ -198,14 +198,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .emptyMessage {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: #666;
+  color: var(--text-tertiary);
   margin: 0;
 }
 
@@ -216,7 +216,7 @@
 }
 
 .pricingCard {
-  background: white;
+  background: var(--bg-white);
   border: 1px solid transparent;
   border-radius: 30px;
   padding: 1.5rem;
@@ -225,8 +225,8 @@
 }
 
 .pricingCard:hover {
-  border-color: #ddd;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: var(--border-medium);
+  box-shadow: 0 4px 16px var(--shadow-black-10);
 }
 
 .cardActive {
@@ -260,7 +260,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
@@ -303,8 +303,8 @@
 }
 
 .statusExpired {
-  background-color: #f3f4f6;
-  color: #6b7280;
+  background-color: var(--bg-gray);
+  color: var(--gray-500);
 }
 
 .cardMeta {
@@ -325,7 +325,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #666;
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -333,7 +333,7 @@
 .metaValue {
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .features {
@@ -344,7 +344,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
 }
 
@@ -360,7 +360,7 @@
 .featureItem {
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
-  color: #333;
+  color: var(--text-secondary);
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
@@ -412,4 +412,3 @@
     grid-template-columns: 1fr;
   }
 }
-

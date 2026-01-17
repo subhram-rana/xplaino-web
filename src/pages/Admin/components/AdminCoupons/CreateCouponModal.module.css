@@ -176,12 +176,12 @@
 
 .dropdownOptionSelected {
   background-color: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .dropdownOptionSelected:hover {
   background-color: var(--teal-dark);
-  color: white;
+  color: #ffffff;
 }
 
 .errorMessage {
@@ -222,12 +222,12 @@
 .cancelButton {
   background: var(--bg-white);
   color: var(--text-secondary);
-  border-color: #ddd;
+  border-color: var(--border-medium);
 }
 
 .cancelButton:hover {
-  background: #f9f9f9;
-  border-color: #ccc;
+  background: var(--button-hover-bg);
+  border-color: var(--border-dark);
 }
 
 .cancelButton:disabled {
@@ -237,7 +237,7 @@
 
 .submitButton {
   background: var(--teal);
-  color: white;
+  color: #ffffff;
   border-color: var(--teal);
 }
 
@@ -275,4 +275,3 @@
     width: 100%;
   }
 }
-

@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--bg-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,7 +22,7 @@
 }
 
 .modal {
-  background: white;
+  background: var(--bg-white);
   border-radius: 30px;
   padding: 1.5rem;
   max-width: 700px;
@@ -48,7 +48,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
 }
 
@@ -86,7 +86,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
@@ -100,9 +100,9 @@
   padding: 0.625rem 0.75rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
-  color: #333;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   transition: border-color 0.2s ease;
   width: 100%;
@@ -153,8 +153,8 @@
   left: 0;
   right: 0;
   margin-top: 0.5rem;
-  background: white;
-  border: 2px solid #ddd;
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   z-index: 100;
   overflow: hidden;
@@ -167,7 +167,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
   background: none;
   border: none;
   text-align: left;
@@ -187,12 +187,12 @@
 
 .dropdownOptionSelected {
   background-color: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .dropdownOptionSelected:hover {
   background-color: var(--teal-dark);
-  color: white;
+  color: #ffffff;
 }
 
 .errorMessage {
@@ -231,14 +231,14 @@
 }
 
 .cancelButton {
-  background: white;
-  color: #333;
-  border-color: #ddd;
+  background: var(--bg-white);
+  color: var(--text-secondary);
+  border-color: var(--border-medium);
 }
 
 .cancelButton:hover {
-  background: #f9f9f9;
-  border-color: #ccc;
+  background: var(--button-hover-bg);
+  border-color: var(--border-dark);
 }
 
 .cancelButton:disabled {
@@ -248,7 +248,7 @@
 
 .submitButton {
   background: var(--teal);
-  color: white;
+  color: #ffffff;
   border-color: var(--teal);
 }
 
@@ -302,4 +302,3 @@
     width: 100%;
   }
 }
-

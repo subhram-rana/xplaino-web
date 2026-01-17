@@ -16,7 +16,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   color: var(--teal);
-  background: white;
+  background: var(--bg-white);
   border: 2px solid var(--teal);
   border-radius: var(--button-border-radius);
   cursor: pointer;
@@ -30,7 +30,7 @@
 
 .refreshButton:hover:not(:disabled) {
   background: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .refreshButton:disabled {
@@ -68,7 +68,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #666;
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -83,9 +83,9 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  color: #333;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   cursor: pointer;
   display: flex;
@@ -98,7 +98,7 @@
 
 .filterButton:hover {
   border-color: var(--teal);
-  background-color: #f9f9f9;
+  background-color: var(--button-hover-bg);
 }
 
 .filterDropdown {
@@ -106,10 +106,10 @@
   top: 100%;
   left: 0;
   margin-top: 0.5rem;
-  background: white;
-  border: 2px solid #ddd;
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--shadow-black-15);
   min-width: 160px;
   z-index: 100;
   overflow: hidden;
@@ -122,7 +122,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-secondary);
   background: none;
   border: none;
   text-align: left;
@@ -137,12 +137,12 @@
 
 .filterOptionSelected {
   background-color: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .filterOptionSelected:hover {
   background-color: var(--teal-dark);
-  color: white;
+  color: #ffffff;
 }
 
 .ticketIdInput {
@@ -150,9 +150,9 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 500;
-  color: #333;
-  background: white;
-  border: 2px solid #ddd;
+  color: var(--text-secondary);
+  background: var(--bg-white);
+  border: 2px solid var(--border-medium);
   border-radius: var(--button-border-radius);
   min-width: 180px;
   transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -165,11 +165,11 @@
 .ticketIdInput:focus {
   outline: none;
   border-color: var(--teal);
-  background-color: #faf5ff;
+  background-color: var(--teal-lighter);
 }
 
 .ticketIdInput::placeholder {
-  color: #999;
+  color: var(--text-quaternary);
 }
 
 .fetchButton {
@@ -177,7 +177,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: #ffffff;
   background: var(--teal);
   border: 2px solid var(--teal);
   border-radius: var(--button-border-radius);
@@ -207,7 +207,7 @@
   padding: 3rem;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .initialState {
@@ -219,14 +219,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .initialMessage {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: #666;
+  color: var(--text-tertiary);
   margin: 0;
 }
 
@@ -239,14 +239,14 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .emptyMessage {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: #666;
+  color: var(--text-tertiary);
   margin: 0;
 }
 
@@ -264,7 +264,7 @@
   gap: 1.5rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-gray);
 }
 
 .paginationButton {
@@ -276,7 +276,7 @@
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--teal);
-  background: white;
+  background: var(--bg-white);
   border: 2px solid var(--teal);
   border-radius: var(--button-border-radius);
   cursor: pointer;
@@ -285,7 +285,7 @@
 
 .paginationButton:hover:not(:disabled) {
   background: var(--teal);
-  color: white;
+  color: #ffffff;
 }
 
 .paginationButton:active:not(:disabled) {
@@ -295,8 +295,8 @@
 .paginationButton:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  border-color: #ccc;
-  color: #999;
+  border-color: var(--border-dark);
+  color: var(--text-quaternary);
 }
 
 .paginationButton svg {
@@ -307,16 +307,16 @@
 .paginationInfo {
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
-  color: #666;
+  color: var(--text-tertiary);
   white-space: nowrap;
 }
 
 .issueCard {
-  background: white;
+  background: var(--bg-white);
   border: none;
   border-radius: 20px;
   padding: 1rem 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px var(--shadow-black-10);
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   animation: fadeInUp 0.5s ease-out forwards;
@@ -335,7 +335,7 @@
 }
 
 .issueCard:hover {
-  background: #faf5ff;
+  background: var(--teal-lighter);
   box-shadow: 0 8px 24px var(--shadow-black-20);
 }
 
@@ -392,7 +392,7 @@
 }
 
 .copyButton:active {
-  background: #e8dfff;
+  background: var(--teal-lighter);
 }
 
 .copyButton svg {
@@ -401,7 +401,7 @@
 }
 
 .checkIcon {
-  color: #10b981;
+  color: var(--green);
 }
 
 .copiedTooltip {
@@ -410,13 +410,13 @@
   left: 0;
   font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
-  color: #10b981;
+  color: var(--green);
   font-weight: 500;
   white-space: nowrap;
-  background: white;
+  background: var(--bg-white);
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px var(--shadow-black-15);
   z-index: 10;
   pointer-events: none;
 }
@@ -425,7 +425,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 700;
-  color: #333;
+  color: var(--text-secondary);
   margin-left: auto;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -442,23 +442,23 @@
 }
 
 .statusOPEN {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--yellow-light);
+  color: var(--yellow-dark);
 }
 
 .statusWORK_IN_PROGRESS {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--blue-light);
+  color: var(--blue);
 }
 
 .statusDISCARDED {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--bg-gray);
+  color: var(--gray-700);
 }
 
 .statusRESOLVED {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--light-green);
+  color: var(--green-dark);
 }
 
 .issueMeta {
@@ -467,7 +467,7 @@
   flex-wrap: wrap;
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-tertiary);
   margin-top: 0.25rem;
 }
 
@@ -477,13 +477,13 @@
 }
 
 .issueDate {
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .issueDescription {
   font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
-  color: #333;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin: 0.5rem 0 0.75rem 0;
   white-space: pre-wrap;
@@ -507,7 +507,7 @@
 
 .urlLabel {
   font-weight: 600;
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .urlLink {
@@ -536,7 +536,7 @@
 
 .filesLabel {
   font-weight: 600;
-  color: #666;
+  color: var(--text-tertiary);
   flex-shrink: 0;
 }
 
@@ -562,7 +562,7 @@
 }
 
 .fileLink:hover {
-  background-color: #ede5ff;
+  background-color: var(--teal-lighter);
   text-decoration: none;
 }
 
@@ -671,4 +671,3 @@
     font-size: 0.9375rem;
   }
 }
-
