@@ -18,6 +18,8 @@ import { AdminPricingPage } from '@/pages/Admin/AdminPricingPage';
 import { AdminTicketsPage } from '@/pages/Admin/AdminTicketsPage';
 import { AdminDomainsPage } from '@/pages/Admin/AdminDomainsPage';
 import { AdminCouponPage } from '@/pages/Admin/AdminCouponPage';
+import { PricingAdd } from '@/pages/Admin/components/PricingAdd';
+import { PricingDetail } from '@/pages/Admin/components/PricingDetail';
 import { UserDashboardLayout } from '@/pages/UserDashboard/UserDashboardLayout';
 import { MyBookmarksPage } from '@/pages/UserDashboard/MyBookmarksPage';
 import { PdfPage } from '@/pages/UserDashboard/PdfPage';
@@ -199,7 +201,23 @@ const AppContent: React.FC<{ showMiniCoupon: boolean; setShowMiniCoupon: (show: 
                 } 
               />
               <Route 
+                path="/admin/pricing/add" 
+                element={
+                  <AdminProtectedRoute>
+                    <PricingAdd />
+                  </AdminProtectedRoute>
+                } 
+              />
+              <Route 
                 path="/admin/pricing/:pricingId" 
+                element={
+                  <AdminProtectedRoute>
+                    <PricingDetail />
+                  </AdminProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/pricing/:pricingId/edit" 
                 element={
                   <AdminProtectedRoute>
                     <PricingEdit />

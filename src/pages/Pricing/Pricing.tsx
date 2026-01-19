@@ -14,6 +14,7 @@ export const Pricing: React.FC = () => {
   const [pricings, setPricings] = useState<PricingResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
+  const [billingCycles, setBillingCycles] = useState<Record<string, 'monthly' | 'yearly'>>({});
 
   useEffect(() => {
     const fetchPricings = async () => {
@@ -21,6 +22,13 @@ export const Pricing: React.FC = () => {
         setIsLoading(true);
         const response = await getLivePricings();
         setPricings(response.pricings);
+        
+        // Initialize billing cycles for each pricing (default to monthly)
+        const initialCycles: Record<string, 'monthly' | 'yearly'> = {};
+        response.pricings.forEach(pricing => {
+          initialCycles[pricing.id] = 'monthly';
+        });
+        setBillingCycles(initialCycles);
       } catch (error) {
         console.error('Error fetching pricings:', error);
         const errorMessage = error instanceof Error ? error.message : 'Failed to load pricing plans';
@@ -33,123 +41,110 @@ export const Pricing: React.FC = () => {
     fetchPricings();
   }, []);
 
-  const formatPriceDisplay = (pricing: PricingResponse): string => {
-    const period = pricing.recurring_period.toLowerCase();
-    const amount = pricing.amount;
-    const currency = pricing.currency;
+  const toggleBillingCycle = (pricingId: string) => {
+    setBillingCycles(prev => ({
+      ...prev,
+      [pricingId]: prev[pricingId] === 'monthly' ? 'yearly' : 'monthly'
+    }));
+  };
+
+  const calculatePrice = (pricing: PricingResponse, billingCycle: 'monthly' | 'yearly'): { price: number; originalPrice: number; discount: number } => {
+    const monthlyPrice = pricing.pricing_details.monthly_price;
+    const monthlyDiscount = pricing.pricing_details.monthly_discount.discount_percentage;
     
-    // Get currency symbol
+    if (billingCycle === 'monthly') {
+      const discountedPrice = monthlyPrice * (1 - monthlyDiscount / 100);
+      return {
+        price: discountedPrice,
+        originalPrice: monthlyPrice,
+        discount: monthlyDiscount
+      };
+    } else {
+      // Yearly billing
+      if (pricing.pricing_details.is_yearly_enabled && pricing.pricing_details.yearly_discount) {
+        const yearlyPrice = monthlyPrice * 12;
+        const yearlyDiscount = pricing.pricing_details.yearly_discount.discount_percentage;
+        const discountedYearlyPrice = yearlyPrice * (1 - yearlyDiscount / 100);
+        return {
+          price: discountedYearlyPrice / 12, // Show monthly equivalent
+          originalPrice: monthlyPrice,
+          discount: yearlyDiscount
+        };
+      } else {
+        // No yearly pricing, fallback to monthly
+        const discountedPrice = monthlyPrice * (1 - monthlyDiscount / 100);
+        return {
+          price: discountedPrice,
+          originalPrice: monthlyPrice,
+          discount: monthlyDiscount
+        };
+      }
+    }
+  };
+
+  const formatPriceDisplay = (pricing: PricingResponse, billingCycle: 'monthly' | 'yearly'): React.ReactNode => {
+    const { price, originalPrice, discount } = calculatePrice(pricing, billingCycle);
+    const currency = pricing.currency;
     const currencySymbol = currency === 'USD' ? '$' : currency;
     
-    if (amount === 0) {
-      return `Starts at ${currencySymbol}0 per month/user`;
+    if (price === 0) {
+      return (
+        <div className={styles.priceContainer}>
+          <div className={styles.priceAmount}>{currencySymbol}0</div>
+          <div className={styles.pricePeriod}>per month</div>
+        </div>
+      );
     }
-    
-    if (period === 'year') {
-      // If amount is in thousands, show with 'k' suffix
-      if (amount >= 1000) {
-        const thousands = amount / 1000;
-        return `Starts at ${currencySymbol}${thousands}k per year`;
-      }
-      return `Starts at ${currencySymbol}${amount.toLocaleString()} per year`;
-    }
-    
-    return `Starts at ${currencySymbol}${amount} per month/user`;
+
+    return (
+      <div className={styles.priceContainer}>
+        <div className={styles.priceAmount}>
+          {currencySymbol}{price.toFixed(2)}
+        </div>
+        <div className={styles.pricePeriod}>
+          per month {billingCycle === 'yearly' && '(billed annually)'}
+        </div>
+        {discount > 0 && (
+          <div className={styles.priceDiscount}>
+            <span className={styles.originalPrice}>{currencySymbol}{originalPrice.toFixed(2)}</span>
+            <span className={styles.discountBadge}>{discount}% OFF</span>
+          </div>
+        )}
+      </div>
+    );
   };
 
-  const parseFeatures = (featuresString: string): string[] => {
-    try {
-      // Try to parse as JSON first
-      const parsed = JSON.parse(featuresString);
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-      if (typeof parsed === 'object' && parsed.features) {
-        return Array.isArray(parsed.features) ? parsed.features : [];
-      }
-    } catch {
-      // If not JSON, try splitting by newlines or commas
-      if (featuresString.includes('\n')) {
-        return featuresString.split('\n').filter(f => f.trim());
-      }
-      if (featuresString.includes(',')) {
-        return featuresString.split(',').map(f => f.trim()).filter(f => f);
-      }
+  const formatFeatureLimit = (feature: any): string => {
+    if (!feature.is_allowed) return '';
+    if (feature.max_allowed_type === 'UNLIMITED') return 'Unlimited';
+    if (feature.max_allowed_type === 'FIXED' && feature.max_allowed_count) {
+      return `${feature.max_allowed_count.toLocaleString()}`;
     }
-    return [featuresString];
+    return '';
   };
 
-  const renderMarkdown = (text: string): React.ReactNode => {
-    // Simple markdown renderer for bold text (**text**) and regular text
-    const parts: React.ReactNode[] = [];
-    let currentIndex = 0;
-    const boldRegex = /\*\*(.*?)\*\*/g;
-    let match;
-
-    while ((match = boldRegex.exec(text)) !== null) {
-      // Add text before the bold
-      if (match.index > currentIndex) {
-        const beforeText = text.substring(currentIndex, match.index);
-        if (beforeText) {
-          parts.push(beforeText);
-        }
-      }
-      
-      // Add bold text
-      parts.push(<strong key={match.index}>{match[1]}</strong>);
-      
-      currentIndex = match.index + match[0].length;
-    }
-
-    // Add remaining text
-    if (currentIndex < text.length) {
-      const remainingText = text.substring(currentIndex);
-      if (remainingText) {
-        parts.push(remainingText);
-      }
-    }
-
-    // If no bold text was found, return the original text
-    if (parts.length === 0) {
-      return text;
-    }
-
-    return <>{parts}</>;
-  };
-
-  const getDescription = (pricing: PricingResponse): string => {
-    const name = pricing.name.toLowerCase();
-    if (name.includes('individual')) {
-      return 'Good for individuals who are just starting out and simply want the essentials.';
-    } else if (name.includes('team')) {
-      return 'Highly recommended for small teams who seek to upgrade their time & perform.';
-    } else if (name.includes('enterprise')) {
-      return 'Robust scheduling for larger teams looking to have more control, privacy & security.';
-    }
-    return 'Perfect for your needs.';
-  };
-
-  const getButtonText = (pricing: PricingResponse): string => {
+  const getButtonText = (pricing: PricingResponse, billingCycle: 'monthly' | 'yearly'): string => {
     const name = pricing.name.toLowerCase();
     if (name.includes('enterprise')) {
       return 'Contact us';
+    }
+    if (calculatePrice(pricing, billingCycle).price === 0) {
+      return 'Get started for free';
     }
     return 'Get started';
   };
 
   const getButtonClass = (pricing: PricingResponse, index: number): string => {
+    // Highlighted plan gets primary button
+    if (pricing.is_highlighted) {
+      return styles.buttonPrimary;
+    }
     const name = pricing.name.toLowerCase();
-    // Middle card (index 1) or Teams plan gets blue button
-    if (index === 1 || name.includes('team')) {
+    // Middle card (index 1) or Team/Pro plans get blue button
+    if (index === 1 || name.includes('team') || name.includes('pro')) {
       return styles.buttonPrimary;
     }
     return styles.buttonSecondary;
-  };
-
-  const hasBanner = (pricing: PricingResponse, index: number): boolean => {
-    const name = pricing.name.toLowerCase();
-    // Middle card or Teams plan might have a banner
-    return index === 1 || name.includes('team');
   };
 
   if (isLoading) {
@@ -179,39 +174,74 @@ export const Pricing: React.FC = () => {
     <div className={styles.pricing}>
       <div className={styles.container}>
         <h1 className={styles.heading}>Pricing</h1>
+
         <div className={styles.cards}>
           {pricings.map((pricing, index) => {
-            const features = parseFeatures(pricing.features);
             const isMiddleCard = index === 1;
+            const allowedFeatures = pricing.features.filter(f => f.is_allowed);
+            const billingCycle = billingCycles[pricing.id] || 'monthly';
+            const hasYearlyOption = pricing.pricing_details.is_yearly_enabled;
             
             return (
               <div 
                 key={pricing.id} 
                 className={`${styles.card} ${isMiddleCard ? styles.cardMiddle : ''}`}
               >
-                {hasBanner(pricing, index) && (
-                  <div className={styles.banner}>30 days free trial</div>
+                {pricing.is_highlighted && (
+                  <div className={styles.banner}>Most Popular</div>
                 )}
                 <h2 className={styles.cardTitle}>{pricing.name}</h2>
-                <div className={styles.price}>{formatPriceDisplay(pricing)}</div>
-                <p className={styles.description}>{getDescription(pricing)}</p>
+                
+                {/* Billing Cycle Toggle inside card */}
+                {hasYearlyOption && (
+                  <div className={styles.cardBillingToggle}>
+                    <span className={`${styles.toggleLabel} ${billingCycle === 'monthly' ? styles.toggleLabelActive : ''}`}>
+                      Monthly
+                    </span>
+                    <button
+                      className={styles.toggleSwitch}
+                      onClick={() => toggleBillingCycle(pricing.id)}
+                      role="switch"
+                      aria-checked={billingCycle === 'yearly'}
+                    >
+                      <span className={`${styles.toggleSlider} ${billingCycle === 'yearly' ? styles.toggleSliderActive : ''}`} />
+                    </button>
+                    <span className={`${styles.toggleLabel} ${billingCycle === 'yearly' ? styles.toggleLabelActive : ''}`}>
+                      Yearly
+                      {pricing.pricing_details.yearly_discount && (
+                        <span className={styles.cardSaveBadge}>
+                          Save {pricing.pricing_details.yearly_discount.discount_percentage}%
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                )}
+                
+                <div className={styles.price}>{formatPriceDisplay(pricing, billingCycle)}</div>
+                <p className={styles.description}>{pricing.description}</p>
                 <button className={getButtonClass(pricing, index)}>
-                  {getButtonText(pricing)}
+                  {getButtonText(pricing, billingCycle)}
                 </button>
                 <div className={styles.features}>
-                  {index === 1 && (
+                  {index === 1 && allowedFeatures.length > 0 && (
                     <p className={styles.featuresPrefix}>Free plan features, plus:</p>
                   )}
-                  {index === 2 && (
-                    <p className={styles.featuresPrefix}>Organization plan features, plus:</p>
+                  {index === 2 && allowedFeatures.length > 0 && (
+                    <p className={styles.featuresPrefix}>Standard plan features, plus:</p>
                   )}
                   <ul className={styles.featuresList}>
-                    {features.map((feature, idx) => (
+                    {allowedFeatures.map((feature, idx) => {
+                      const limit = formatFeatureLimit(feature);
+                      return (
                       <li key={idx} className={styles.featureItem}>
                         <span className={styles.checkmark}>✓</span>
-                        <span className={styles.featureText}>{renderMarkdown(feature)}</span>
+                          <span className={styles.featureText}>
+                            {limit && <span className={styles.featureLimit}>{limit} </span>}
+                            {feature.description || feature.name}
+                          </span>
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 </div>
               </div>
@@ -233,4 +263,3 @@ export const Pricing: React.FC = () => {
 };
 
 Pricing.displayName = 'Pricing';
-

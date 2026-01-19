@@ -1,4 +1,4 @@
-.pricingEdit {
+.pricingAdd {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
@@ -36,17 +36,12 @@
   margin: 0;
 }
 
-.loading,
-.error {
+.loading {
   text-align: center;
   padding: 3rem;
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   color: var(--text-tertiary);
-}
-
-.error {
-  color: var(--red);
 }
 
 .card {
@@ -395,7 +390,7 @@
 }
 
 @media (max-width: 768px) {
-  .pricingEdit {
+  .pricingAdd {
     padding: 1rem;
   }
 

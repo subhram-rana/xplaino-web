@@ -5,7 +5,6 @@ import styles from './AdminPricing.module.css';
 import { getAllPricings, getLivePricings } from '@/shared/services/pricing.service';
 import type { PricingResponse } from '@/shared/types/pricing.types';
 import { Toast } from '@/shared/components/Toast';
-import { CreatePricingModal } from './CreatePricingModal';
 
 type StatusTab = 'live' | 'all' | 'active' | 'inactive';
 
@@ -25,7 +24,6 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
   const [filteredPricings, setFilteredPricings] = useState<PricingResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusTab, setStatusTab] = useState<StatusTab>('live');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
 
   const fetchLivePricings = async () => {
@@ -118,26 +116,17 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
   };
 
   const formatPriceDisplay = (pricing: PricingResponse): string => {
-    const period = pricing.recurring_period.toLowerCase();
-    const amount = pricing.amount;
+    const monthlyPrice = pricing.pricing_details.monthly_price;
     const currency = pricing.currency;
     
     // Get currency symbol
     const currencySymbol = currency === 'USD' ? '$' : currency;
     
-    if (amount === 0) {
-      return `${currencySymbol}0 per month/user`;
+    if (monthlyPrice === 0) {
+      return `${currencySymbol}0 per month`;
     }
     
-    if (period === 'year') {
-      if (amount >= 1000) {
-        const thousands = amount / 1000;
-        return `${currencySymbol}${thousands}k per year`;
-      }
-      return `${currencySymbol}${amount.toLocaleString()} per year`;
-    }
-    
-    return `${currencySymbol}${amount} per month/user`;
+    return `${currencySymbol}${monthlyPrice.toLocaleString()} per month`;
   };
 
   const statusTabs: { value: StatusTab; label: string }[] = [
@@ -155,6 +144,14 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
   const handleRefresh = () => {
     // Always refresh both APIs to keep all state variables updated
     fetchBothPricings();
+  };
+
+  const handleAddPricing = () => {
+    navigate('/admin/pricing/add');
+  };
+
+  const handlePricingClick = (pricing: PricingResponse) => {
+    navigate(`/admin/pricing/${pricing.id}`, { state: { pricing } });
   };
 
   if (isLoading) {
@@ -179,7 +176,7 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
           </button>
           <button
             className={styles.addButton}
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleAddPricing}
           >
             Add pricing
           </button>
@@ -230,12 +227,24 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
               <div
                 key={pricing.id}
                 className={cardClass}
-                onClick={() => navigate(`/admin/pricing/${pricing.id}`, { state: { pricing } })}
+                onClick={() => handlePricingClick(pricing)}
               >
+                {pricing.is_highlighted && (
+                  <div className={styles.highlightedBanner}>
+                    ⭐ HIGHLIGHTED
+                  </div>
+                )}
                 <div className={styles.cardHeader}>
                   <div>
                     <h2 className={styles.cardTitle}>{pricing.name}</h2>
                     <div className={styles.price}>{formatPriceDisplay(pricing)}</div>
+                    {pricing.description && (
+                      <p className={styles.description}>
+                        {pricing.description.length > 100 
+                          ? `${pricing.description.slice(0, 100)}...` 
+                          : pricing.description}
+                      </p>
+                    )}
                   </div>
                   <div className={styles.statusBadges}>
                     <span className={`${styles.statusBadge} ${styles[`status${pricing.status}`]}`}>
@@ -264,9 +273,9 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
                     <span className={styles.metaValue}>{formatDate(pricing.expiry)}</span>
                   </div>
                   <div className={styles.metaItem}>
-                    <span className={styles.metaLabel}>Recurring:</span>
+                    <span className={styles.metaLabel}>Features:</span>
                     <span className={styles.metaValue}>
-                      {pricing.recurring_period_count} {pricing.recurring_period.toLowerCase()}(s)
+                      {pricing.features.filter(f => f.is_allowed).length} enabled
                     </span>
                   </div>
                   <div className={styles.metaItem}>
@@ -288,21 +297,8 @@ export const AdminPricing: React.FC<AdminPricingProps> = ({ accessToken }) => {
           onClose={() => setToast(null)}
         />
       )}
-
-      {/* Create Pricing Modal */}
-      <CreatePricingModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={() => {
-          // Refresh pricings after successful creation
-          fetchBothPricings();
-          setToast({ message: 'Pricing created successfully', type: 'success' });
-        }}
-        accessToken={accessToken}
-      />
     </div>
   );
 };
 
 AdminPricing.displayName = 'AdminPricing';
-

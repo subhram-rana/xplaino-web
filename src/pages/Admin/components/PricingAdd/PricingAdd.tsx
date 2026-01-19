@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import styles from './PricingEdit.module.css';
+import { useNavigate } from 'react-router-dom';
+import styles from './PricingAdd.module.css';
 import { getFeatures } from '@/shared/services/features.service';
-import { updatePricing, getPricingById } from '@/shared/services/pricing.service';
+import { createPricing } from '@/shared/services/pricing.service';
 import type { Feature } from '@/shared/types/features.types';
-import type { PricingResponse, UpdatePricingRequest, PricingFeature, PricingStatus, Currency, MaxAllowedType } from '@/shared/types/pricing.types';
+import type { PricingFeature, CreatePricingRequest, PricingStatus, Currency, MaxAllowedType } from '@/shared/types/pricing.types';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Toast } from '@/shared/components/Toast';
 import { DropdownIcon } from '@/shared/components/DropdownIcon';
@@ -19,20 +19,13 @@ interface FeatureFormData {
 }
 
 /**
- * PricingEdit - Edit pricing plan component
+ * PricingAdd - Add new pricing plan component
  */
-export const PricingEdit: React.FC = () => {
-  const { pricingId } = useParams<{ pricingId: string }>();
+export const PricingAdd: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { accessToken } = useAuth();
 
-  // Get pricing data from navigation state
-  const pricingFromState = (location.state as { pricing?: PricingResponse })?.pricing;
-
-  const [pricing, setPricing] = useState<PricingResponse | null>(pricingFromState || null);
   const [features, setFeatures] = useState<Feature[]>([]);
-  const [isLoadingPricing, setIsLoadingPricing] = useState(!pricingFromState);
   const [isLoadingFeatures, setIsLoadingFeatures] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
@@ -58,27 +51,6 @@ export const PricingEdit: React.FC = () => {
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState(false);
 
-  // Fetch pricing if not in state
-  useEffect(() => {
-    const fetchPricing = async () => {
-      if (!accessToken || !pricingId || pricingFromState) return;
-
-      try {
-        setIsLoadingPricing(true);
-        const fetchedPricing = await getPricingById(accessToken, pricingId);
-        setPricing(fetchedPricing);
-      } catch (error) {
-        console.error('Error fetching pricing:', error);
-        const errorMessage = error instanceof Error ? error.message : 'Failed to load pricing';
-        setToast({ message: errorMessage, type: 'error' });
-      } finally {
-        setIsLoadingPricing(false);
-      }
-    };
-
-    fetchPricing();
-  }, [accessToken, pricingId, pricingFromState]);
-
   // Fetch features on mount
   useEffect(() => {
     const fetchFeatures = async () => {
@@ -88,6 +60,19 @@ export const PricingEdit: React.FC = () => {
         setIsLoadingFeatures(true);
         const response = await getFeatures(accessToken);
         setFeatures(response.features);
+        
+        // Initialize selectedFeatures map with all features unselected
+        const featuresMap = new Map<string, FeatureFormData>();
+        response.features.forEach(feature => {
+          featuresMap.set(feature.name, {
+            name: feature.name,
+            description: feature.description,
+            is_allowed: false,
+            max_allowed_type: null,
+            max_allowed_count: null,
+          });
+        });
+        setSelectedFeatures(featuresMap);
       } catch (error) {
         console.error('Error fetching features:', error);
         const errorMessage = error instanceof Error ? error.message : 'Failed to load features';
@@ -99,77 +84,6 @@ export const PricingEdit: React.FC = () => {
 
     fetchFeatures();
   }, [accessToken]);
-
-  // Initialize form data from pricing
-  useEffect(() => {
-    if (pricing && features.length > 0) {
-      // Convert ISO dates to datetime-local format
-      const activationDate = new Date(pricing.activation);
-      const expiryDate = new Date(pricing.expiry);
-      
-      const activationLocal = new Date(activationDate.getTime() - activationDate.getTimezoneOffset() * 60000)
-        .toISOString()
-        .slice(0, 16);
-      const expiryLocal = new Date(expiryDate.getTime() - expiryDate.getTimezoneOffset() * 60000)
-        .toISOString()
-        .slice(0, 16);
-
-      const monthlyDiscountValidTillDate = new Date(pricing.pricing_details.monthly_discount.discount_valid_till);
-      const monthlyDiscountValidTillLocal = new Date(monthlyDiscountValidTillDate.getTime() - monthlyDiscountValidTillDate.getTimezoneOffset() * 60000)
-        .toISOString()
-        .slice(0, 16);
-
-      const yearlyDiscountValidTillLocal = pricing.pricing_details.yearly_discount 
-        ? new Date(new Date(pricing.pricing_details.yearly_discount.discount_valid_till).getTime() - new Date(pricing.pricing_details.yearly_discount.discount_valid_till).getTimezoneOffset() * 60000)
-            .toISOString()
-            .slice(0, 16)
-        : '';
-
-      setFormData({
-        name: pricing.name,
-        activation: activationLocal,
-        expiry: expiryLocal,
-        status: pricing.status as PricingStatus,
-        currency: pricing.currency as Currency,
-        description: pricing.description || '',
-        is_highlighted: pricing.is_highlighted || false,
-        monthly_price: pricing.pricing_details.monthly_price.toString(),
-        monthly_discount_percentage: pricing.pricing_details.monthly_discount.discount_percentage.toString(),
-        monthly_discount_valid_till: monthlyDiscountValidTillLocal,
-        is_yearly_enabled: pricing.pricing_details.is_yearly_enabled,
-        yearly_discount_percentage: pricing.pricing_details.yearly_discount?.discount_percentage.toString() || '',
-        yearly_discount_valid_till: yearlyDiscountValidTillLocal,
-      });
-
-      // Initialize selectedFeatures map
-      const featuresMap = new Map<string, FeatureFormData>();
-      
-      // First, add all available features
-      features.forEach(feature => {
-        const existingFeature = pricing.features.find(f => f.name === feature.name);
-        
-        if (existingFeature) {
-          featuresMap.set(feature.name, {
-            name: feature.name,
-            description: feature.description,
-            is_allowed: existingFeature.is_allowed,
-            max_allowed_type: existingFeature.max_allowed_type,
-            max_allowed_count: existingFeature.max_allowed_count,
-          });
-        } else {
-          featuresMap.set(feature.name, {
-            name: feature.name,
-            description: feature.description,
-            is_allowed: false,
-            max_allowed_type: null,
-            max_allowed_count: null,
-          });
-        }
-      });
-
-      setSelectedFeatures(featuresMap);
-    }
-  }, [pricing, features]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -271,7 +185,7 @@ export const PricingEdit: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!accessToken || !pricingId) {
+    if (!accessToken) {
       setToast({ message: 'Not authenticated', type: 'error' });
       return;
     }
@@ -367,7 +281,7 @@ export const PricingEdit: React.FC = () => {
         max_allowed_count: f.is_allowed && f.max_allowed_type === 'FIXED' ? f.max_allowed_count : null,
       }));
 
-      const requestBody: UpdatePricingRequest = {
+      const requestBody: CreatePricingRequest = {
         name: formData.name.trim(),
         activation: activationISO,
         expiry: expiryISO,
@@ -390,16 +304,16 @@ export const PricingEdit: React.FC = () => {
         },
       };
 
-      const updatedPricing = await updatePricing(accessToken, pricingId, requestBody);
-      setToast({ message: 'Pricing updated successfully', type: 'success' });
+      await createPricing(accessToken, requestBody);
+      setToast({ message: 'Pricing created successfully', type: 'success' });
       
-      // Navigate back to detail page after a short delay
+      // Navigate back to pricing list after a short delay
       setTimeout(() => {
-        navigate(`/admin/pricing/${pricingId}`, { state: { pricing: updatedPricing } });
+        navigate('/admin/pricing');
       }, 1000);
     } catch (error) {
-      console.error('Error updating pricing:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update pricing';
+      console.error('Error creating pricing:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create pricing';
       setToast({ message: errorMessage, type: 'error' });
     } finally {
       setIsSubmitting(false);
@@ -407,58 +321,45 @@ export const PricingEdit: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigate(`/admin/pricing/${pricingId}`);
+    navigate('/admin/pricing');
   };
 
-  if (isLoadingPricing || isLoadingFeatures) {
+  if (isLoadingFeatures) {
     return (
       <Admin>
-        <div className={styles.pricingEdit}>
-          <div className={styles.loading}>Loading...</div>
+        <div className={styles.pricingAdd}>
+          <div className={styles.loading}>Loading features...</div>
         </div>
-      </Admin>
-    );
-  }
-
-  if (!pricing) {
-    return (
-      <Admin>
-      <div className={styles.pricingEdit}>
-        <div className={styles.error}>Pricing not found</div>
-          <button className={styles.backButton} onClick={() => navigate('/admin/pricing')}>
-            ← Back to Pricing List
-        </button>
-      </div>
       </Admin>
     );
   }
 
   return (
     <Admin>
-    <div className={styles.pricingEdit}>
-      <div className={styles.header}>
+      <div className={styles.pricingAdd}>
+        <div className={styles.header}>
           <button onClick={handleCancel} className={styles.backButton}>
-          ← Back
-        </button>
-          <h1 className={styles.title}>Edit Pricing Plan</h1>
-      </div>
+            ← Back
+          </button>
+          <h1 className={styles.title}>Add New Pricing Plan</h1>
+        </div>
 
         <form onSubmit={handleSubmit} className={styles.card}>
           {/* Basic Information */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Basic Information</h2>
             
-        <div className={styles.fieldRow}>
-          <div className={styles.field}>
+            <div className={styles.fieldRow}>
+              <div className={styles.field}>
                 <label className={styles.label}>Name *</label>
-              <input
-                type="text"
+                <input
+                  type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                className={styles.input}
+                  className={styles.input}
                   placeholder="e.g., Premium Plan"
-                maxLength={30}
+                  maxLength={30}
                   required
                 />
               </div>
@@ -499,11 +400,11 @@ export const PricingEdit: React.FC = () => {
                     </div>
                   )}
                 </div>
-          </div>
-        </div>
+              </div>
+            </div>
 
-        <div className={styles.fieldRow}>
-          <div className={styles.field}>
+            <div className={styles.fieldRow}>
+              <div className={styles.field}>
                 <label className={styles.label}>Activation Date *</label>
                 <input
                   type="datetime-local"
@@ -513,9 +414,9 @@ export const PricingEdit: React.FC = () => {
                   className={styles.input}
                   required
                 />
-          </div>
+              </div>
 
-          <div className={styles.field}>
+              <div className={styles.field}>
                 <label className={styles.label}>Expiry Date *</label>
                 <input
                   type="datetime-local"
@@ -525,25 +426,25 @@ export const PricingEdit: React.FC = () => {
                   className={styles.input}
                   required
                 />
-          </div>
-        </div>
+              </div>
+            </div>
 
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label className={styles.label}>Currency *</label>
-              <div className={styles.dropdownContainer}>
-                <button
-                  type="button"
-                  className={`${styles.dropdownButton} ${isCurrencyDropdownOpen ? styles.dropdownButtonOpen : ''}`}
-                  onClick={() => {
-                    setIsCurrencyDropdownOpen(!isCurrencyDropdownOpen);
-                    setIsStatusDropdownOpen(false);
-                  }}
-                >
+                <div className={styles.dropdownContainer}>
+                  <button
+                    type="button"
+                    className={`${styles.dropdownButton} ${isCurrencyDropdownOpen ? styles.dropdownButtonOpen : ''}`}
+                    onClick={() => {
+                      setIsCurrencyDropdownOpen(!isCurrencyDropdownOpen);
+                      setIsStatusDropdownOpen(false);
+                    }}
+                  >
                     {formData.currency}
-                  <DropdownIcon isOpen={isCurrencyDropdownOpen} />
-                </button>
-                {isCurrencyDropdownOpen && (
+                    <DropdownIcon isOpen={isCurrencyDropdownOpen} />
+                  </button>
+                  {isCurrencyDropdownOpen && (
                     <div className={styles.dropdownList}>
                       <button
                         type="button"
@@ -599,9 +500,9 @@ export const PricingEdit: React.FC = () => {
           {/* Pricing Details */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Pricing Details</h2>
-
-        <div className={styles.fieldRow}>
-          <div className={styles.field}>
+            
+            <div className={styles.fieldRow}>
+              <div className={styles.field}>
                 <label className={styles.label}>Monthly Price ($) *</label>
                 <input
                   type="number"
@@ -631,10 +532,10 @@ export const PricingEdit: React.FC = () => {
                   required
                 />
               </div>
-          </div>
+            </div>
 
             <div className={styles.fieldRow}>
-          <div className={styles.field}>
+              <div className={styles.field}>
                 <label className={styles.label}>Monthly Discount Valid Till *</label>
                 <input
                   type="datetime-local"
@@ -650,7 +551,7 @@ export const PricingEdit: React.FC = () => {
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label className={styles.checkboxLabel}>
-                <input
+                  <input
                     type="checkbox"
                     name="is_yearly_enabled"
                     checked={formData.is_yearly_enabled}
@@ -695,7 +596,7 @@ export const PricingEdit: React.FC = () => {
                 </div>
               </>
             )}
-        </div>
+          </div>
 
           {/* Features Selection */}
           <div className={styles.section}>
@@ -710,7 +611,7 @@ export const PricingEdit: React.FC = () => {
                   {allFeaturesSelected ? 'Deselect All Features' : 'Select All Features'}
                 </button>
               )}
-                  </div>
+            </div>
             
             {features.length === 0 ? (
               <div className={styles.emptyFeatures}>
@@ -735,9 +636,9 @@ export const PricingEdit: React.FC = () => {
                           <div className={styles.featureInfo}>
                             <span className={styles.featureName}>{feature.name}</span>
                             <span className={styles.featureDescription}>{feature.description}</span>
-          </div>
+                          </div>
                         </label>
-          </div>
+                      </div>
 
                       {featureData.is_allowed && (
                         <div className={styles.featureOptions}>
@@ -762,7 +663,7 @@ export const PricingEdit: React.FC = () => {
                               />
                               Unlimited
                             </label>
-        </div>
+                          </div>
 
                           {featureData.max_allowed_type === 'FIXED' && (
                             <div className={styles.featureCountField}>
@@ -780,44 +681,44 @@ export const PricingEdit: React.FC = () => {
                           )}
                         </div>
                       )}
-          </div>
+                    </div>
                   );
                 })}
-          </div>
+              </div>
             )}
-        </div>
+          </div>
 
           {/* Action Buttons */}
-        <div className={styles.actions}>
-          <button
+          <div className={styles.actions}>
+            <button
               type="button"
               onClick={handleCancel}
-                  className={styles.cancelButton}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </button>
-                <button
+              className={styles.cancelButton}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
               type="submit"
               className={styles.submitButton}
-                  disabled={isSubmitting}
-                >
-              {isSubmitting ? 'Updating...' : 'Update Pricing'}
-              </button>
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Creating...' : 'Create Pricing'}
+            </button>
           </div>
         </form>
 
         {/* Toast Notification */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
-    </div>
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
+      </div>
     </Admin>
   );
 };
 
-PricingEdit.displayName = 'PricingEdit';
+PricingAdd.displayName = 'PricingAdd';

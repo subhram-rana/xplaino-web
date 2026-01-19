@@ -216,6 +216,7 @@
 }
 
 .pricingCard {
+  position: relative;
   background: var(--bg-white);
   border: 1px solid transparent;
   border-radius: 30px;
@@ -270,6 +271,29 @@
   font-weight: 600;
   color: var(--teal);
   margin: 0;
+}
+
+.description {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin: 0.5rem 0 0 0;
+  line-height: 1.4;
+}
+
+.highlightedBanner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  color: white;
+  padding: 0.5rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0 30px 0 15px;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
 }
 
 .statusBadges {
