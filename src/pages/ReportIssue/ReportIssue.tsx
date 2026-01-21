@@ -317,8 +317,8 @@ export const ReportIssue: React.FC = () => {
             {errors.description && <span className={styles.errorMessage}>{errors.description}</span>}
           </div>
 
-          {/* File Attachment */}
-          <div className={styles.fieldGroup}>
+          {/* File Attachment - Hidden from UI */}
+          <div className={styles.fieldGroup} style={{ display: 'none' }}>
             <label htmlFor="fileAttachment" className={styles.label}>
               File Attachment <span className={styles.optional}>(Optional)</span>
             </label>

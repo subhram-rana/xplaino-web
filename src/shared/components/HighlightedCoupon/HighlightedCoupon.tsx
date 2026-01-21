@@ -20,7 +20,42 @@ export const HighlightedCoupon: React.FC<HighlightedCouponProps> = ({ onDismiss 
   const [copied, setCopied] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [timeRemaining, setTimeRemaining] = useState<string>('');
   const navigate = useNavigate();
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (!coupon?.expiry) return;
+    
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const expiryTime = new Date(coupon.expiry).getTime();
+      const diff = expiryTime - now;
+      
+      if (diff <= 0) {
+        setTimeRemaining('Expired');
+        return;
+      }
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      // Format - always show seconds for urgency
+      if (days > 0) {
+        setTimeRemaining(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      } else if (hours > 0) {
+        setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+      } else {
+        setTimeRemaining(`${minutes}m ${seconds}s`);
+      }
+    };
+    
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [coupon?.expiry]);
 
   useEffect(() => {
     const fetchCoupon = async () => {
@@ -94,9 +129,16 @@ export const HighlightedCoupon: React.FC<HighlightedCouponProps> = ({ onDismiss 
               )}
             </div>
           </div>
+          {timeRemaining && (
+            <div className={styles.timerSection}>
+              <span className={styles.timerLabel}>Ends in:</span>
+              <span className={styles.timerIcon}>⏰</span>
+              <span className={styles.timerText}>{timeRemaining}</span>
+            </div>
+          )}
           <div className={styles.rightSection}>
             <div className={styles.codeContainer}>
-              <span className={styles.codeLabel}>Use Code:</span>
+              <span className={styles.codeLabel}>Use Coupon:</span>
               <button 
                 className={styles.codeButton}
                 onClick={handleCopyCode}
@@ -114,7 +156,7 @@ export const HighlightedCoupon: React.FC<HighlightedCouponProps> = ({ onDismiss 
               className={styles.ctaButton}
               onClick={handleGoToPricing}
             >
-              View Pricing
+              Claim Offer
             </button>
           </div>
         </div>

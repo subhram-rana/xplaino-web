@@ -161,7 +161,12 @@ export const Issues: React.FC = () => {
     );
   }
 
-  const isEmpty = !state.isLoading && state.issues.length === 0;
+  // Filter out feature request tickets
+  const filteredIssues = state.issues.filter(
+    (issue) => issue.type !== IssueType.FEATURE_REQUEST
+  );
+
+  const isEmpty = !state.isLoading && filteredIssues.length === 0;
 
   return (
     <div className={styles.issues}>
@@ -214,7 +219,7 @@ export const Issues: React.FC = () => {
         ) : (
           /* Issues List */
           <div className={`${styles.issuesList} ${isTransitioning ? styles.issuesListTransitioning : ''}`}>
-            {state.issues.map((issue, index) => (
+            {filteredIssues.map((issue, index) => (
               <div 
                 key={issue.id} 
                 className={styles.issueCard}
