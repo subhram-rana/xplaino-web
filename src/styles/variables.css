@@ -188,7 +188,7 @@
   /* ============================================
      GRAY SCALE (DARK MODE)
      ============================================ */
-  --gray-900: #e8eaed;
+  --gray-900: #f5f5f5;
   --gray-800: #c9cdd3;
   --gray-700: #a8adb7;
   --gray-600: #8a8f98;
@@ -203,7 +203,7 @@
      BASE COLORS (DARK MODE)
      ============================================ */
   --white: #0f1419;
-  --black: #e8eaed;
+  --black: #f5f5f5;
 
   /* ============================================
      SEMANTIC COLORS - SUCCESS (GREEN) (DARK MODE)
@@ -245,13 +245,13 @@
   /* ============================================
      TEXT COLORS (DARK MODE)
      ============================================ */
-  --text-primary: #e8eaed;
-  --text-secondary: #c9cdd3;
-  --text-tertiary: #8a8f98;
+  --text-primary: #f5f5f5;
+  --text-secondary: #e8eaed;
+  --text-tertiary: #c9cdd3;
   --text-quaternary: #6b7280;
-  --text-dark: #e8eaed;
-  --text-dark-gray: #c9cdd3;
-  --text-medium: #a8adb7;
+  --text-dark: #f5f5f5;
+  --text-dark-gray: #e8eaed;
+  --text-medium: #c9cdd3;
   --text-light: #6b7280;
   --text-on-primary: #0f1419;
 
