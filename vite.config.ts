@@ -12,6 +12,9 @@ export default defineConfig({
       '@/features': path.resolve(__dirname, './src/features'),
     },
   },
+  preview: {
+    allowedHosts: ['xplaino.com', 'www.xplaino.com'],
+  },
 })
 
 
