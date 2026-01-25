@@ -16,8 +16,8 @@ export const PromoText: React.FC = () => {
         <span>AI-Powered Browser Extension</span>
       </div>
       <h1 className={styles.heading}>
-        Maximise your{' '}
-        <span className={styles.headingHighlight}>contextual understanding</span>{' '}
+        Understand better{' '}
+        <span className={styles.headingHighlight}>with AI</span>{' '}
         while browsing
       </h1>
       <p className={styles.description}>
