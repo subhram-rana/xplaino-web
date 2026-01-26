@@ -41,26 +41,28 @@ export const SupportedLanguages: React.FC = () => {
   ];
 
   return (
-    <section className={styles.supportedLanguages}>
-      <h2 className={styles.subheading}>Works in 30+ languages</h2>
-      <div className={styles.scrollingContainer}>
-        <div className={styles.scrollingContent}>
-          {languages.map((language, index) => (
-            <span key={index} className={styles.languageItem}>
-              <span className={styles.flag}>{language.flag}</span>
-              <span className={styles.languageName}>{language.name}</span>
-            </span>
-          ))}
-          {/* Duplicate for seamless loop */}
-          {languages.map((language, index) => (
-            <span key={`duplicate-${index}`} className={styles.languageItem}>
-              <span className={styles.flag}>{language.flag}</span>
-              <span className={styles.languageName}>{language.name}</span>
-            </span>
-          ))}
+    <div className={styles.supportedLanguagesWrapper}>
+      <section className={styles.supportedLanguages}>
+        <h2 className={styles.subheading}>Works in 30+ languages</h2>
+        <div className={styles.scrollingContainer}>
+          <div className={styles.scrollingContent}>
+            {languages.map((language, index) => (
+              <span key={index} className={styles.languageItem}>
+                <span className={styles.flag}>{language.flag}</span>
+                <span className={styles.languageName}>{language.name}</span>
+              </span>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {languages.map((language, index) => (
+              <span key={`duplicate-${index}`} className={styles.languageItem}>
+                <span className={styles.flag}>{language.flag}</span>
+                <span className={styles.languageName}>{language.name}</span>
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

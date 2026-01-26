@@ -105,20 +105,22 @@ export const FeatureSet: React.FC = () => {
   ];
 
   return (
-    <section className={styles.featureSet}>
-      <h2 className={styles.subheading}>Key Features</h2>
-      <div className={styles.containerList}>
-        {features.map((feature) => (
-          <FeatureContainer
-            key={feature.id}
-            icon={feature.icon}
-            title={feature.title}
-            videoUrl={feature.videoUrl}
-            bullets={feature.bullets}
-          />
-        ))}
-      </div>
-    </section>
+    <div className={styles.featureSetWrapper}>
+      <section className={styles.featureSet}>
+        <h2 className={styles.subheading}>Key Features</h2>
+        <div className={styles.containerList}>
+          {features.map((feature) => (
+            <FeatureContainer
+              key={feature.id}
+              icon={feature.icon}
+              title={feature.title}
+              videoUrl={feature.videoUrl}
+              bullets={feature.bullets}
+            />
+          ))}
+        </div>
+      </section>
+    </div>
   );
 };
 

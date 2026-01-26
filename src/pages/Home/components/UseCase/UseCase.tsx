@@ -17,24 +17,26 @@ export const UseCase: React.FC = () => {
   ];
 
   return (
-    <section className={styles.useCase}>
-      <h2 className={styles.subheading}>Use cases</h2>
-      <div className={styles.scrollingContainer}>
-        <div className={styles.scrollingContent}>
-          {useCases.map((useCase, index) => (
-            <span key={index} className={styles.useCaseItem}>
-              {useCase}
-            </span>
-          ))}
-          {/* Duplicate for seamless loop */}
-          {useCases.map((useCase, index) => (
-            <span key={`duplicate-${index}`} className={styles.useCaseItem}>
-              {useCase}
-            </span>
-          ))}
+    <div className={styles.useCaseWrapper}>
+      <section className={styles.useCase}>
+        <h2 className={styles.subheading}>Use cases</h2>
+        <div className={styles.scrollingContainer}>
+          <div className={styles.scrollingContent}>
+            {useCases.map((useCase, index) => (
+              <span key={index} className={styles.useCaseItem}>
+                {useCase}
+              </span>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {useCases.map((useCase, index) => (
+              <span key={`duplicate-${index}`} className={styles.useCaseItem}>
+                {useCase}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

@@ -20,14 +20,17 @@ export const Home: React.FC = () => {
       <UseCase />
       <SupportedLanguages />
       <Support />
-      <div className={styles.chromeButtonContainer}>
-        <h2 className={styles.ctaHeading}>Ready to learn faster?</h2>
-        <p className={styles.ctaSubtext}>Start browsing smarter with AI-powered insights — it only takes a few seconds to get started.</p>
-        <ChromeButton />
-        <p className={styles.trustBadge}>
-          <span className={styles.trustIcon}>✨</span>
-          Join thousands of curious minds
-        </p>
+      <div className={styles.ctaWrapper}>
+        <div className={styles.chromeButtonContainer}>
+          <h2 className={styles.ctaHeading}>Ready to learn faster?</h2>
+          <p className={styles.ctaSubtext}>Start browsing smarter with AI-powered insights — it only takes a few seconds to get started.</p>
+          <ChromeButton />
+          <p className={styles.trustBadge}>
+            <span className={styles.trustIcon}>✨</span>
+            Join thousands of curious minds
+          </p>
+        </div>
+        <div className={styles.bottomGradient} />
       </div>
     </div>
   );

@@ -1,3 +1,7 @@
+.supportedLanguagesWrapper {
+  position: relative;
+}
+
 .supportedLanguages {
   padding: 2rem 4.5rem 4rem;
   max-width: 1400px;

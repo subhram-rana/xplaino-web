@@ -1,7 +1,13 @@
+.supportWrapper {
+  position: relative;
+}
+
 .support {
   padding: 4rem 4.5rem;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .container {

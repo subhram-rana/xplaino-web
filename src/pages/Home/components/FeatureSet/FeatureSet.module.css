@@ -1,9 +1,18 @@
+.featureSetWrapper {
+  position: relative;
+}
+
 .featureSet {
   padding: 2rem 4.5rem 4rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
+}
+
+/* Raise z-index when hovering over feature cards so expanded descriptions appear above other sections */
+.featureSet:has(.containerList:hover) {
+  z-index: 10;
 }
 
 .heading {

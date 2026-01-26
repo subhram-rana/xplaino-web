@@ -46,34 +46,36 @@ export const Support: React.FC = () => {
   ];
 
   return (
-    <section className={styles.support} ref={containerRef}>
-      <div className={styles.container}>
-        {/* Left side - Text content */}
-        <div className={styles.textSection}>
-          <h2 className={styles.heading}>
-            <span className={styles.icon}>💚</span>
-            We've got your back — always
-          </h2>
-          <ul className={styles.bulletList}>
-            {bullets.map((bullet, index) => (
-              <li key={index} className={styles.bulletItem}>{bullet}</li>
-            ))}
-          </ul>
-        </div>
+    <div className={styles.supportWrapper}>
+      <section className={styles.support} ref={containerRef}>
+        <div className={styles.container}>
+          {/* Left side - Text content */}
+          <div className={styles.textSection}>
+            <h2 className={styles.heading}>
+              <span className={styles.icon}>💚</span>
+              We've got your back — always
+            </h2>
+            <ul className={styles.bulletList}>
+              {bullets.map((bullet, index) => (
+                <li key={index} className={styles.bulletItem}>{bullet}</li>
+              ))}
+            </ul>
+          </div>
 
-        {/* Right side - Video */}
-        <div className={styles.videoSection}>
-          <video
-            ref={videoRef}
-            className={styles.video}
-            src=""
-            loop
-            muted
-            playsInline
-          />
+          {/* Right side - Video */}
+          <div className={styles.videoSection}>
+            <video
+              ref={videoRef}
+              className={styles.video}
+              src=""
+              loop
+              muted
+              playsInline
+            />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 
