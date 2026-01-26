@@ -74,6 +74,32 @@
   max-width: 480px;
 }
 
+.highlight {
+  background: linear-gradient(
+    90deg,
+    #0a5d52 0%,
+    #0d8070 25%,
+    #14b8a6 50%,
+    #0d8070 75%,
+    #0a5d52 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  animation: tealShimmer 3s linear infinite;
+}
+
+@keyframes tealShimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
 
 /* Responsive design */
 @media (max-width: 1024px) {

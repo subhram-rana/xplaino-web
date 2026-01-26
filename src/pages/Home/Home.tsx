@@ -19,8 +19,8 @@ export const Home: React.FC = () => {
       <UseCase />
       <SupportedLanguages />
       <div className={styles.chromeButtonContainer}>
-        <h2 className={styles.ctaHeading}>Ready to understand better?</h2>
-        <p className={styles.ctaSubtext}>Join thousands of users who are already browsing smarter with AI-powered insights.</p>
+        <h2 className={styles.ctaHeading}>Ready to learn faster?</h2>
+        <p className={styles.ctaSubtext}>Start browsing smarter with AI-powered insights — it only takes a few seconds to get started.</p>
         <ChromeButton />
       </div>
     </div>

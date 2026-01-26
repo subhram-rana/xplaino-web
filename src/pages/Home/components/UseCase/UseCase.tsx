@@ -18,8 +18,7 @@ export const UseCase: React.FC = () => {
 
   return (
     <section className={styles.useCase}>
-      <h2 className={styles.heading}>Use Cases</h2>
-      <p className={styles.subheading}>Built for every workflow</p>
+      <h2 className={styles.subheading}>Use cases</h2>
       <div className={styles.scrollingContainer}>
         <div className={styles.scrollingContent}>
           {useCases.map((useCase, index) => (

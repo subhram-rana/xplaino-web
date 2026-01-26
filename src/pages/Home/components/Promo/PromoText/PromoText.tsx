@@ -16,12 +16,14 @@ export const PromoText: React.FC = () => {
         <span>AI-Powered Browser Extension</span>
       </div>
       <h1 className={styles.heading}>
-        Understand better{' '}
-        <span className={styles.headingHighlight}>with AI</span>{' '}
+        Learn faster
+        <br />
+        <span className={styles.headingHighlight}>with AI</span>
+        <br />
         while browsing
       </h1>
       <p className={styles.description}>
-        Get AI-powered contextual explanations, summaries, and instant answers in any language—right as you browse
+        Get AI-powered contextual explanations, summaries, and instant answers in any language—<span className={styles.highlight}>right as you browse</span>
       </p>
       <ChromeButton />
     </div>

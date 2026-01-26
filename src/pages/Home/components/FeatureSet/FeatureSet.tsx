@@ -45,7 +45,7 @@ export const FeatureSet: React.FC = () => {
     {
       id: 4,
       icon: '📝',
-      title: 'Understand any text instantly',
+      title: 'Understand any text in depth instantly',
       videoUrl: '',
       bullets: [
         'Select any text or paragraph and get AI-powered contextual explanations — ask follow-up questions to dive deeper',
@@ -93,13 +93,13 @@ export const FeatureSet: React.FC = () => {
     {
       id: 8,
       icon: '🗂️',
-      title: 'Your personal knowledge hub',
+      title: 'One place for all your bookmarks',
       videoUrl: '',
       bullets: [
-        'Save words, passages, images, and webpage summaries — all organized in one powerful dashboard',
-        'Every saved item links back to its original source, so you never lose context',
-        'Generate a consolidated summary across all your saved passages and ask follow-up questions about everything at once',
-        'Build your own knowledge library over time and revisit your learning journey anytime'
+        'Stop juggling bookmarks across YouTube, Twitter, articles, and other platforms — save everything to one unified dashboard',
+        'No more switching tabs or hunting through different apps to find what you saved — it\'s all here',
+        'Organize words, passages, images, videos, and summaries in one powerful hub you fully control',
+        'Every saved item links back to its source, so you can jump to the original content in one click'
       ]
     },
     {
@@ -117,8 +117,7 @@ export const FeatureSet: React.FC = () => {
 
   return (
     <section className={styles.featureSet}>
-      <h2 className={styles.heading}>Features</h2>
-      <p className={styles.subheading}>Everything you need to understand better</p>
+      <h2 className={styles.subheading}>Key Features</h2>
       <div className={styles.containerList}>
         {features.map((feature, index) => (
           <FeatureContainer

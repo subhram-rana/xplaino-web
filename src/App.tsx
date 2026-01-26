@@ -53,14 +53,7 @@ const AppContent: React.FC<{ showMiniCoupon: boolean; setShowMiniCoupon: (show: 
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/pricing" element={<Pricing />} />
-              <Route 
-                path="/contact-us" 
-                element={
-                  <ProtectedRoute>
-                    <Contact />
-                  </ProtectedRoute>
-                } 
-              />
+              <Route path="/contact-us" element={<Contact />} />
               <Route 
                 path="/report-issue" 
                 element={
@@ -85,30 +78,9 @@ const AppContent: React.FC<{ showMiniCoupon: boolean; setShowMiniCoupon: (show: 
                   </ProtectedRoute>
                 } 
               />
-              <Route 
-                path="/terms-and-conditions" 
-                element={
-                  <ProtectedRoute>
-                    <TermsAndConditions />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/privacy-policy" 
-                element={
-                  <ProtectedRoute>
-                    <PrivacyPolicy />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/refund-policy" 
-                element={
-                  <ProtectedRoute>
-                    <RefundPolicy />
-                  </ProtectedRoute>
-                } 
-              />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route 
                 path="/user/dashboard" 
                 element={

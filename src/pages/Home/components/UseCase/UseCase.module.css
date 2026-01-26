@@ -1,5 +1,5 @@
 .useCase {
-  padding: 4rem 4.5rem;
+  padding: 4rem 4.5rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -94,7 +94,7 @@
 /* Responsive design */
 @media (max-width: 768px) {
   .useCase {
-    padding: 3rem 2rem;
+    padding: 3rem 2rem 1.5rem;
   }
 
   .heading {
@@ -118,7 +118,7 @@
 
 @media (max-width: 480px) {
   .useCase {
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 1rem;
   }
 
   .heading {

@@ -1,5 +1,5 @@
 .supportedLanguages {
-  padding: 4rem 4.5rem;
+  padding: 2rem 4.5rem 4rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -103,7 +103,7 @@
 /* Responsive design */
 @media (max-width: 768px) {
   .supportedLanguages {
-    padding: 3rem 2rem;
+    padding: 1.5rem 2rem 3rem;
   }
 
   .heading {
@@ -134,7 +134,7 @@
 
 @media (max-width: 480px) {
   .supportedLanguages {
-    padding: 2rem 1rem;
+    padding: 1rem 1rem 2rem;
   }
 
   .heading {
