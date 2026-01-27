@@ -14,7 +14,7 @@ export const FeatureSet: React.FC = () => {
       id: 1,
       icon: '⚡',
       title: 'Summarize any webpage in seconds',
-      videoUrl: '',
+      videoUrl: 'https://www.xplaino.com/website/page_summary.mp4',
       bullets: [
         'Get a concise AI-generated summary of any webpage — skip the fluff and grasp the key points instantly',
         'Each summary point links back to the exact section of the page it came from, so you can dive deeper when needed',
@@ -26,7 +26,7 @@ export const FeatureSet: React.FC = () => {
       id: 2,
       icon: '📝',
       title: 'Understand any text in depth instantly',
-      videoUrl: '',
+      videoUrl: 'https://www.xplaino.com/website/',
       bullets: [
         'Select any text or paragraph and get AI-powered contextual explanations — ask follow-up questions to dive deeper',
         'Translate selections to your native language or any language you choose',
@@ -38,7 +38,7 @@ export const FeatureSet: React.FC = () => {
       id: 3,
       icon: '🔄',
       title: 'Revisit what you just learned',
-      videoUrl: '',
+      videoUrl: 'https://www.xplaino.com/website/',
       bullets: [
         'All AI explanations for words, text, images, summaries, and translations are stored right in the UI',
         'Previous conversations stay intact while you explore new topics'
@@ -48,7 +48,7 @@ export const FeatureSet: React.FC = () => {
       id: 4,
       icon: '🖼️',
       title: 'Decode any image with AI',
-      videoUrl: '',
+      videoUrl: 'https://www.xplaino.com/website/image-mp4.mp4',
       bullets: [
         'Click on any image and get instant AI-powered explanations — understand diagrams, charts, infographics, and more',
         'Ask follow-up questions to explore details, context, or anything you\'re curious about',
@@ -60,7 +60,7 @@ export const FeatureSet: React.FC = () => {
       id: 5,
       icon: '🗂️',
       title: 'One place for all your bookmarks',
-      videoUrl: '',
+      videoUrl: 'https://www.xplaino.com/website/',
       bullets: [
         'Stop juggling bookmarks across YouTube, Twitter, articles, and other platforms — save everything to one unified dashboard',
         'No more switching tabs or hunting through different apps to find what you saved — it\'s all here',
@@ -72,7 +72,7 @@ export const FeatureSet: React.FC = () => {
       id: 6,
       icon: '📖',
       title: 'Master any word with one click',
-      videoUrl: '',
+      videoUrl: 'https://www.xplaino.com/website/',
       bullets: [
         'Get contextual explanations with real examples, synonyms, antonyms, and instant translation to your native language',
         'Ask follow-up questions about the word — in context or in general — with built-in smart prompts for detailed, clear answers',
@@ -84,7 +84,7 @@ export const FeatureSet: React.FC = () => {
       id: 7,
       icon: '🌐',
       title: 'Translate entire webpages instantly',
-      videoUrl: '',
+      videoUrl: 'https://www.xplaino.com/website/page_translate.mp4',
       bullets: [
         'Translate any webpage into your preferred language in seconds — no copy-pasting, no extra tabs',
         'Replace the original content seamlessly so the page feels like it was written in your native language',
