@@ -1,0 +1,186 @@
+.container {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.card {
+  background: var(--bg-white);
+  border-radius: 24px;
+  padding: 3rem 2.5rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 32px var(--shadow-black-10);
+}
+
+.iconContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.successIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.checkmark {
+  width: 40px;
+  height: 40px;
+  color: white;
+  animation: drawCheck 0.4s ease-out 0.2s forwards;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.title {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem 0;
+}
+
+.message {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+.transactionInfo {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.transactionLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.transactionId {
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 0.875rem 1.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid;
+}
+
+.primaryButton {
+  background-color: var(--teal);
+  color: var(--text-on-primary);
+  border-color: var(--teal);
+}
+
+.primaryButton:hover {
+  background-color: var(--button-hover-bg);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.secondaryButton {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-medium);
+}
+
+.secondaryButton:hover {
+  background-color: var(--button-hover-bg);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.helpText {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+/* Dark theme */
+[data-theme="dark"] .card {
+  border: 1px solid var(--border-light);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .card {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .successIcon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .checkmark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .message {
+    font-size: 0.9375rem;
+  }
+}

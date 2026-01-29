@@ -15,6 +15,7 @@ import { TermsAndConditions } from '@/pages/TermsAndConditions';
 import { PrivacyPolicy } from '@/pages/PrivacyPolicy';
 import { RefundPolicy } from '@/pages/RefundPolicy';
 import { Pricing } from '@/pages/Pricing';
+import { PaymentSuccess } from '@/pages/PaymentSuccess';
 import { AdminPricingPage } from '@/pages/Admin/AdminPricingPage';
 import { AdminTicketsPage } from '@/pages/Admin/AdminTicketsPage';
 import { AdminDomainsPage } from '@/pages/Admin/AdminDomainsPage';
@@ -55,6 +56,7 @@ const AppContent: React.FC<{ showMiniCoupon: boolean; setShowMiniCoupon: (show: 
               <Route path="/" element={<Home />} />
               <Route path="/pre-launch" element={<PreLaunch />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/contact-us" element={<Contact />} />
               <Route 
                 path="/report-issue" 

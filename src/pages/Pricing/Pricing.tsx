@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './Pricing.module.css';
 import { usePaddle } from '@/shared/hooks/usePaddle';
+import { useAuth } from '@/shared/hooks/useAuth';
 import type { FormattedPaddlePrice } from '@/shared/types/paddle.types';
 import { Toast } from '@/shared/components/Toast';
 import { ChromeButton } from '@/shared/components/ChromeButton';
+import { LoginModal } from '@/shared/components/LoginModal';
 
 /**
  * Pricing - Pricing page component displaying Paddle pricing plans
@@ -12,10 +14,34 @@ import { ChromeButton } from '@/shared/components/ChromeButton';
  */
 export const Pricing: React.FC = () => {
   const { prices, isLoading, error, openCheckout } = usePaddle();
+  const { isLoggedIn } = useAuth();
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isModalClosing, setIsModalClosing] = useState(false);
+  
+  // Store the pending price to checkout after login
+  const pendingCheckoutRef = useRef<FormattedPaddlePrice | null>(null);
 
-  const handleGetStarted = async (price: FormattedPaddlePrice) => {
+  // Close modal and proceed to checkout after successful login
+  useEffect(() => {
+    if (isLoggedIn && showLoginModal) {
+      setIsModalClosing(true);
+      setTimeout(() => {
+        setShowLoginModal(false);
+        setIsModalClosing(false);
+        
+        // If there's a pending checkout, proceed with it
+        if (pendingCheckoutRef.current) {
+          const price = pendingCheckoutRef.current;
+          pendingCheckoutRef.current = null;
+          handleCheckout(price);
+        }
+      }, 300);
+    }
+  }, [isLoggedIn, showLoginModal]);
+
+  const handleCheckout = async (price: FormattedPaddlePrice) => {
     try {
       setCheckoutLoading(price.id);
       await openCheckout(price.id);
@@ -25,6 +51,27 @@ export const Pricing: React.FC = () => {
     } finally {
       setCheckoutLoading(null);
     }
+  };
+
+  const handleGetStarted = async (price: FormattedPaddlePrice) => {
+    // Check if user is logged in
+    if (!isLoggedIn) {
+      pendingCheckoutRef.current = price;
+      setIsModalClosing(false);
+      setShowLoginModal(true);
+      return;
+    }
+
+    await handleCheckout(price);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalClosing(true);
+    setTimeout(() => {
+      setShowLoginModal(false);
+      setIsModalClosing(false);
+      pendingCheckoutRef.current = null;
+    }, 300);
   };
 
   const getButtonText = (price: FormattedPaddlePrice): string => {
@@ -160,6 +207,25 @@ export const Pricing: React.FC = () => {
           />
         )}
       </div>
+
+      {/* Login Modal with Overlay */}
+      {(showLoginModal || isModalClosing) && (
+        <>
+          <div 
+            className={`${styles.modalOverlay} ${isModalClosing ? styles.modalOverlayClosing : ''}`} 
+            onClick={handleCloseModal} 
+          />
+          <div 
+            className={`${styles.modalContainer} ${isModalClosing ? styles.modalContainerClosing : ''}`} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <LoginModal 
+              actionText="subscribe to a plan"
+              onClose={handleCloseModal}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
