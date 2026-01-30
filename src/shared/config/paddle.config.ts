@@ -13,12 +13,31 @@ export const paddleConfig = {
   // Environment: 'sandbox' for testing, 'production' for live
   environment: (import.meta.env.VITE_PADDLE_ENVIRONMENT || 'sandbox') as 'sandbox' | 'production',
   
-  // Price IDs from your Paddle catalog
-  // These are fetched dynamically, but you can define known IDs here for reference
+  // Price IDs organized by billing period
   priceIds: {
-    pro: 'pri_01kfx4f260av038gdqft568z2d',      // $30/month
-    ultra: 'pri_01kfx4hw8gpfzbe09w82m54ekk',    // $40/month
+    monthly: {
+      pro: import.meta.env.VITE_PADDLE_PRICE_PRO_MONTHLY || '',
+      ultra: import.meta.env.VITE_PADDLE_PRICE_ULTRA_MONTHLY || '',
+    },
+    yearly: {
+      pro: import.meta.env.VITE_PADDLE_PRICE_PRO_YEARLY || '',
+      ultra: import.meta.env.VITE_PADDLE_PRICE_ULTRA_YEARLY || '',
+    },
+  },
+  
+  // Discount IDs for each price (each discount is restricted to its specific price)
+  discountIds: {
+    monthly: {
+      pro: import.meta.env.VITE_PADDLE_DISCOUNT_PRO_MONTHLY || '',
+      ultra: import.meta.env.VITE_PADDLE_DISCOUNT_ULTRA_MONTHLY || '',
+    },
+    yearly: {
+      pro: import.meta.env.VITE_PADDLE_DISCOUNT_PRO_YEARLY || '',
+      ultra: import.meta.env.VITE_PADDLE_DISCOUNT_ULTRA_YEARLY || '',
+    },
   },
 } as const;
 
 export type PaddleEnvironment = typeof paddleConfig.environment;
+export type BillingPeriod = 'monthly' | 'yearly';
+export type PlanType = 'pro' | 'ultra';

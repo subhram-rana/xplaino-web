@@ -2,7 +2,7 @@
  * usePaddle Hook
  * 
  * React hook for Paddle.js integration.
- * Provides price fetching and checkout functionality.
+ * Provides price fetching and checkout functionality with monthly/yearly pricing support.
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -26,13 +26,14 @@ interface UsePaddleReturn {
   isLoading: boolean;
   /** Error message if any */
   error: string | null;
-  /** Formatted prices for display */
-  prices: FormattedPaddlePrice[];
-  /** Raw Paddle prices */
-  rawPrices: PaddlePrice[];
+  /** Monthly formatted prices (Pro, Ultra) */
+  monthlyPrices: FormattedPaddlePrice[];
+  /** Yearly formatted prices (Pro, Ultra) */
+  yearlyPrices: FormattedPaddlePrice[];
   /** Open checkout for a specific price */
   openCheckout: (
     priceId: string, 
+    discountId?: string,
     settings?: PaddleCheckoutSettings,
     customer?: PaddleCheckoutCustomer
   ) => Promise<void>;
@@ -41,8 +42,6 @@ interface UsePaddleReturn {
 }
 
 interface UsePaddleOptions {
-  /** Price IDs to fetch (optional, fetches all if not provided) */
-  priceIds?: string[];
   /** Auto-fetch prices on mount */
   autoFetch?: boolean;
 }
@@ -90,17 +89,116 @@ interface PaddlePricePreviewData {
 }
 
 /**
- * Hook for Paddle.js integration
+ * Fetch a single price with its discount
+ */
+const fetchSinglePrice = async (
+  paddle: Paddle,
+  priceId: string,
+  discountId?: string
+): Promise<FormattedPaddlePrice | null> => {
+  if (!priceId) return null;
+
+  try {
+    const pricePreviewResult = await paddle.PricePreview({
+      items: [{ priceId, quantity: 1 }],
+      ...(discountId && { discountId }),
+    });
+
+    const data = pricePreviewResult?.data as PaddlePricePreviewData | undefined;
+
+    if (data?.details?.lineItems && data.details.lineItems.length > 0) {
+      const item = data.details.lineItems[0];
+      const price = item.price;
+      const product = item.product;
+      const currencyCode = data.currencyCode;
+
+      // Parse amounts from totals (in smallest currency unit)
+      // Using subtotal (before tax) for display
+      const subtotalInSmallestUnit = parseInt(item.totals.subtotal, 10);
+      const discountInSmallestUnit = parseInt(item.totals.discount, 10);
+
+      const originalAmount = subtotalInSmallestUnit / 100;
+      const discountAmount = discountInSmallestUnit / 100;
+      // Final amount is subtotal minus discount (excluding tax/GST)
+      const finalAmount = (subtotalInSmallestUnit - discountInSmallestUnit) / 100;
+
+      // Check if discount is applied
+      const hasDiscount = discountAmount > 0;
+
+      // Calculate discount percentage
+      const discountPercentage = hasDiscount && originalAmount > 0
+        ? Math.round((discountAmount / originalAmount) * 100)
+        : null;
+
+      const billingInterval = price.billingCycle?.interval || 'month';
+      const billingFrequency = price.billingCycle?.frequency || 1;
+
+      // Format price without tax - use subtotal for display
+      // If discount applied, manually format the discounted price
+      const currencySymbol = getCurrencySymbol(currencyCode);
+      const formattedFinalPrice = hasDiscount 
+        ? `${currencySymbol}${Math.floor(finalAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : `${currencySymbol}${Math.floor(parseFloat(item.totals.subtotal) / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
+      // Calculate monthly equivalents for yearly pricing
+      const isYearly = billingInterval === 'year';
+      const monthlyEquivalent = isYearly ? Math.floor(finalAmount / 12) : null;
+      const originalMonthlyEquivalent = isYearly ? Math.floor(originalAmount / 12) : null;
+      const formattedMonthlyEquivalent = isYearly 
+        ? `${currencySymbol}${Math.floor(finalAmount / 12).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : null;
+      const formattedOriginalMonthlyEquivalent = isYearly 
+        ? `${currencySymbol}${Math.floor(originalAmount / 12).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : null;
+
+      return {
+        id: price.id,
+        name: price.name || product?.name || 'Unnamed Plan',
+        description: price.description || product?.description || '',
+        amount: finalAmount,
+        currencyCode,
+        currencySymbol,
+        billingInterval,
+        billingFrequency,
+        formattedPrice: formattedFinalPrice,
+        formattedBillingCycle: formatBillingCycle(billingInterval, billingFrequency),
+        product: product ? {
+          id: product.id,
+          name: product.name,
+          description: product.description || '',
+          imageUrl: product.imageUrl,
+        } : null,
+        hasDiscount,
+        originalAmount: hasDiscount ? originalAmount : null,
+        discountAmount: hasDiscount ? discountAmount : null,
+        discountPercentage,
+        formattedOriginalPrice: hasDiscount ? `${currencySymbol}${Math.floor(originalAmount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : null,
+        // Monthly equivalent fields for yearly pricing
+        monthlyEquivalent,
+        formattedMonthlyEquivalent,
+        originalMonthlyEquivalent,
+        formattedOriginalMonthlyEquivalent,
+      };
+    }
+  } catch (err) {
+    console.error(`Failed to fetch price ${priceId}:`, err);
+  }
+
+  return null;
+};
+
+/**
+ * Hook for Paddle.js integration with monthly/yearly pricing
  */
 export const usePaddle = (options: UsePaddleOptions = {}): UsePaddleReturn => {
-  const { priceIds, autoFetch = true } = options;
+  const { autoFetch = true } = options;
   
   const [paddle, setPaddle] = useState<Paddle | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [prices, setPrices] = useState<FormattedPaddlePrice[]>([]);
-  const [rawPrices, setRawPrices] = useState<PaddlePrice[]>([]);
+  const [monthlyPrices, setMonthlyPrices] = useState<FormattedPaddlePrice[]>([]);
+  const [yearlyPrices, setYearlyPrices] = useState<FormattedPaddlePrice[]>([]);
 
   // Initialize Paddle
   useEffect(() => {
@@ -122,7 +220,7 @@ export const usePaddle = (options: UsePaddleOptions = {}): UsePaddleReturn => {
     init();
   }, []);
 
-  // Fetch prices using PricePreview
+  // Fetch all prices (monthly and yearly)
   const fetchPrices = useCallback(async () => {
     if (!paddle) {
       return;
@@ -132,71 +230,36 @@ export const usePaddle = (options: UsePaddleOptions = {}): UsePaddleReturn => {
     setError(null);
 
     try {
-      // Get price IDs to fetch
-      const idsToFetch = priceIds || Object.values(paddleConfig.priceIds);
-      
-      if (idsToFetch.length === 0) {
-        setPrices([]);
-        setRawPrices([]);
-        setIsLoading(false);
-        return;
-      }
+      const { priceIds, discountIds } = paddleConfig;
 
-      // Use Paddle PricePreview to get localized prices
-      const pricePreviewResult = await paddle.PricePreview({
-        items: idsToFetch.map(id => ({ priceId: id, quantity: 1 })),
-      });
+      // Fetch all 4 prices in parallel, each with its specific discount
+      const [proMonthly, ultraMonthly, proYearly, ultraYearly] = await Promise.all([
+        fetchSinglePrice(paddle, priceIds.monthly.pro, discountIds.monthly.pro),
+        fetchSinglePrice(paddle, priceIds.monthly.ultra, discountIds.monthly.ultra),
+        fetchSinglePrice(paddle, priceIds.yearly.pro, discountIds.yearly.pro),
+        fetchSinglePrice(paddle, priceIds.yearly.ultra, discountIds.yearly.ultra),
+      ]);
 
-      // Paddle.js SDK returns camelCase data
-      const data = pricePreviewResult?.data as PaddlePricePreviewData | undefined;
+      // Build monthly prices array (filter out nulls)
+      const monthly: FormattedPaddlePrice[] = [];
+      if (proMonthly) monthly.push(proMonthly);
+      if (ultraMonthly) monthly.push(ultraMonthly);
 
-      if (data?.details?.lineItems && data.details.lineItems.length > 0) {
-        const lineItems = data.details.lineItems;
-        const currencyCode = data.currencyCode;
+      // Build yearly prices array (filter out nulls)
+      const yearly: FormattedPaddlePrice[] = [];
+      if (proYearly) yearly.push(proYearly);
+      if (ultraYearly) yearly.push(ultraYearly);
 
-        // Map the preview results to our format
-        const formattedPrices: FormattedPaddlePrice[] = lineItems.map(item => {
-          const price = item.price;
-          const product = item.product; // product is sibling of price, not nested
-          
-          // Parse the amount from totals (in smallest currency unit)
-          const amountInSmallestUnit = parseInt(item.totals.subtotal, 10);
-          const amount = amountInSmallestUnit / 100;
-          
-          const billingInterval = price.billingCycle?.interval || 'month';
-          const billingFrequency = price.billingCycle?.frequency || 1;
+      // Sort by amount (ascending)
+      monthly.sort((a, b) => a.amount - b.amount);
+      yearly.sort((a, b) => a.amount - b.amount);
 
-          return {
-            id: price.id,
-            name: price.name || product?.name || 'Unnamed Plan',
-            description: price.description || product?.description || '',
-            amount,
-            currencyCode,
-            currencySymbol: getCurrencySymbol(currencyCode),
-            billingInterval,
-            billingFrequency,
-            // Use Paddle's pre-formatted price (includes local currency symbol)
-            formattedPrice: item.formattedTotals.subtotal,
-            formattedBillingCycle: formatBillingCycle(billingInterval, billingFrequency),
-            product: product ? {
-              id: product.id,
-              name: product.name,
-              description: product.description || '',
-              imageUrl: product.imageUrl,
-            } : null,
-          };
-        });
+      setMonthlyPrices(monthly);
+      setYearlyPrices(yearly);
 
-        // Sort by amount (ascending)
-        formattedPrices.sort((a, b) => a.amount - b.amount);
-
-        setPrices(formattedPrices);
-        
-        // Store raw prices for reference
-        setRawPrices(lineItems.map(item => item.price as unknown as PaddlePrice));
-      } else {
-        console.error('Unexpected Paddle response structure:', pricePreviewResult);
-        setError('Failed to load pricing. Please refresh the page.');
+      if (monthly.length === 0 && yearly.length === 0) {
+        // No prices configured - this is OK for free tier
+        console.log('No paid prices configured');
       }
     } catch (err) {
       console.error('Failed to fetch prices:', err);
@@ -204,7 +267,7 @@ export const usePaddle = (options: UsePaddleOptions = {}): UsePaddleReturn => {
     } finally {
       setIsLoading(false);
     }
-  }, [paddle, priceIds]);
+  }, [paddle]);
 
   // Auto-fetch prices when paddle is initialized
   useEffect(() => {
@@ -216,11 +279,12 @@ export const usePaddle = (options: UsePaddleOptions = {}): UsePaddleReturn => {
   // Open checkout handler
   const handleOpenCheckout = useCallback(async (
     priceId: string,
+    discountId?: string,
     settings?: PaddleCheckoutSettings,
     customer?: PaddleCheckoutCustomer
   ) => {
     try {
-      await openCheckoutForPrice(priceId, 1, settings, customer);
+      await openCheckoutForPrice(priceId, 1, settings, customer, discountId);
     } catch (err) {
       console.error('Checkout error:', err);
       throw err;
@@ -231,8 +295,8 @@ export const usePaddle = (options: UsePaddleOptions = {}): UsePaddleReturn => {
     isInitialized,
     isLoading,
     error,
-    prices,
-    rawPrices,
+    monthlyPrices,
+    yearlyPrices,
     openCheckout: handleOpenCheckout,
     refreshPrices: fetchPrices,
   };

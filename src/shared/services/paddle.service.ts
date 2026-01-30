@@ -121,7 +121,8 @@ export const formatPaddlePrice = (price: PaddlePrice): FormattedPaddlePrice => {
 export const openCheckout = async (
   items: PaddleCheckoutItem[],
   settings?: PaddleCheckoutSettings,
-  customer?: PaddleCheckoutCustomer
+  customer?: PaddleCheckoutCustomer,
+  discountId?: string
 ): Promise<void> => {
   const paddle = await getPaddle();
   
@@ -133,6 +134,7 @@ export const openCheckout = async (
   try {
     paddle.Checkout.open({
       items,
+      ...(discountId && { discountId }),
       settings: {
         displayMode: settings?.displayMode || 'overlay',
         theme: settings?.theme || 'light',
@@ -160,11 +162,13 @@ export const openCheckoutForPrice = async (
   priceId: string,
   quantity: number = 1,
   settings?: PaddleCheckoutSettings,
-  customer?: PaddleCheckoutCustomer
+  customer?: PaddleCheckoutCustomer,
+  discountId?: string
 ): Promise<void> => {
   return openCheckout(
     [{ priceId, quantity }],
     settings,
-    customer
+    customer,
+    discountId
   );
 };

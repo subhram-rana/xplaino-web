@@ -83,12 +83,12 @@ export interface FormattedPaddlePrice {
   id: string;
   name: string;
   description: string;
-  amount: number; // Converted from smallest currency unit to main unit
+  amount: number; // Converted from smallest currency unit to main unit (after discount if applied)
   currencyCode: string;
   currencySymbol: string;
   billingInterval: string;
   billingFrequency: number;
-  formattedPrice: string; // Pre-formatted by Paddle, e.g., "₹2,335.26" or "$30.00"
+  formattedPrice: string; // Pre-formatted by Paddle, e.g., "₹2,335.26" or "$30.00" (after discount)
   formattedBillingCycle: string; // e.g., "per month"
   product: {
     id: string;
@@ -96,6 +96,17 @@ export interface FormattedPaddlePrice {
     description: string;
     imageUrl: string | null;
   } | null;
+  // Discount fields
+  hasDiscount: boolean;
+  originalAmount: number | null; // Original price before discount
+  discountAmount: number | null; // Amount saved
+  discountPercentage: number | null; // e.g., 20 for 20%
+  formattedOriginalPrice: string | null; // Pre-formatted original price, e.g., "$40.00"
+  // Monthly equivalent for yearly pricing
+  monthlyEquivalent: number | null; // Final price divided by 12 for yearly plans
+  formattedMonthlyEquivalent: string | null; // e.g., "$25.00"
+  originalMonthlyEquivalent: number | null; // Original price divided by 12 for yearly plans
+  formattedOriginalMonthlyEquivalent: string | null; // e.g., "$30.00"
 }
 
 /**

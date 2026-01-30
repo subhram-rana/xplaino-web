@@ -1,20 +1,69 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import styles from './Pricing.module.css';
 import { usePaddle } from '@/shared/hooks/usePaddle';
 import { useAuth } from '@/shared/hooks/useAuth';
 import type { FormattedPaddlePrice } from '@/shared/types/paddle.types';
+import { paddleConfig } from '@/shared/config/paddle.config';
 import { Toast } from '@/shared/components/Toast';
-import { ChromeButton } from '@/shared/components/ChromeButton';
 import { LoginModal } from '@/shared/components/LoginModal';
+
+type BillingPeriod = 'monthly' | 'yearly';
+
+// Features for free trial
+const freeTrialFeatures = [
+  '10 page summaries',
+  '50 text explanations',
+  '10 image explanations and 20 chats wiht image',
+  'Results in your 60+ languages',
+  '5 Page translations',
+  '50 Contextual word meanings & vocabulary',
+  'Revisit your reading history',
+  'Bookmark anything with source links - Page, summary, text, image, word',
+  'Create notes from saved content & chat with them',
+  'Priority support via tickets'
+];
+
+// Features for Ultra plan
+const ultraFeatures = [
+  'Unlimited page summaries & AI chat',
+  'Unlimited text explanations & AI chat',
+  'Unlimited image explanations & AI chat',
+  'Results in your native language',
+  'Unlimited Page translations in 60+ languages',
+  'Unlimited Contextual word meanings & vocabulary',
+  'Revisit your reading history',
+  'Unlimited bookmark with source links - Page, summary, text, image, word with contextual meaning',
+  'Unlimited create notes from saved content & chat with them',
+  'Priority support via tickets at anytime'
+];
+
+// Features for Plus plan
+const plusFeatures = [
+  'Unlimited page summaries & AI chat',
+  'Unlimited text explanations & AI chat',
+  'Unlimited image explanations & AI chat',
+  'Page translations in 60+ languages',
+  'Contextual word meanings & vocabulary',
+  'Revisit your reading history',
+  'Bookmark anything with source links',
+  'Create notes & chat with them',
+];
+
+// Helper to extract base plan name (remove Monthly/Yearly suffix)
+const getBasePlanName = (name: string): string => {
+  return name.replace(/\s*(Monthly|Yearly)\s*/gi, '').trim();
+};
 
 /**
  * Pricing - Pricing page component displaying Paddle pricing plans
+ * with monthly/yearly toggle and Free Trial card
  * 
  * @returns JSX element
  */
 export const Pricing: React.FC = () => {
-  const { prices, isLoading, error, openCheckout } = usePaddle();
+  const { monthlyPrices, yearlyPrices, isLoading, error, openCheckout } = usePaddle();
   const { isLoggedIn } = useAuth();
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('yearly');
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -22,6 +71,32 @@ export const Pricing: React.FC = () => {
   
   // Store the pending price to checkout after login
   const pendingCheckoutRef = useRef<FormattedPaddlePrice | null>(null);
+  // Track if Free Trial card triggered the login modal
+  const freeTrialLoginRef = useRef<boolean>(false);
+
+  // Get the current prices based on billing period
+  const currentPrices = billingPeriod === 'monthly' ? monthlyPrices : yearlyPrices;
+
+  // Group and sort plans dynamically by price (highest first = featured)
+  const sortedPlans = useMemo(() => {
+    // Sort prices by amount (highest first)
+    const sorted = [...currentPrices].sort((a, b) => b.amount - a.amount);
+    return sorted;
+  }, [currentPrices]);
+
+  // Get discount ID for a price based on its price ID
+  const getDiscountIdForPrice = (price: FormattedPaddlePrice): string | undefined => {
+    const { discountIds, priceIds } = paddleConfig;
+    
+    if (billingPeriod === 'monthly') {
+      if (price.id === priceIds.monthly.pro) return discountIds.monthly.pro || undefined;
+      if (price.id === priceIds.monthly.ultra) return discountIds.monthly.ultra || undefined;
+    } else {
+      if (price.id === priceIds.yearly.pro) return discountIds.yearly.pro || undefined;
+      if (price.id === priceIds.yearly.ultra) return discountIds.yearly.ultra || undefined;
+    }
+    return undefined;
+  };
 
   // Close modal and proceed to checkout after successful login
   useEffect(() => {
@@ -31,12 +106,13 @@ export const Pricing: React.FC = () => {
         setShowLoginModal(false);
         setIsModalClosing(false);
         
-        // If there's a pending checkout, proceed with it
-        if (pendingCheckoutRef.current) {
+        // If there's a pending checkout (not from Free Trial), proceed with it
+        if (pendingCheckoutRef.current && !freeTrialLoginRef.current) {
           const price = pendingCheckoutRef.current;
           pendingCheckoutRef.current = null;
           handleCheckout(price);
         }
+        freeTrialLoginRef.current = false;
       }, 300);
     }
   }, [isLoggedIn, showLoginModal]);
@@ -44,7 +120,8 @@ export const Pricing: React.FC = () => {
   const handleCheckout = async (price: FormattedPaddlePrice) => {
     try {
       setCheckoutLoading(price.id);
-      await openCheckout(price.id);
+      const discountId = getDiscountIdForPrice(price);
+      await openCheckout(price.id, discountId);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to open checkout';
       setToast({ message: errorMessage, type: 'error' });
@@ -57,6 +134,7 @@ export const Pricing: React.FC = () => {
     // Check if user is logged in
     if (!isLoggedIn) {
       pendingCheckoutRef.current = price;
+      freeTrialLoginRef.current = false;
       setIsModalClosing(false);
       setShowLoginModal(true);
       return;
@@ -65,12 +143,24 @@ export const Pricing: React.FC = () => {
     await handleCheckout(price);
   };
 
+  const handleFreeTrialClick = () => {
+    // For non-logged-in users, show login modal
+    if (!isLoggedIn) {
+      freeTrialLoginRef.current = true;
+      pendingCheckoutRef.current = null;
+      setIsModalClosing(false);
+      setShowLoginModal(true);
+    }
+    // For logged-in users, button is disabled
+  };
+
   const handleCloseModal = () => {
     setIsModalClosing(true);
     setTimeout(() => {
       setShowLoginModal(false);
       setIsModalClosing(false);
       pendingCheckoutRef.current = null;
+      freeTrialLoginRef.current = false;
     }, 300);
   };
 
@@ -78,22 +168,7 @@ export const Pricing: React.FC = () => {
     if (checkoutLoading === price.id) {
       return 'Loading...';
     }
-    const name = price.name.toLowerCase();
-    if (name.includes('enterprise')) {
-      return 'Contact us';
-    }
-    if (price.amount === 0) {
-      return 'Get started for free';
-    }
     return 'Get started';
-  };
-
-  const getButtonClass = (index: number): string => {
-    // Middle card or second card gets primary button style
-    if (index === 1) {
-      return styles.buttonPrimary;
-    }
-    return styles.buttonSecondary;
   };
 
   if (isLoading) {
@@ -116,83 +191,190 @@ export const Pricing: React.FC = () => {
     );
   }
 
-  if (prices.length === 0) {
-    return (
-      <div className={styles.pricingEmpty}>
-        <div className={styles.emptyState}>
-          <p className={styles.emptyMessage}>
-            <strong style={{ fontWeight: 800 }}>Free while in beta</strong>
-            <br />
-            <span style={{ fontSize: '0.85em', fontStyle: 'italic' }}>Join thousands of early adopters before pricing kicks in!</span>
-          </p>
-          <div className={styles.chromeButtonContainer}>
-            <ChromeButton />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.pricing}>
       <div className={styles.container}>
-        <h1 className={styles.heading}>Pricing</h1>
+        <h1 className={styles.heading}>Don't Get Left Behind in the Era of AI</h1>
+        <p className={styles.tagline}>Learn faster as you browse with your AI explainer. Save everything — links, images, text — all in one place, accessible anywhere.</p>
+        <p className={styles.subheading}>You found us at the right time. Exclusive launch discounts won't last forever.</p>
+
+        {/* Billing Period Toggle */}
+        {(() => {
+          // Calculate max yearly discount
+          const maxYearlyDiscount = Math.max(
+            ...yearlyPrices
+              .filter(p => p.discountPercentage)
+              .map(p => p.discountPercentage || 0)
+          );
+          
+          return (
+            <div className={styles.billingToggle}>
+              <button
+                className={`${styles.toggleButton} ${billingPeriod === 'yearly' ? styles.toggleButtonActive : ''}`}
+                onClick={() => setBillingPeriod('yearly')}
+              >
+                Yearly
+                {maxYearlyDiscount > 0 && (
+                  <span className={styles.toggleDiscount}>{maxYearlyDiscount}% OFF</span>
+                )}
+              </button>
+              <button
+                className={`${styles.toggleButton} ${billingPeriod === 'monthly' ? styles.toggleButtonActive : ''}`}
+                onClick={() => setBillingPeriod('monthly')}
+              >
+                Monthly
+              </button>
+            </div>
+          );
+        })()}
 
         <div className={styles.cards}>
-          {prices.map((price, index) => {
-            const isMiddleCard = index === 1;
+          {/* Free Trial Card */}
+          <div className={`${styles.card} ${styles.cardFree}`}>
+            <div className={styles.cardTitleContainer}>
+              <h2 className={styles.cardTitle}>Free Trial</h2>
+            </div>
+            
+            <div className={styles.price}>
+              <div className={styles.priceContainer}>
+                <div className={styles.priceAmount}>{currentPrices[0]?.currencySymbol || '$'}0</div>
+                <div className={styles.pricePeriod}>forever</div>
+              </div>
+            </div>
+
+            <p className={styles.description}>
+              Perfect for trying out the platform.
+            </p>
+
+            <button 
+              className={`${styles.buttonSecondary} ${isLoggedIn ? styles.disabledButton : ''}`}
+              onClick={handleFreeTrialClick}
+              disabled={isLoggedIn}
+            >
+              {isLoggedIn ? 'Current Plan' : 'Get started'}
+            </button>
+
+            {/* Features List */}
+            <ul className={styles.featuresList}>
+              {freeTrialFeatures.map((feature, idx) => {
+                // First 7 features (up to 'Revisit your reading history') get teal dot
+                const isIncluded = idx <= 6;
+                return (
+                  <li key={idx} className={`${styles.featureItem} ${!isIncluded ? styles.featureExcluded : ''}`}>
+                    {isIncluded ? (
+                      <span className={styles.featureDot}>•</span>
+                    ) : (
+                      <svg className={styles.featureCross} width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/>
+                      </svg>
+                    )}
+                    {feature}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Dynamic Paid Plan Cards - sorted by price (highest first = featured) */}
+          {sortedPlans.map((price, index) => {
+            const isYearly = price.billingInterval === 'year';
+            const isFeatured = index === 0; // Highest priced plan is featured
+            const planName = getBasePlanName(price.name);
             
             return (
               <div 
                 key={price.id} 
-                className={`${styles.card} ${isMiddleCard ? styles.cardMiddle : ''}`}
+                className={`${styles.card} ${isFeatured ? styles.cardUltra : ''}`}
               >
-                {/* Product Image */}
-                {price.product?.imageUrl && (
-                  <div className={styles.productImageContainer}>
-                    <img 
-                      src={price.product.imageUrl} 
-                      alt={price.product.name}
-                      className={styles.productImage}
-                    />
-                  </div>
-                )}
-
-                {/* Plan Name */}
+                {/* Most Popular Badge - only for featured plan */}
+                {isFeatured && <div className={styles.popularBadge}>Most Popular</div>}
+                
+                {/* Plan Name with Discount Badge */}
                 <div className={styles.cardTitleContainer}>
-                  <h2 className={styles.cardTitle}>{price.name}</h2>
+                  <h2 className={styles.cardTitle}>{planName}</h2>
+                  {price.hasDiscount && price.discountPercentage && (price.discountPercentage ?? 0) > 0 && (
+                    <span className={styles.titleDiscountBadge}>
+                      {price.discountPercentage}% OFF
+                    </span>
+                  )}
                 </div>
                 
                 {/* Price Display */}
                 <div className={styles.price}>
                   <div className={styles.priceContainer}>
-                    <div className={styles.priceAmount}>
-                      {price.formattedPrice}
-                    </div>
-                    <div className={styles.pricePeriod}>
-                      {price.formattedBillingCycle}
-                    </div>
+                    {/* For yearly: show monthly equivalent prices */}
+                    {isYearly ? (
+                      <>
+                        <div className={styles.priceRow}>
+                          {price.hasDiscount && (price.discountPercentage ?? 0) > 0 && price.formattedOriginalMonthlyEquivalent && (
+                            <>
+                              <span className={styles.originalPrice}>
+                                {price.formattedOriginalMonthlyEquivalent}
+                              </span>
+                              <span className={styles.priceArrow}>→</span>
+                            </>
+                          )}
+                          <span className={styles.priceAmount}>
+                            {price.formattedMonthlyEquivalent}
+                          </span>
+                        </div>
+                        <div className={styles.pricePeriod}>per month</div>
+                        <div className={styles.billedAnnually}>billed annually · {price.description}</div>
+                      </>
+                    ) : (
+                      <>
+                        <div className={styles.priceRow}>
+                          {price.hasDiscount && (price.discountPercentage ?? 0) > 0 && price.formattedOriginalPrice && (
+                            <>
+                              <span className={styles.originalPrice}>
+                                {price.formattedOriginalPrice}
+                              </span>
+                              <span className={styles.priceArrow}>→</span>
+                            </>
+                          )}
+                          <span className={styles.priceAmount}>
+                            {price.formattedPrice}
+                          </span>
+                        </div>
+                        <div className={styles.pricePeriod}>
+                          {price.formattedBillingCycle}
+                        </div>
+                        <div className={styles.billedAnnually}>{price.description}</div>
+                      </>
+                    )}
                   </div>
                 </div>
 
-                {/* Description */}
-                <p className={styles.description}>{price.description}</p>
-
-                {/* CTA Button */}
+                {/* CTA Button - Primary for featured, Secondary for others */}
                 <button 
-                  className={getButtonClass(index)}
+                  className={isFeatured ? styles.buttonPrimary : styles.buttonSecondary}
                   onClick={() => handleGetStarted(price)}
                   disabled={checkoutLoading === price.id}
                 >
                   {getButtonText(price)}
                 </button>
 
-                {/* Product Info */}
-                {price.product && (
-                  <div className={styles.productInfo}>
-                    <span className={styles.productName}>{price.product.name}</span>
-                  </div>
-                )}
+                {/* Features List */}
+                <ul className={styles.featuresList}>
+                  {(isFeatured ? ultraFeatures : plusFeatures).map((feature, idx) => {
+                    // For Plus plan: last 2 features (index 6+) get cross icon
+                    const isExcluded = !isFeatured && idx >= 6;
+                    return (
+                      <li key={idx} className={`${styles.featureItem} ${isExcluded ? styles.featureExcluded : ''}`}>
+                        {isExcluded ? (
+                          <svg className={styles.featureCross} width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/>
+                          </svg>
+                        ) : (
+                          <svg className={styles.featureIcon} width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/>
+                          </svg>
+                        )}
+                        {feature}
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             );
           })}
@@ -220,7 +402,7 @@ export const Pricing: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <LoginModal 
-              actionText="subscribe to a plan"
+              actionText={freeTrialLoginRef.current ? "start your free trial" : "subscribe to a plan"}
               onClose={handleCloseModal}
             />
           </div>
