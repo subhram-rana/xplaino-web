@@ -137,6 +137,7 @@ export const openCheckout = async (
       ...(discountId && { discountId }),
       settings: {
         displayMode: settings?.displayMode || 'overlay',
+        variant: 'one-page',
         theme: settings?.theme || 'light',
         locale: settings?.locale,
         allowLogout: settings?.allowLogout ?? true,

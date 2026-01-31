@@ -124,6 +124,7 @@ export interface PaddleCheckoutSettings {
   displayMode?: 'overlay' | 'inline';
   theme?: 'light' | 'dark';
   locale?: string;
+  variant?: 'one-page' | 'multi-page';
   allowLogout?: boolean;
   showAddDiscounts?: boolean;
   showAddTaxId?: boolean;

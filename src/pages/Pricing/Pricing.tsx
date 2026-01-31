@@ -13,7 +13,7 @@ type BillingPeriod = 'monthly' | 'yearly';
 const freeTrialFeatures = [
   '10 page summaries',
   '50 text explanations',
-  '10 image explanations and 20 chats wiht image',
+  '10 image explanations and 20 chats with image',
   'Results in your 60+ languages',
   '5 Page translations',
   '50 Contextual word meanings & vocabulary',
@@ -254,6 +254,9 @@ export const Pricing: React.FC = () => {
               {isLoggedIn ? 'Current Plan' : 'Get started'}
             </button>
 
+            {/* No credit card required text */}
+            <p className={styles.cancelAnytime}>No card required</p>
+
             {/* Features List */}
             <ul className={styles.featuresList}>
               {freeTrialFeatures.map((feature, idx) => {
@@ -353,6 +356,9 @@ export const Pricing: React.FC = () => {
                 >
                   {getButtonText(price)}
                 </button>
+
+                {/* Cancel anytime text */}
+                <p className={styles.cancelAnytime}>Cancel anytime</p>
 
                 {/* Features List */}
                 <ul className={styles.featuresList}>

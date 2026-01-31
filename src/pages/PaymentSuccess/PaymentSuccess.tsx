@@ -20,8 +20,8 @@ export const PaymentSuccess: React.FC = () => {
     navigate('/user/dashboard');
   };
 
-  const handleGoHome = () => {
-    navigate('/');
+  const handleGoToAccount = () => {
+    navigate('/user/account');
   };
 
   return (
@@ -64,20 +64,45 @@ export const PaymentSuccess: React.FC = () => {
             className={styles.primaryButton}
             onClick={handleGoToDashboard}
           >
-            Go to Dashboard
+            <svg 
+              className={styles.buttonIcon}
+              width="18" 
+              height="18" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
           </button>
           <button 
             className={styles.secondaryButton}
-            onClick={handleGoHome}
+            onClick={handleGoToAccount}
           >
-            Back to Home
+            <svg 
+              className={styles.buttonIcon}
+              width="18" 
+              height="18" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            My Account
           </button>
         </div>
-
-        {/* Help Text */}
-        <p className={styles.helpText}>
-          A confirmation email has been sent to your registered email address.
-        </p>
       </div>
     </div>
   );

@@ -413,6 +413,17 @@
   transform: scale(0.98);
 }
 
+/* Cancel anytime text */
+.cancelAnytime {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-align: center;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
 /* Disabled button for Current Plan */
 .disabledButton {
   background-color: var(--bg-secondary) !important;
