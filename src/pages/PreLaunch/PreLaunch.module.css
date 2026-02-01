@@ -9,12 +9,10 @@
 
 .content {
   background: var(--bg-white);
-  border: 2px solid var(--border-light);
   border-radius: 16px;
   padding: 3rem;
   max-width: 600px;
   width: 100%;
-  box-shadow: 0 10px 40px var(--shadow-black-10);
   position: relative;
 }
 
