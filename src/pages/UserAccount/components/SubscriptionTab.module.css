@@ -244,6 +244,13 @@
   text-transform: uppercase;
 }
 
+/* Plus Plan Badge - Yellow */
+.planNamePlus {
+  color: #b45309;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.12) 0%, rgba(245, 158, 11, 0.18) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
 /* Active Header */
 .activeHeader {
   display: flex;
@@ -685,6 +692,16 @@
   margin-top: 0.5rem;
 }
 
+/* Plus plan upgrade actions - buttons on opposite ends */
+.plusUpgradeActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 /* View All Plans Link - With border */
 .viewAllPlansLink {
   display: inline-flex;
@@ -908,5 +925,312 @@
   .viewPlansButtonWhite {
     width: 100%;
     justify-content: center;
+  }
+
+  .plusUpgradeActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .plusUpgradeActions .upgradeButton,
+  .plusUpgradeActions .viewAllPlansLink {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Refreshing Subscription State */
+.refreshingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.refreshingState p {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.spinnerIcon {
+  color: var(--teal);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Cancel Confirmation Modal */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalSlideOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+}
+
+.cancelModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+.cancelModalContent {
+  position: relative;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 30px;
+  max-width: 600px;
+  width: 90%;
+  text-align: center;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.modalCloseButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: all 0.2s ease;
+}
+
+.modalCloseButton:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-dark-gray);
+}
+
+/* Modal closing animations */
+.modalClosing {
+  animation: modalFadeOut 0.25s ease-out forwards;
+}
+
+.modalContentClosing {
+  animation: modalSlideOut 0.25s ease-out forwards;
+}
+
+.cancelModalContent h3 {
+  margin: 0 0 1rem;
+  color: var(--text-dark-gray);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.cancelModalContent p {
+  margin: 0 0 1.25rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Cancellation Reasons List */
+.cancelReasonsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.cancelReasonItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: var(--text-dark-gray);
+  transition: color 0.2s ease;
+}
+
+.cancelReasonItem:hover {
+  color: var(--text-primary);
+}
+
+.cancelReasonCheckbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--teal);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Feedback Section */
+.cancelFeedbackSection {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.cancelFeedbackPrompt {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-dark-gray);
+  margin-bottom: 0.5rem;
+}
+
+.requiredAsterisk {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.cancelFeedbackTextarea {
+  width: 100%;
+  padding: 0.875rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: var(--text-dark-gray);
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cancelFeedbackTextarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1);
+}
+
+.cancelFeedbackTextarea::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.cancelFeedbackTextarea:disabled {
+  background: rgba(0, 0, 0, 0.04);
+  cursor: not-allowed;
+}
+
+.cancelModalActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+/* Continue with Xplaino Button - Teal BG */
+.continueButton {
+  padding: 0.875rem 2rem;
+  background: var(--teal);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+}
+
+.continueButton:hover {
+  background: #0a7b71;
+}
+
+.continueButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Cancel Subscription Button - No BG, Red on hover */
+.cancelModalConfirm {
+  padding: 0.875rem 2rem;
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+}
+
+.cancelModalConfirm:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.cancelModalConfirm:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: transparent;
+  color: #dc2626;
+}
+
+/* Responsive adjustments for cancel modal */
+@media (max-width: 600px) {
+  .cancelModalContent {
+    padding: 1.5rem;
+    margin: 1rem;
+    border-radius: 20px;
+  }
+
+  .cancelModalActions {
+    flex-direction: column;
+  }
+
+  .continueButton,
+  .cancelModalConfirm {
+    width: 100%;
   }
 }

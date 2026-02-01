@@ -6,13 +6,16 @@ import {
   FiClock, 
   FiAlertCircle,
   FiRefreshCw,
-  FiXCircle
+  FiXCircle,
+  FiLoader,
+  FiX
 } from 'react-icons/fi';
 import { FaCrown } from 'react-icons/fa';
 import styles from './SubscriptionTab.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { usePaddle } from '@/shared/hooks/usePaddle';
-import { getUserSubscriptionStatus } from '@/shared/services/subscription.service';
+import { paddleConfig } from '@/shared/config/paddle.config';
+import { getUserSubscriptionStatus, cancelSubscription } from '@/shared/services/subscription.service';
 import { Toast } from '@/shared/components/Toast';
 import { 
   SubscriptionStatus,
@@ -36,6 +39,42 @@ const formatDate = (dateString: string | null): string => {
   });
 };
 
+/**
+ * Cancellation reasons configuration
+ */
+const CANCELLATION_REASONS = [
+  {
+    id: 'TOO_EXPENSIVE',
+    label: "It's too expensive for me",
+    feedbackPrompt: 'What price point would work better for you?'
+  },
+  {
+    id: 'NOT_USING',
+    label: "I'm not using it enough",
+    feedbackPrompt: 'What prevented you from using Xplaino more?'
+  },
+  {
+    id: 'FOUND_ALTERNATIVE',
+    label: 'I found a better alternative',
+    feedbackPrompt: 'Which alternative did you find? What made it better?'
+  },
+  {
+    id: 'MISSING_FEATURES',
+    label: "It's missing features I need",
+    feedbackPrompt: 'What features would you like us to add?'
+  },
+  {
+    id: 'EXTENSION_NOT_WORKING',
+    label: 'The extension is not working properly',
+    feedbackPrompt: 'What issues are you experiencing with the extension?'
+  },
+  {
+    id: 'OTHER',
+    label: 'Other reason',
+    feedbackPrompt: 'Please tell us more about why you are leaving'
+  }
+];
+
 
 /**
  * SubscriptionTab - User subscription management tab
@@ -44,13 +83,113 @@ const formatDate = (dateString: string | null): string => {
  */
 export const SubscriptionTab: React.FC = () => {
   const { user } = useAuth();
-  const { yearlyPrices } = usePaddle();
+  const { yearlyPrices, openCheckout } = usePaddle();
   const [loading, setLoading] = useState(true);
   const [subscriptionData, setSubscriptionData] = useState<GetUserSubscriptionResponse | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [refreshingSubscription, setRefreshingSubscription] = useState(false);
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [userFeedback, setUserFeedback] = useState('');
+  const [feedbackPrompt, setFeedbackPrompt] = useState('');
+  const [isModalClosing, setIsModalClosing] = useState(false);
 
   // Find Ultra yearly price for upgrade button
   const ultraYearlyPrice = yearlyPrices.find(p => p.name?.toUpperCase().includes('ULTRA'));
+
+  // Handle upgrade button click - open Paddle checkout
+  const handleUpgradeClick = async () => {
+    if (!ultraYearlyPrice) return;
+    
+    try {
+      setCheckoutLoading(true);
+      const discountId = paddleConfig.discountIds.yearly.ultra || undefined;
+      await openCheckout(ultraYearlyPrice.id, discountId);
+    } catch (err) {
+      setToast({ 
+        message: err instanceof Error ? err.message : 'Failed to open checkout', 
+        type: 'error' 
+      });
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  // Handle cancel subscription
+  // Handle reason checkbox change
+  const handleReasonChange = (reasonId: string, checked: boolean) => {
+    let newReasons: string[];
+    if (checked) {
+      newReasons = [...selectedReasons, reasonId];
+      // Update feedback prompt based on last selected reason
+      const reason = CANCELLATION_REASONS.find(r => r.id === reasonId);
+      if (reason) {
+        setFeedbackPrompt(reason.feedbackPrompt);
+      }
+    } else {
+      newReasons = selectedReasons.filter(r => r !== reasonId);
+      // Update feedback prompt to the last remaining reason, or clear if none
+      if (newReasons.length > 0) {
+        const lastReason = CANCELLATION_REASONS.find(r => r.id === newReasons[newReasons.length - 1]);
+        if (lastReason) {
+          setFeedbackPrompt(lastReason.feedbackPrompt);
+        }
+      } else {
+        setFeedbackPrompt('');
+      }
+    }
+    setSelectedReasons(newReasons);
+  };
+
+  // Reset cancel modal state
+  const resetCancelModal = () => {
+    setIsModalClosing(true);
+    setTimeout(() => {
+      setShowCancelConfirm(false);
+      setSelectedReasons([]);
+      setUserFeedback('');
+      setFeedbackPrompt('');
+      setIsModalClosing(false);
+    }, 250); // Match the animation duration
+  };
+
+  const handleCancelSubscription = async () => {
+    const subscription = subscriptionData?.subscription;
+    if (!subscription?.paddle_subscription_id) return;
+    
+    try {
+      setCancelLoading(true);
+      await cancelSubscription(subscription.paddle_subscription_id, {
+        reasons: selectedReasons,
+        user_feedback: userFeedback
+      });
+      resetCancelModal();
+      
+      // Show refreshing state
+      setRefreshingSubscription(true);
+      
+      // Wait 3 seconds before fetching updated data
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Fetch updated subscription data
+      if (user?.id) {
+        const data = await getUserSubscriptionStatus(user.id);
+        setSubscriptionData(data);
+      }
+      
+      setToast({ message: 'Subscription canceled successfully', type: 'success' });
+    } catch (err) {
+      setToast({ 
+        message: err instanceof Error ? err.message : 'Failed to cancel subscription', 
+        type: 'error' 
+      });
+    } finally {
+      setCancelLoading(false);
+      setRefreshingSubscription(false);
+    }
+  };
 
   // Fetch subscription status on mount
   useEffect(() => {
@@ -79,6 +218,20 @@ export const SubscriptionTab: React.FC = () => {
     return (
       <div className={styles.subscriptionTab}>
         <div className={styles.loading}>Loading subscription...</div>
+      </div>
+    );
+  }
+
+  // Show refreshing state after cancel
+  if (refreshingSubscription) {
+    return (
+      <div className={styles.subscriptionTab}>
+        <div className={styles.content}>
+          <div className={styles.refreshingState}>
+            <FiLoader className={styles.spinnerIcon} size={32} />
+            <p>Fetching updated subscription...</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -130,10 +283,14 @@ export const SubscriptionTab: React.FC = () => {
 
             {/* Actions */}
             <div className={styles.noSubActions}>
-              <Link to="/pricing" className={styles.upgradeButton}>
+              <button 
+                className={styles.upgradeButton}
+                onClick={handleUpgradeClick}
+                disabled={checkoutLoading}
+              >
                 <FaCrown size={20} />
-                Upgrade to Ultra Yearly
-              </Link>
+                {checkoutLoading ? 'Loading...' : 'Upgrade to Ultra Yearly'}
+              </button>
               <Link to="/pricing" className={styles.viewAllPlansLink}>
                 View All Plans
               </Link>
@@ -153,9 +310,32 @@ export const SubscriptionTab: React.FC = () => {
   }
 
   const { subscription, has_active_subscription } = subscriptionData;
-  const planName = getPlanName(subscription);
+  const planNameFromItems = getPlanName(subscription);
   const formattedPrice = formatSubscriptionPrice(subscription);
   const statusEnum = getSubscriptionStatusEnum(subscription.status);
+
+  // Derive plan name from available data when items is empty
+  const derivePlanName = (): string => {
+    if (planNameFromItems) return planNameFromItems.toUpperCase();
+    
+    // Fallback: derive from billing_cycle_interval
+    const interval = subscription.billing_cycle_interval?.toUpperCase();
+    if (interval === 'YEAR') return 'YEARLY PLAN';
+    if (interval === 'MONTH') return 'MONTHLY PLAN';
+    return 'ACTIVE PLAN';
+  };
+
+  const planName = derivePlanName();
+  const isYearlyPlan = subscription.billing_cycle_interval?.toUpperCase() === 'YEAR';
+  const isMonthlyPlan = subscription.billing_cycle_interval?.toUpperCase() === 'MONTH';
+
+  // Determine current plan type for conditional UI (from items if available)
+  const isUltraYearly = planNameFromItems?.toUpperCase() === 'ULTRA YEARLY';
+  const isUltraMonthly = planNameFromItems?.toUpperCase() === 'ULTRA MONTHLY';
+  const isPlusPlan = planNameFromItems?.toUpperCase().startsWith('PLUS');
+  
+  // If items is empty, we don't know the exact plan - show upgrade options
+  const hasUnknownPlan = !planNameFromItems;
 
   // Case 2: Subscription exists but is not active (expired/canceled/past_due)
   if (!has_active_subscription) {
@@ -165,9 +345,9 @@ export const SubscriptionTab: React.FC = () => {
           <div className={styles.expiredSubscription}>
             <div className={styles.expiredHeader}>
               <p className={styles.sectionLabel}>Your current plan</p>
-              {planName && (
-                <span className={styles.planNameLarge}>{planName}</span>
-              )}
+              <span className={styles.planNameLarge}>
+                {planName || 'EXPIRED PLAN'}
+              </span>
             </div>
             
             <div className={styles.expiredContent}>
@@ -215,13 +395,20 @@ export const SubscriptionTab: React.FC = () => {
           {/* Header with label and plan name */}
           <div className={styles.activeHeader}>
             <p className={styles.sectionLabel}>Your current plan</p>
-            {planName && (
-              <span className={styles.planNameLarge}>{planName}</span>
-            )}
+            <span className={`${styles.planNameLarge} ${isPlusPlan ? styles.planNamePlus : ''}`}>
+              {planName}
+            </span>
           </div>
           
           {formattedPrice && (
             <p className={styles.planPrice}>{formattedPrice}</p>
+          )}
+          
+          {/* Show billing interval if no price available */}
+          {!formattedPrice && subscription.currency_code && (
+            <p className={styles.planPrice}>
+              {subscription.currency_code} / {isYearlyPlan ? 'year' : isMonthlyPlan ? 'month' : 'period'}
+            </p>
           )}
 
           {/* Subscription Details */}
@@ -265,43 +452,272 @@ export const SubscriptionTab: React.FC = () => {
 
           <div className={styles.divider} />
 
+          {/* Actions - conditional based on plan */}
+          <div className={styles.actions}>
+            {/* Ultra Yearly - only cancel button */}
+            {isUltraYearly && (
+              <button 
+                className={styles.cancelButton}
+                onClick={() => setShowCancelConfirm(true)}
+              >
+                <FiXCircle size={18} />
+              </button>
+            )}
+
+            {/* Ultra Monthly - upgrade to yearly */}
+            {isUltraMonthly && (
+              <>
+                <button 
+                  className={styles.upgradeButton}
+                  onClick={handleUpgradeClick}
+                  disabled={checkoutLoading}
+                >
+                  <FaCrown size={20} />
+                  {checkoutLoading ? 'Loading...' : `Upgrade to Yearly for ${ultraYearlyPrice?.discountPercentage || ''}% OFF`}
+                </button>
+                <button 
+                  className={styles.cancelButton}
+                  onClick={() => setShowCancelConfirm(true)}
+                >
+                  <FiXCircle size={18} />
+                </button>
+              </>
+            )}
+
+            {/* Plus plans - cancel button here before suggested plan */}
+            {isPlusPlan && (
+              <button 
+                className={styles.cancelButton}
+                onClick={() => setShowCancelConfirm(true)}
+              >
+                <FiXCircle size={18} />
+              </button>
+            )}
+
+            {/* Unknown plan (items empty) - show upgrade options based on billing interval */}
+            {hasUnknownPlan && isMonthlyPlan && (
+              <>
+                <button 
+                  className={styles.upgradeButton}
+                  onClick={handleUpgradeClick}
+                  disabled={checkoutLoading}
+                >
+                  <FaCrown size={20} />
+                  {checkoutLoading ? 'Loading...' : `Upgrade to Yearly for ${ultraYearlyPrice?.discountPercentage || '30'}% OFF`}
+                </button>
+                <button 
+                  className={styles.cancelButton}
+                  onClick={() => setShowCancelConfirm(true)}
+                >
+                  <FiXCircle size={18} />
+                </button>
+              </>
+            )}
+
+            {/* Unknown yearly plan - just show cancel and view plans */}
+            {hasUnknownPlan && isYearlyPlan && (
+              <>
+                <Link to="/pricing" className={styles.viewPlansButton}>
+                  View All Plans
+                </Link>
+                <button 
+                  className={styles.cancelButton}
+                  onClick={() => setShowCancelConfirm(true)}
+                >
+                  <FiXCircle size={18} />
+                </button>
+              </>
+            )}
+
+            {/* Fallback if no billing interval info */}
+            {hasUnknownPlan && !isMonthlyPlan && !isYearlyPlan && (
+              <>
+                <Link to="/pricing" className={styles.viewPlansButton}>
+                  View All Plans
+                </Link>
+                <button 
+                  className={styles.cancelButton}
+                  onClick={() => setShowCancelConfirm(true)}
+                >
+                  <FiXCircle size={18} />
+                </button>
+              </>
+            )}
+          </div>
+
           {/* Ultra Benefits for Plus subscribers */}
-          {planName?.toUpperCase().startsWith('PLUS') && (
-            <div className={styles.ultraBenefits}>
-              <p className={styles.ultraBenefitsTitle}>
-                <FaCrown size={14} />
-                Unlock more with Ultra
-              </p>
-              <ul className={styles.ultraBenefitsList}>
-                <li>Save any page, summary, passage & images to your dashboard that come across your browsing</li>
-                <li>Get back to the original source of the content you saved in one click</li>
-                <li>Chat with saved content to quickly revise your learnings</li>
-                <li>Create your own notes form saved content</li>
-              </ul>
-            </div>
+          {isPlusPlan && (
+            <>
+              {/* Best plan recommendation */}
+              <div className={styles.bestPlanRow}>
+                <span className={styles.bestPlanText}>Best plan for you</span>
+                <span className={styles.bestPlanName}>ULTRA YEARLY</span>
+                {ultraYearlyPrice?.discountPercentage && (
+                  <div className={styles.offerGroup}>
+                    <span className={styles.discountBadge}>
+                      {ultraYearlyPrice.discountPercentage}% OFF
+                    </span>
+                    <span className={styles.limitedOffer}>Limited offer!</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Extra Ultra Features (compared to Plus) */}
+              <div className={styles.ultraBenefits}>
+                <p className={styles.ultraBenefitsTitle}>
+                  <FaCrown size={14} />
+                  What's extra in Ultra
+                </p>
+                <ul className={styles.ultraBenefitsList}>
+                  <li>Save any page, summary, passage & images to your dashboard that come across your browsing</li>
+                  <li>Get back to the original source of the content you saved in one click</li>
+                  <li>Chat with saved content to quickly revise your learnings</li>
+                  <li>Create your own notes from saved content</li>
+                </ul>
+              </div>
+
+              {/* Upgrade actions - buttons on opposite ends */}
+              <div className={styles.plusUpgradeActions}>
+                <button 
+                  className={styles.upgradeButton}
+                  onClick={handleUpgradeClick}
+                  disabled={checkoutLoading}
+                >
+                  <FaCrown size={20} />
+                  {checkoutLoading ? 'Loading...' : 'Upgrade to Ultra Yearly'}
+                </button>
+                <Link to="/pricing" className={styles.viewAllPlansLink}>
+                  View All Plans
+                </Link>
+              </div>
+            </>
           )}
 
-          {/* Actions */}
-          <div className={styles.actions}>
-            {/* Show Upgrade button for Plus plans, View Plans for others */}
-            {planName?.toUpperCase().startsWith('PLUS') ? (
-              <Link to="/pricing" className={styles.upgradeButton}>
-                <FaCrown size={20} />
-                Upgrade to Ultra
-              </Link>
-            ) : (
-              <Link to="/pricing" className={styles.viewPlansButton}>
-                View All Plans
-              </Link>
-            )}
-            
-            {/* Cancel subscription button (icon only) */}
-            <button className={styles.cancelButton}>
-              <FiXCircle size={18} />
-            </button>
-          </div>
+          {/* Upgrade section for unknown monthly plans */}
+          {hasUnknownPlan && isMonthlyPlan && (
+            <>
+              {/* Best plan recommendation */}
+              <div className={styles.bestPlanRow}>
+                <span className={styles.bestPlanText}>Best plan for you</span>
+                <span className={styles.bestPlanName}>ULTRA YEARLY</span>
+                {ultraYearlyPrice?.discountPercentage && (
+                  <div className={styles.offerGroup}>
+                    <span className={styles.discountBadge}>
+                      {ultraYearlyPrice.discountPercentage}% OFF
+                    </span>
+                    <span className={styles.limitedOffer}>Limited offer!</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Ultra Features */}
+              <div className={styles.ultraBenefits}>
+                <p className={styles.ultraBenefitsTitle}>
+                  <FaCrown size={14} />
+                  Unlock Ultra features
+                </p>
+                <ul className={styles.ultraBenefitsList}>
+                  <li>Unlimited page summaries & AI chat</li>
+                  <li>Unlimited text & image explanations</li>
+                  <li>Results in your native language</li>
+                  <li>Unlimited page translations in 60+ languages</li>
+                  <li>Unlimited contextual word meanings & vocabulary</li>
+                  <li>Revisit your reading history</li>
+                  <li>Unlimited bookmarks with source links</li>
+                  <li>Unlimited notes & AI chat</li>
+                  <li>Priority support anytime</li>
+                </ul>
+              </div>
+
+              {/* Upgrade actions */}
+              <div className={styles.plusUpgradeActions}>
+                <button 
+                  className={styles.upgradeButton}
+                  onClick={handleUpgradeClick}
+                  disabled={checkoutLoading}
+                >
+                  <FaCrown size={20} />
+                  {checkoutLoading ? 'Loading...' : 'Upgrade to Ultra Yearly'}
+                </button>
+                <Link to="/pricing" className={styles.viewAllPlansLink}>
+                  View All Plans
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Cancel Confirmation Modal */}
+      {showCancelConfirm && (
+        <div 
+          className={`${styles.cancelModal} ${isModalClosing ? styles.modalClosing : ''}`} 
+          onClick={resetCancelModal}
+        >
+          <div 
+            className={`${styles.cancelModalContent} ${isModalClosing ? styles.modalContentClosing : ''}`} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              className={styles.modalCloseButton}
+              onClick={resetCancelModal}
+              aria-label="Close modal"
+            >
+              <FiX size={20} />
+            </button>
+            <h3>Cancel Subscription</h3>
+            <p>We're sorry to see you go. Please let us know why you're canceling so we can improve.</p>
+            
+            <div className={styles.cancelReasonsList}>
+              {CANCELLATION_REASONS.map((reason) => (
+                <label key={reason.id} className={styles.cancelReasonItem}>
+                  <input
+                    type="checkbox"
+                    className={styles.cancelReasonCheckbox}
+                    checked={selectedReasons.includes(reason.id)}
+                    onChange={(e) => handleReasonChange(reason.id, e.target.checked)}
+                    disabled={cancelLoading}
+                  />
+                  <span>{reason.label}</span>
+                </label>
+              ))}
+            </div>
+
+            {selectedReasons.length > 0 && (
+              <div className={styles.cancelFeedbackSection}>
+                <label className={styles.cancelFeedbackPrompt}>
+                  {feedbackPrompt} <span className={styles.requiredAsterisk}>*</span>
+                </label>
+                <textarea
+                  className={styles.cancelFeedbackTextarea}
+                  value={userFeedback}
+                  onChange={(e) => setUserFeedback(e.target.value)}
+                  placeholder="Your feedback helps us improve..."
+                  disabled={cancelLoading}
+                  rows={3}
+                />
+              </div>
+            )}
+
+            <div className={styles.cancelModalActions}>
+              <button 
+                className={styles.continueButton}
+                onClick={resetCancelModal}
+                disabled={cancelLoading}
+              >
+                Continue with Xplaino
+              </button>
+              <button 
+                className={styles.cancelModalConfirm}
+                onClick={handleCancelSubscription}
+                disabled={cancelLoading || selectedReasons.length === 0 || !userFeedback.trim()}
+              >
+                {cancelLoading ? 'Canceling...' : 'Cancel Subscription'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {toast && (
         <Toast

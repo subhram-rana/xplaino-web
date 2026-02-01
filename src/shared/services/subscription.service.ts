@@ -41,15 +41,23 @@ export async function getUserSubscriptionStatus(userId: string): Promise<GetUser
 }
 
 /**
+ * Cancellation info for subscription cancellation
+ */
+export interface CancellationInfo {
+  reasons: string[];
+  user_feedback: string;
+}
+
+/**
  * Cancel subscription
- * Initiates subscription cancellation at end of billing period
+ * Initiates subscription cancellation with cancellation reasons and feedback
  * 
  * @param subscriptionId - The Paddle subscription ID
- * @param effectiveFrom - When cancellation takes effect ('immediately' or 'next_billing_period')
+ * @param cancellationInfo - Object containing reasons array and user feedback
  */
 export async function cancelSubscription(
   subscriptionId: string,
-  effectiveFrom: 'immediately' | 'next_billing_period' = 'next_billing_period'
+  cancellationInfo: CancellationInfo
 ): Promise<void> {
   const response = await fetchWithAuth(
     `${authConfig.catenBaseUrl}/api/subscription/${subscriptionId}/cancel`,
@@ -58,7 +66,7 @@ export async function cancelSubscription(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ effective_from: effectiveFrom }),
+      body: JSON.stringify({ cancellation_info: cancellationInfo }),
     }
   );
 
