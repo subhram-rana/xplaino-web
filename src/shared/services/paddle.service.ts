@@ -112,6 +112,17 @@ export const formatPaddlePrice = (price: PaddlePrice): FormattedPaddlePrice => {
       description: price.product.description || '',
       imageUrl: price.product.imageUrl,
     } : null,
+    // Discount fields (no discount in this basic formatter)
+    hasDiscount: false,
+    originalAmount: null,
+    discountAmount: null,
+    discountPercentage: null,
+    formattedOriginalPrice: null,
+    // Monthly equivalent fields
+    monthlyEquivalent: null,
+    formattedMonthlyEquivalent: null,
+    originalMonthlyEquivalent: null,
+    formattedOriginalMonthlyEquivalent: null,
   };
 };
 
@@ -145,7 +156,7 @@ export const openCheckout = async (
         showAddTaxId: settings?.showAddTaxId ?? true,
         successUrl: settings?.successUrl || `${window.location.origin}/payment-success`,
       },
-      customer: customer ? {
+      customer: customer?.email ? {
         email: customer.email,
         address: customer.address,
       } : undefined,

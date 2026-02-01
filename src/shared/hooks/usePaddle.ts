@@ -13,7 +13,6 @@ import {
 } from '@/shared/services/paddle.service';
 import { paddleConfig } from '@/shared/config/paddle.config';
 import type { 
-  PaddlePrice, 
   FormattedPaddlePrice,
   PaddleCheckoutSettings,
   PaddleCheckoutCustomer 
