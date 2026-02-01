@@ -212,6 +212,7 @@ export const Navbar: React.FC<NavbarProps> = ({ showMiniCoupon, hideNavButtons }
               >
                 {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') ? 'Admin Dashboard' : 'My Dashboard'}
               </button>
+              {/* Temporarily hidden
               <Link 
                 to="/pricing" 
                 className={`${styles.navLink} ${isActiveRoute('/pricing') ? styles.navLinkActive : ''}`} 
@@ -219,6 +220,7 @@ export const Navbar: React.FC<NavbarProps> = ({ showMiniCoupon, hideNavButtons }
               >
                 Pricing
               </Link>
+              */}
               <Link 
                 to="/report-issue" 
                 className={`${styles.navLink} ${isActiveRoute('/report-issue') ? styles.navLinkActive : ''}`} 
