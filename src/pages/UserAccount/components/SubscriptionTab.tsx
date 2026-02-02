@@ -134,7 +134,7 @@ export const SubscriptionTab: React.FC = () => {
       } else {
         // For users without subscription (FREE TRIAL), open Paddle checkout
         const discountId = paddleConfig.discountIds.yearly.ultra || undefined;
-        await openCheckout(ultraYearlyPrice.id, discountId);
+        await openCheckout(ultraYearlyPrice.id, discountId, undefined, undefined, { userId: user!.id });
       }
     } catch (err) {
       setToast({ 

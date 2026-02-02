@@ -15,7 +15,8 @@ import { paddleConfig } from '@/shared/config/paddle.config';
 import type { 
   FormattedPaddlePrice,
   PaddleCheckoutSettings,
-  PaddleCheckoutCustomer 
+  PaddleCheckoutCustomer,
+  PaddleCheckoutCustomData 
 } from '@/shared/types/paddle.types';
 
 interface UsePaddleReturn {
@@ -34,7 +35,8 @@ interface UsePaddleReturn {
     priceId: string, 
     discountId?: string,
     settings?: PaddleCheckoutSettings,
-    customer?: PaddleCheckoutCustomer
+    customer?: PaddleCheckoutCustomer,
+    customData?: PaddleCheckoutCustomData
   ) => Promise<void>;
   /** Refresh prices */
   refreshPrices: () => Promise<void>;
@@ -280,10 +282,11 @@ export const usePaddle = (options: UsePaddleOptions = {}): UsePaddleReturn => {
     priceId: string,
     discountId?: string,
     settings?: PaddleCheckoutSettings,
-    customer?: PaddleCheckoutCustomer
+    customer?: PaddleCheckoutCustomer,
+    customData?: PaddleCheckoutCustomData
   ) => {
     try {
-      await openCheckoutForPrice(priceId, 1, settings, customer, discountId);
+      await openCheckoutForPrice(priceId, 1, settings, customer, discountId, customData);
     } catch (err) {
       console.error('Checkout error:', err);
       throw err;

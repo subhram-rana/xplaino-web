@@ -12,7 +12,8 @@ import type {
   FormattedPaddlePrice,
   PaddleCheckoutItem,
   PaddleCheckoutSettings,
-  PaddleCheckoutCustomer 
+  PaddleCheckoutCustomer,
+  PaddleCheckoutCustomData 
 } from '@/shared/types/paddle.types';
 
 // Singleton Paddle instance
@@ -133,7 +134,8 @@ export const openCheckout = async (
   items: PaddleCheckoutItem[],
   settings?: PaddleCheckoutSettings,
   customer?: PaddleCheckoutCustomer,
-  discountId?: string
+  discountId?: string,
+  customData?: PaddleCheckoutCustomData
 ): Promise<void> => {
   const paddle = await getPaddle();
   
@@ -146,6 +148,7 @@ export const openCheckout = async (
     paddle.Checkout.open({
       items,
       ...(discountId && { discountId }),
+      ...(customData && { customData }),
       settings: {
         displayMode: settings?.displayMode || 'overlay',
         variant: 'one-page',
@@ -175,12 +178,14 @@ export const openCheckoutForPrice = async (
   quantity: number = 1,
   settings?: PaddleCheckoutSettings,
   customer?: PaddleCheckoutCustomer,
-  discountId?: string
+  discountId?: string,
+  customData?: PaddleCheckoutCustomData
 ): Promise<void> => {
   return openCheckout(
     [{ priceId, quantity }],
     settings,
     customer,
-    discountId
+    discountId,
+    customData
   );
 };

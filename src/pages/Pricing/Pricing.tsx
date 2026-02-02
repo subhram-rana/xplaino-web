@@ -62,7 +62,7 @@ const getBasePlanName = (name: string): string => {
  */
 export const Pricing: React.FC = () => {
   const { monthlyPrices, yearlyPrices, isLoading, error, openCheckout } = usePaddle();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('yearly');
   const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
@@ -121,7 +121,7 @@ export const Pricing: React.FC = () => {
     try {
       setCheckoutLoading(price.id);
       const discountId = getDiscountIdForPrice(price);
-      await openCheckout(price.id, discountId);
+      await openCheckout(price.id, discountId, undefined, undefined, { userId: user!.id });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to open checkout';
       setToast({ message: errorMessage, type: 'error' });

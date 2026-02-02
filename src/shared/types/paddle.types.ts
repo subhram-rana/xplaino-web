@@ -141,3 +141,11 @@ export interface PaddleCheckoutCustomer {
     postalCode?: string;
   };
 }
+
+/**
+ * Custom data to pass to Paddle checkout
+ * This data is included in webhook events (e.g., customer.created)
+ */
+export interface PaddleCheckoutCustomData {
+  userId: string; // User's UUID from auth
+}
