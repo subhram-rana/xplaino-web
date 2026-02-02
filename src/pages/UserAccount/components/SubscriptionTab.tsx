@@ -336,6 +336,9 @@ export const SubscriptionTab: React.FC = () => {
   
   // If items is empty, we don't know the exact plan - show upgrade options
   const hasUnknownPlan = !planNameFromItems;
+  
+  // Check if next billing date exists - only show cancel button if it does
+  const hasNextBillingDate = !!subscription.next_billed_at;
 
   // Case 2: Subscription exists but is not active (expired/canceled/past_due)
   if (!has_active_subscription) {
@@ -450,12 +453,19 @@ export const SubscriptionTab: React.FC = () => {
             )}
           </div>
 
+          {/* Warning when subscription won't auto-renew - outside the details box */}
+          {!hasNextBillingDate && subscription.current_billing_period_ends_at && (
+            <p className={styles.subscriptionEndWarning}>
+              Your current subscription ends on {formatDate(subscription.current_billing_period_ends_at)}. You will need to subscribe manually after that.
+            </p>
+          )}
+
           <div className={styles.divider} />
 
           {/* Actions - conditional based on plan */}
           <div className={styles.actions}>
             {/* Ultra Yearly - only cancel button */}
-            {isUltraYearly && (
+            {isUltraYearly && hasNextBillingDate && (
               <button 
                 className={styles.cancelButton}
                 onClick={() => setShowCancelConfirm(true)}
@@ -475,17 +485,19 @@ export const SubscriptionTab: React.FC = () => {
                   <FaCrown size={20} />
                   {checkoutLoading ? 'Loading...' : `Upgrade to Yearly for ${ultraYearlyPrice?.discountPercentage || ''}% OFF`}
                 </button>
-                <button 
-                  className={styles.cancelButton}
-                  onClick={() => setShowCancelConfirm(true)}
-                >
-                  <FiXCircle size={18} />
-                </button>
+                {hasNextBillingDate && (
+                  <button 
+                    className={styles.cancelButton}
+                    onClick={() => setShowCancelConfirm(true)}
+                  >
+                    <FiXCircle size={18} />
+                  </button>
+                )}
               </>
             )}
 
             {/* Plus plans - cancel button here before suggested plan */}
-            {isPlusPlan && (
+            {isPlusPlan && hasNextBillingDate && (
               <button 
                 className={styles.cancelButton}
                 onClick={() => setShowCancelConfirm(true)}
@@ -505,12 +517,14 @@ export const SubscriptionTab: React.FC = () => {
                   <FaCrown size={20} />
                   {checkoutLoading ? 'Loading...' : `Upgrade to Yearly for ${ultraYearlyPrice?.discountPercentage || '30'}% OFF`}
                 </button>
-                <button 
-                  className={styles.cancelButton}
-                  onClick={() => setShowCancelConfirm(true)}
-                >
-                  <FiXCircle size={18} />
-                </button>
+                {hasNextBillingDate && (
+                  <button 
+                    className={styles.cancelButton}
+                    onClick={() => setShowCancelConfirm(true)}
+                  >
+                    <FiXCircle size={18} />
+                  </button>
+                )}
               </>
             )}
 
@@ -520,12 +534,14 @@ export const SubscriptionTab: React.FC = () => {
                 <Link to="/pricing" className={styles.viewPlansButton}>
                   View All Plans
                 </Link>
-                <button 
-                  className={styles.cancelButton}
-                  onClick={() => setShowCancelConfirm(true)}
-                >
-                  <FiXCircle size={18} />
-                </button>
+                {hasNextBillingDate && (
+                  <button 
+                    className={styles.cancelButton}
+                    onClick={() => setShowCancelConfirm(true)}
+                  >
+                    <FiXCircle size={18} />
+                  </button>
+                )}
               </>
             )}
 
@@ -535,12 +551,14 @@ export const SubscriptionTab: React.FC = () => {
                 <Link to="/pricing" className={styles.viewPlansButton}>
                   View All Plans
                 </Link>
-                <button 
-                  className={styles.cancelButton}
-                  onClick={() => setShowCancelConfirm(true)}
-                >
-                  <FiXCircle size={18} />
-                </button>
+                {hasNextBillingDate && (
+                  <button 
+                    className={styles.cancelButton}
+                    onClick={() => setShowCancelConfirm(true)}
+                  >
+                    <FiXCircle size={18} />
+                  </button>
+                )}
               </>
             )}
           </div>
