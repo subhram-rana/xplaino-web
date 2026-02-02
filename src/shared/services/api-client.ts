@@ -168,8 +168,11 @@ export async function fetchWithAuth(
       await clearAuthFromStorage();
       
       if (typeof window !== 'undefined') {
+        const message = typeof errorData.detail === 'object' 
+          ? (errorData.detail?.reason || errorData.detail?.error_message || 'Please login')
+          : (errorData.detail || 'Please login');
         window.dispatchEvent(new CustomEvent('loginRequired', { 
-          detail: { message: errorData.detail?.message || 'Please login' }
+          detail: { message }
         }));
       }
       

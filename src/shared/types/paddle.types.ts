@@ -148,4 +148,5 @@ export interface PaddleCheckoutCustomer {
  */
 export interface PaddleCheckoutCustomData {
   userId: string; // User's UUID from auth
+  [key: string]: unknown; // Index signature for Paddle SDK compatibility
 }
