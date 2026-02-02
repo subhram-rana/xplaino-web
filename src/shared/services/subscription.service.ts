@@ -148,3 +148,44 @@ export async function resumeSubscription(
     );
   }
 }
+
+/**
+ * Subscription update item (price + quantity)
+ */
+export interface SubscriptionUpdateItem {
+  price_id: string;
+  quantity: number;
+}
+
+/**
+ * Update subscription (upgrade)
+ * Updates subscription items to upgrade the plan. Downgrades are not allowed.
+ * Prorated amount is charged immediately.
+ * 
+ * @param subscriptionId - The Paddle subscription ID
+ * @param items - Array of items with price_id and quantity
+ */
+export async function updateSubscription(
+  subscriptionId: string,
+  items: SubscriptionUpdateItem[]
+): Promise<void> {
+  const response = await fetchWithAuth(
+    `${authConfig.catenBaseUrl}/api/subscription/${subscriptionId}/update`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ items }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Failed to update subscription' }));
+    throw new Error(
+      errorData.detail?.error_message || 
+      errorData.detail || 
+      `Failed to update subscription with status ${response.status}`
+    );
+  }
+}

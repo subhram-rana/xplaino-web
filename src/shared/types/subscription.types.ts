@@ -202,3 +202,19 @@ export function getSubscriptionStatusEnum(status: string): SubscriptionStatus {
       return SubscriptionStatus.CANCELED;
   }
 }
+
+/**
+ * Get next billing date - falls back to items if top-level is null
+ */
+export function getNextBilledAt(subscription: PaddleSubscriptionResponse): string | null {
+  if (subscription.next_billed_at) return subscription.next_billed_at;
+  // Fallback to first item's next_billed_at
+  return subscription.items?.[0]?.next_billed_at || null;
+}
+
+/**
+ * Get previously billed date from items (billing period start approximation)
+ */
+export function getPreviouslyBilledAt(subscription: PaddleSubscriptionResponse): string | null {
+  return subscription.items?.[0]?.previously_billed_at || null;
+}

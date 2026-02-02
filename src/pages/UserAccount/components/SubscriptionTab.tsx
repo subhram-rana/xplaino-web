@@ -15,13 +15,15 @@ import styles from './SubscriptionTab.module.css';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { usePaddle } from '@/shared/hooks/usePaddle';
 import { paddleConfig } from '@/shared/config/paddle.config';
-import { getUserSubscriptionStatus, cancelSubscription } from '@/shared/services/subscription.service';
+import { getUserSubscriptionStatus, cancelSubscription, updateSubscription } from '@/shared/services/subscription.service';
 import { Toast } from '@/shared/components/Toast';
 import { 
   SubscriptionStatus,
   getPlanName,
   formatSubscriptionPrice,
   getSubscriptionStatusEnum,
+  getNextBilledAt,
+  getPreviouslyBilledAt,
 } from '@/shared/types/subscription.types';
 import type { GetUserSubscriptionResponse } from '@/shared/types/subscription.types';
 
@@ -99,19 +101,47 @@ export const SubscriptionTab: React.FC = () => {
   // Find Ultra yearly price for upgrade button
   const ultraYearlyPrice = yearlyPrices.find(p => p.name?.toUpperCase().includes('ULTRA'));
 
-  // Handle upgrade button click - open Paddle checkout
+  // Handle upgrade button click - call update API for existing subscribers, Paddle checkout for new
   const handleUpgradeClick = async () => {
     if (!ultraYearlyPrice) return;
     
+    const paddleSubscriptionId = subscriptionData?.subscription?.paddle_subscription_id;
+    
     try {
       setCheckoutLoading(true);
-      const discountId = paddleConfig.discountIds.yearly.ultra || undefined;
-      await openCheckout(ultraYearlyPrice.id, discountId);
+      
+      // If user has an active subscription, use the update API
+      if (paddleSubscriptionId && subscriptionData?.has_active_subscription) {
+        await updateSubscription(paddleSubscriptionId, [
+          { price_id: ultraYearlyPrice.id, quantity: 1 }
+        ]);
+        
+        // Show success and refresh subscription data
+        setToast({ 
+          message: 'Subscription upgraded successfully!', 
+          type: 'success' 
+        });
+        
+        // Show refreshing state and fetch updated data
+        setRefreshingSubscription(true);
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        if (user?.id) {
+          const data = await getUserSubscriptionStatus(user.id);
+          setSubscriptionData(data);
+        }
+        setRefreshingSubscription(false);
+      } else {
+        // For users without subscription (FREE TRIAL), open Paddle checkout
+        const discountId = paddleConfig.discountIds.yearly.ultra || undefined;
+        await openCheckout(ultraYearlyPrice.id, discountId);
+      }
     } catch (err) {
       setToast({ 
-        message: err instanceof Error ? err.message : 'Failed to open checkout', 
+        message: err instanceof Error ? err.message : 'Failed to upgrade subscription', 
         type: 'error' 
       });
+      setRefreshingSubscription(false);
     } finally {
       setCheckoutLoading(false);
     }
@@ -337,8 +367,12 @@ export const SubscriptionTab: React.FC = () => {
   // If items is empty, we don't know the exact plan - show upgrade options
   const hasUnknownPlan = !planNameFromItems;
   
+  // Get billing dates with fallback to item-level data
+  const nextBilledAt = getNextBilledAt(subscription);
+  const previouslyBilledAt = getPreviouslyBilledAt(subscription);
+  
   // Check if next billing date exists - only show cancel button if it does
-  const hasNextBillingDate = !!subscription.next_billed_at;
+  const hasNextBillingDate = !!nextBilledAt;
 
   // Case 2: Subscription exists but is not active (expired/canceled/past_due)
   if (!has_active_subscription) {
@@ -416,7 +450,8 @@ export const SubscriptionTab: React.FC = () => {
 
           {/* Subscription Details */}
           <div className={styles.details}>
-            {subscription.current_billing_period_starts_at && subscription.current_billing_period_ends_at && (
+            {/* Current Period - use top-level or fallback to item-level dates */}
+            {(subscription.current_billing_period_starts_at && subscription.current_billing_period_ends_at) ? (
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>
                   <FiCalendar className={styles.detailIcon} size={18} />
@@ -426,16 +461,27 @@ export const SubscriptionTab: React.FC = () => {
                   {formatDate(subscription.current_billing_period_starts_at)} - {formatDate(subscription.current_billing_period_ends_at)}
                 </span>
               </div>
+            ) : (previouslyBilledAt && nextBilledAt) && (
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>
+                  <FiCalendar className={styles.detailIcon} size={18} />
+                  Current Period
+                </span>
+                <span className={styles.detailValue}>
+                  {formatDate(previouslyBilledAt)} - {formatDate(nextBilledAt)}
+                </span>
+              </div>
             )}
 
-            {subscription.next_billed_at && statusEnum === SubscriptionStatus.ACTIVE && (
+            {/* Next Billing Date - use fallback helper */}
+            {nextBilledAt && statusEnum === SubscriptionStatus.ACTIVE && (
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>
                   <FiClock className={styles.detailIcon} size={18} />
                   Next Billing Date
                 </span>
                 <span className={styles.detailValue}>
-                  {formatDate(subscription.next_billed_at)}
+                  {formatDate(nextBilledAt)}
                 </span>
               </div>
             )}
@@ -454,9 +500,9 @@ export const SubscriptionTab: React.FC = () => {
           </div>
 
           {/* Warning when subscription won't auto-renew - outside the details box */}
-          {!hasNextBillingDate && subscription.current_billing_period_ends_at && (
+          {!hasNextBillingDate && (subscription.current_billing_period_ends_at || nextBilledAt) && (
             <p className={styles.subscriptionEndWarning}>
-              Your current subscription ends on {formatDate(subscription.current_billing_period_ends_at)}. You will need to subscribe manually after that.
+              Your current subscription ends on {formatDate(subscription.current_billing_period_ends_at || nextBilledAt)}. You will need to subscribe manually after that.
             </p>
           )}
 
