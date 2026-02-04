@@ -123,7 +123,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const loginResponse = await loginWithGoogle(idToken);
         await saveAuthToStorage(loginResponse);
         setAuthState(loginResponse);
-        navigate('/');
+        // Navigation after login is handled by the component that initiated the login flow
       } catch (error) {
         console.error('Login error:', error);
         throw error;
@@ -131,7 +131,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoading(false);
       }
     },
-    [navigate],
+    [],
   );
 
   const logout = useCallback(async () => {

@@ -52,6 +52,12 @@ export const Navbar: React.FC<NavbarProps> = ({ showMiniCoupon, hideNavButtons }
   const handleMyDashboardClick = () => {
     if (!isLoggedIn) {
       setLoginModalActionText('access your dashboard');
+      // Set pending route to dashboard since user explicitly wants it
+      if (user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') {
+        pendingRouteRef.current = '/admin/dashboard';
+      } else {
+        pendingRouteRef.current = '/user/dashboard/bookmark';
+      }
       setIsModalClosing(false);
       setShowLoginModal(true);
     } else if (user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') {
@@ -150,19 +156,16 @@ export const Navbar: React.FC<NavbarProps> = ({ showMiniCoupon, hideNavButtons }
       setTimeout(() => {
         setShowLoginModal(false);
         setIsModalClosing(false);
-        // Navigate to the original route if available, otherwise based on role
+        // Only navigate if there's an explicit pending route
         if (pendingRouteRef.current) {
           const route = pendingRouteRef.current;
           pendingRouteRef.current = null;
           navigate(route);
-        } else if (user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') {
-          navigate('/admin/dashboard');
-        } else {
-          navigate('/user/dashboard/bookmark');
         }
+        // Otherwise, stay on current page (no navigation)
       }, 300);
     }
-  }, [isLoggedIn, showLoginModal, user, navigate]);
+  }, [isLoggedIn, showLoginModal, navigate]);
 
   // Check if a route is active
   const isActiveRoute = (path: string): boolean => {
