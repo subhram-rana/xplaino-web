@@ -15,9 +15,9 @@ export const SubscriptionRequiredModal: React.FC = () => {
   const [message, setMessage] = useState('');
 
   // Handle the subscriptionRequired event
-  const handleSubscriptionRequired = useCallback((event: Event) => {
-    const customEvent = event as CustomEvent<{ message?: string }>;
-    setMessage(customEvent.detail?.message || 'Upgrade your plan to access this feature');
+  const handleSubscriptionRequired = useCallback(() => {
+    // Always use a clean message - don't show raw API error text
+    setMessage('Upgrade your plan to continue.');
     setIsClosing(false);
     setIsOpen(true);
   }, []);

@@ -52,11 +52,19 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
       onClose();
     } catch (err) {
       console.error('Error creating folder:', err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Failed to create folder. Please try again.'
-      );
+      // Don't show subscription-related errors here - SubscriptionRequiredModal handles them
+      const errorMessage = err instanceof Error ? err.message : '';
+      const isSubscriptionError = errorMessage.toLowerCase().includes('api usage limit') ||
+        errorMessage.toLowerCase().includes('subscribe to continue') ||
+        errorMessage.toLowerCase().includes('subscription required');
+      
+      if (!isSubscriptionError) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Failed to create folder. Please try again.'
+        );
+      }
     } finally {
       setIsLoading(false);
     }
