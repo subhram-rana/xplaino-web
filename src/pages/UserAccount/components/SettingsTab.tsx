@@ -100,35 +100,18 @@ export const SettingsTab: React.FC = () => {
     fetchData();
   }, [accessToken]);
 
-  // Check if form has changes
-  const hasChanges = originalSettings && (
-    nativeLanguage !== originalSettings.nativeLanguage ||
-    pageTranslationView !== originalSettings.pageTranslationView ||
-    theme !== originalSettings.theme
-  );
-
-  const handleUpdate = async () => {
-    if (!accessToken || !hasChanges) return;
+  // Auto-save settings to API
+  const saveSettings = async (settings: {
+    nativeLanguage: NativeLanguage | null;
+    pageTranslationView: PageTranslationView;
+    theme: Theme;
+  }) => {
+    if (!accessToken) return;
 
     try {
       setUpdating(true);
-
-      await updateUserSettings(accessToken, {
-        nativeLanguage,
-        pageTranslationView,
-        theme,
-      });
-
-      // Apply theme change after successful update
-      setGlobalTheme(theme);
-
-      // Update original settings after successful update
-      setOriginalSettings({
-        nativeLanguage,
-        pageTranslationView,
-        theme,
-      });
-
+      await updateUserSettings(accessToken, settings);
+      setOriginalSettings(settings);
       setToast({ message: 'Settings updated successfully', type: 'success' });
     } catch (error) {
       console.error('Error updating settings:', error);
@@ -139,6 +122,26 @@ export const SettingsTab: React.FC = () => {
     } finally {
       setUpdating(false);
     }
+  };
+
+  // Individual change handlers that auto-save
+  const handleNativeLanguageChange = async (value: string) => {
+    const newValue = value ? (value as NativeLanguage) : null;
+    setNativeLanguage(newValue);
+    await saveSettings({ nativeLanguage: newValue, pageTranslationView, theme });
+  };
+
+  const handlePageTranslationViewChange = async (tabId: string) => {
+    const newValue = tabId as PageTranslationView;
+    setPageTranslationView(newValue);
+    await saveSettings({ nativeLanguage, pageTranslationView: newValue, theme });
+  };
+
+  const handleThemeChange = async (tabId: string) => {
+    const newTheme = tabId as Theme;
+    setTheme(newTheme);
+    setGlobalTheme(newTheme); // Apply theme immediately
+    await saveSettings({ nativeLanguage, pageTranslationView, theme: newTheme });
   };
 
   if (loading) {
@@ -152,7 +155,7 @@ export const SettingsTab: React.FC = () => {
   return (
     <div className={styles.settingsTab}>
       <div className={styles.content}>
-        <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleUpdate(); }}>
+        <form className={styles.form}>
           {/* Native Language */}
           <div className={styles.fieldGroup}>
             <div className={styles.fieldRow}>
@@ -162,7 +165,7 @@ export const SettingsTab: React.FC = () => {
               <LanguageDropdown
                 options={languageDropdownOptions}
                 value={nativeLanguage || ''}
-                onChange={(value) => setNativeLanguage(value ? (value as NativeLanguage) : null)}
+                onChange={handleNativeLanguageChange}
                 placeholder="Select language"
               />
             </div>
@@ -180,7 +183,7 @@ export const SettingsTab: React.FC = () => {
                   { id: PageTranslationView.APPEND, icon: FiLayers, label: 'Append' },
                 ]}
                 activeTabId={pageTranslationView}
-                onTabChange={(tabId) => setPageTranslationView(tabId as PageTranslationView)}
+                onTabChange={handlePageTranslationViewChange}
                 iconSize={16}
                 tabSize={32}
               />
@@ -199,25 +202,12 @@ export const SettingsTab: React.FC = () => {
                   { id: Theme.DARK, icon: FiMoon, label: 'Dark' },
                 ]}
                 activeTabId={theme}
-                onTabChange={(tabId) => {
-                  const newTheme = tabId as Theme;
-                  setTheme(newTheme);
-                  // Theme will be applied when Update Settings button is clicked
-                }}
+                onTabChange={handleThemeChange}
                 iconSize={16}
                 tabSize={32}
               />
             </div>
           </div>
-
-          {/* Update Button */}
-          <button
-            type="submit"
-            className={styles.updateButton}
-            disabled={!hasChanges || updating}
-          >
-            {updating ? 'Updating...' : 'Update Settings'}
-          </button>
         </form>
       </div>
 
