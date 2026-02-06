@@ -13,7 +13,8 @@ import type { GetMyIssuesResponse, GetAllIssuesResponse, GetAllIssuesFilters, Is
  */
 export async function getMyIssues(
   _accessToken: string,
-  statuses?: string[]
+  statuses?: string[],
+  signal?: AbortSignal
 ): Promise<GetMyIssuesResponse> {
   const statusesParam = statuses && statuses.length > 0 
     ? `?${statuses.map(s => `statuses=${encodeURIComponent(s)}`).join('&')}`
@@ -26,6 +27,7 @@ export async function getMyIssues(
       headers: {
         'Content-Type': 'application/json',
       },
+      signal,
     }
   );
 
