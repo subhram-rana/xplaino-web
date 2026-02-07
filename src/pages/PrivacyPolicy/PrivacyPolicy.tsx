@@ -7,7 +7,7 @@ import styles from './PrivacyPolicy.module.css';
  * @returns JSX element
  */
 export const PrivacyPolicy: React.FC = () => {
-  const lastUpdated = 'January 2025';
+  const lastUpdated = 'February 2025';
 
   return (
     <div className={styles.privacyPolicy}>
@@ -20,8 +20,9 @@ export const PrivacyPolicy: React.FC = () => {
         <section className={styles.section}>
           <h2>1. Introduction</h2>
           <p>
-            At Xplaino ("we", "us", "our", or "Xplaino"), we are committed to protecting your privacy. 
-            This Privacy Policy explains how we collect, use, disclose, and safeguard your information 
+            Xplaino is operated by <strong>Subhram Subhrajyoti Rana</strong> (sole proprietor), doing business 
+            as Xplaino. At Xplaino ("we", "us", "our", or "Xplaino"), we are committed to protecting your 
+            privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information 
             when you use our Chrome browser extension ("Extension", "Service").
           </p>
           <p>
@@ -171,6 +172,18 @@ export const PrivacyPolicy: React.FC = () => {
           <p>
             We may use analytics services to understand how users interact with the Extension. These 
             services collect aggregated, anonymized usage data and do not identify individual users.
+          </p>
+
+          <h3>5.4 Payment Processor</h3>
+          <p>
+            All payments for Xplaino are processed by <strong>Paddle.com Market Ltd</strong> ("Paddle"), 
+            which acts as the Merchant of Record for all transactions. When you make a purchase or subscribe, 
+            Paddle collects and processes your payment information (such as credit card details, billing 
+            address, and transaction data) according to their own{' '}
+            <a href="https://www.paddle.com/legal/privacy" className={styles.link} target="_blank" rel="noopener noreferrer">
+            Privacy Policy</a>. We do not directly collect or store your payment card details. Paddle may 
+            share limited transaction information with us (such as purchase confirmation, subscription status, 
+            and billing country) to enable us to provide you with access to paid features.
           </p>
         </section>
 

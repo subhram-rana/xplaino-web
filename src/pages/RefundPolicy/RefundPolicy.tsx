@@ -7,7 +7,7 @@ import styles from './RefundPolicy.module.css';
  * @returns JSX element
  */
 export const RefundPolicy: React.FC = () => {
-  const lastUpdated = 'January 2025';
+  const lastUpdated = 'February 2025';
 
   return (
     <div className={styles.refundPolicy}>
@@ -31,10 +31,16 @@ export const RefundPolicy: React.FC = () => {
         <section className={styles.section}>
           <h2>1. Policy Overview</h2>
           <p>
-            This Refund Policy ("Policy") governs all transactions related to the Xplaino Chrome Extension 
-            ("Extension", "Service", "we", "us", or "our"). By purchasing, subscribing to, or using any 
-            paid features of the Extension, you acknowledge that you have read, understood, and agree to 
+            Xplaino is operated by <strong>Subhram Subhrajyoti Rana</strong> (sole proprietor), doing business 
+            as Xplaino. This Refund Policy ("Policy") governs all transactions related to the Xplaino Chrome 
+            Extension ("Extension", "Service", "we", "us", or "our"). By purchasing, subscribing to, or using 
+            any paid features of the Extension, you acknowledge that you have read, understood, and agree to 
             be bound by this Policy.
+          </p>
+          <p>
+            All payments, billing, and refunds for Xplaino are processed through <strong>Paddle.com Market 
+            Ltd</strong> ("Paddle"), which acts as the Merchant of Record for all transactions. You may see 
+            "Paddle.net" or "Paddle" on your bank or credit card statements for charges related to Xplaino.
           </p>
           <p>
             <strong>Please note that purchases are generally considered complete upon confirmation.</strong> We 

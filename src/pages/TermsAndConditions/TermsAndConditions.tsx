@@ -7,7 +7,7 @@ import styles from './TermsAndConditions.module.css';
  * @returns JSX element
  */
 export const TermsAndConditions: React.FC = () => {
-  const lastUpdated = 'January 2025';
+  const lastUpdated = 'February 2025';
 
   return (
     <div className={styles.termsAndConditions}>
@@ -20,9 +20,10 @@ export const TermsAndConditions: React.FC = () => {
         <section className={styles.section}>
           <h2>1. Acceptance of Terms</h2>
           <p>
-            By accessing and using the Xplaino Chrome Extension ("Extension", "Service", "we", "us", or "our"), 
-            you accept and agree to be bound by the terms and provision of this agreement. If you do not agree 
-            to abide by the above, please do not use this service.
+            Xplaino is operated by <strong>Subhram Subhrajyoti Rana</strong> (sole proprietor), doing business 
+            as Xplaino. By accessing and using the Xplaino Chrome Extension ("Extension", "Service", "we", "us", 
+            or "our"), you accept and agree to be bound by the terms and provision of this agreement. If you do 
+            not agree to abide by the above, please do not use this service.
           </p>
           <p>
             These Terms & Conditions ("Terms") govern your access to and use of Xplaino, an AI-powered browser 
@@ -181,16 +182,37 @@ export const TermsAndConditions: React.FC = () => {
         </section>
 
         <section className={styles.section}>
-          <h2>10. Governing Law</h2>
+          <h2>10. Payment Processing</h2>
           <p>
-            These Terms shall be interpreted and governed by the laws of the jurisdiction in which Xplaino 
-            operates, without regard to its conflict of law provisions. Our failure to enforce any right or 
-            provision of these Terms will not be considered a waiver of those rights.
+            All payments for Xplaino are processed by <strong>Paddle.com Market Ltd</strong> ("Paddle"), 
+            which acts as the Merchant of Record for all transactions. This means:
+          </p>
+          <ul>
+            <li>Paddle is responsible for handling payment processing, billing, tax collection, and compliance 
+            for all purchases made through Xplaino.</li>
+            <li>You may see "Paddle.net" or "Paddle" on your bank or credit card statements for charges 
+            related to Xplaino.</li>
+            <li>By making a purchase, you agree to Paddle's{' '}
+            <a href="https://www.paddle.com/legal/terms" className={styles.link} target="_blank" rel="noopener noreferrer">
+            Terms of Use</a> and{' '}
+            <a href="https://www.paddle.com/legal/privacy" className={styles.link} target="_blank" rel="noopener noreferrer">
+            Privacy Policy</a> in addition to these Terms.</li>
+            <li>Paddle handles all currency conversions, sales tax, VAT, and other applicable taxes on our 
+            behalf.</li>
+          </ul>
+        </section>
+
+        <section className={styles.section}>
+          <h2>11. Governing Law</h2>
+          <p>
+            These Terms shall be interpreted and governed by the laws of India, without regard to its conflict 
+            of law provisions. Our failure to enforce any right or provision of these Terms will not be 
+            considered a waiver of those rights.
           </p>
         </section>
 
         <section className={styles.section}>
-          <h2>11. Changes to Terms</h2>
+          <h2>12. Changes to Terms</h2>
           <p>
             We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If 
             a revision is material, we will provide at least 30 days notice prior to any new terms taking 
@@ -204,7 +226,7 @@ export const TermsAndConditions: React.FC = () => {
         </section>
 
         <section className={styles.section}>
-          <h2>12. Contact Information</h2>
+          <h2>13. Contact Information</h2>
           <p>
             If you have any questions about these Terms & Conditions, please contact us at:
           </p>
@@ -215,7 +237,7 @@ export const TermsAndConditions: React.FC = () => {
         </section>
 
         <section className={styles.section}>
-          <h2>13. Severability</h2>
+          <h2>14. Severability</h2>
           <p>
             If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining 
             provisions of these Terms will remain in effect. These Terms constitute the entire agreement 
