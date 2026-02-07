@@ -21,7 +21,7 @@ export async function getMyIssues(
     : '';
   
   const response = await fetchWithAuth(
-    `${authConfig.catenBaseUrl}/api/issue${statusesParam}`,
+    `${authConfig.catenBaseUrl}/api/issue/${statusesParam}`,
     {
       method: 'GET',
       headers: {
