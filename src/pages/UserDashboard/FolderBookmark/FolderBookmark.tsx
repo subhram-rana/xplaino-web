@@ -1337,6 +1337,30 @@ export const FolderBookmark: React.FC = () => {
     window.open(finalUrl, '_blank', 'noopener,noreferrer');
   };
 
+  const handleImageSourceClick = (e: React.MouseEvent<HTMLAnchorElement>, sourceUrl: string, imageUrl: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let finalUrl: string;
+    try {
+      const url = new URL(sourceUrl);
+      url.searchParams.set('xplaino_image', imageUrl);
+      finalUrl = url.toString();
+    } catch {
+      try {
+        const url = new URL(sourceUrl, window.location.origin);
+        url.searchParams.set('xplaino_image', imageUrl);
+        finalUrl = url.toString();
+      } catch {
+        const separator = sourceUrl.includes('?') ? '&' : '?';
+        const encodedImage = encodeURIComponent(imageUrl);
+        finalUrl = `${sourceUrl}${separator}xplaino_image=${encodedImage}`;
+      }
+    }
+
+    window.open(finalUrl, '_blank', 'noopener,noreferrer');
+  };
+
 
   // Render content based on active tab
   const renderTabContent = () => {
@@ -2014,7 +2038,7 @@ export const FolderBookmark: React.FC = () => {
                             rel="noopener noreferrer"
                             className={styles.imageCardSourceIcon}
                             title={image.sourceUrl}
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => handleImageSourceClick(e, image.sourceUrl, image.imageUrl)}
                           >
                             <FiExternalLink />
                           </a>
@@ -2078,7 +2102,7 @@ export const FolderBookmark: React.FC = () => {
                           rel="noopener noreferrer"
                           className={styles.imageModalSource}
                           title={selectedImage.sourceUrl}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => handleImageSourceClick(e, selectedImage.sourceUrl, selectedImage.url)}
                         >
                           <FiExternalLink />
                         </a>
