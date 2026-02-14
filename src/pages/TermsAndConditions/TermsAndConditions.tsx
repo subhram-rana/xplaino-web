@@ -7,7 +7,7 @@ import styles from './TermsAndConditions.module.css';
  * @returns JSX element
  */
 export const TermsAndConditions: React.FC = () => {
-  const lastUpdated = 'February 2025';
+  const lastUpdated = 'February 2026';
 
   return (
     <div className={styles.termsAndConditions}>
@@ -21,7 +21,7 @@ export const TermsAndConditions: React.FC = () => {
           <h2>1. Acceptance of Terms</h2>
           <p>
             Xplaino is operated by <strong>Subhram Subhrajyoti Rana</strong> (sole proprietor), doing business 
-            as Xplaino. By accessing and using the Xplaino Chrome Extension ("Extension", "Service", "we", "us", 
+            as Aivor. By accessing and using the Xplaino Chrome Extension ("Extension", "Service", "we", "us", 
             or "our"), you accept and agree to be bound by the terms and provision of this agreement. If you do 
             not agree to abide by the above, please do not use this service.
           </p>

@@ -7,7 +7,7 @@ import styles from './PrivacyPolicy.module.css';
  * @returns JSX element
  */
 export const PrivacyPolicy: React.FC = () => {
-  const lastUpdated = 'February 2025';
+  const lastUpdated = 'February 2026';
 
   return (
     <div className={styles.privacyPolicy}>
@@ -21,7 +21,7 @@ export const PrivacyPolicy: React.FC = () => {
           <h2>1. Introduction</h2>
           <p>
             Xplaino is operated by <strong>Subhram Subhrajyoti Rana</strong> (sole proprietor), doing business 
-            as Xplaino. At Xplaino ("we", "us", "our", or "Xplaino"), we are committed to protecting your 
+            as Aivor. At Xplaino ("we", "us", "our", or "Xplaino"), we are committed to protecting your 
             privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information 
             when you use our Chrome browser extension ("Extension", "Service").
           </p>
