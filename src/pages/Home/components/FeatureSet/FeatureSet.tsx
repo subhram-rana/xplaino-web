@@ -99,17 +99,6 @@ export const FeatureSet: React.FC = () => {
       ]
     },
     {
-      id: 2,
-      icon: '🌍',
-      title: 'Set Your Preferred Language Once & Learn Anywhere',
-      description: 'Choose your preferred language once and receive AI explanations and translations automatically across all websites.',
-      videoUrl: 'https://www.youtube.com/embed/PBmcNg_oRxs',
-      bullets: [
-        'Set your language once, works everywhere automatically',
-        'Switch languages anytime from settings'
-      ]
-    },
-    {
       id: 9,
       icon: '🎨',
       title: 'Custom Light & Dark Themes for Every Website',
