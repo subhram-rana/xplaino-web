@@ -8,12 +8,12 @@ import styles from './FeatureSet.module.css';
  * @returns JSX element
  */
 export const FeatureSet: React.FC = () => {
-  // Placeholder data - will be replaced with actual data
   const features = [
     {
       id: 1,
       icon: '⚡',
-      title: 'Summarize any webpage in seconds',
+      title: 'AI Webpage & Article Summarizer for Faster Learning',
+      description: 'Instantly summarize long webpages and online articles with an AI-powered research assistant designed for students, researchers, and professionals.',
       videoUrl: 'https://www.youtube.com/embed/fZeNDBk2AyQ',
       bullets: [
         'Get a concise AI-generated summary of any webpage — skip the fluff and grasp the key points instantly',
@@ -23,19 +23,23 @@ export const FeatureSet: React.FC = () => {
       ]
     },
     {
-        id: 2,
-        icon: '🌍',
-        title: 'Get explanations in Your Language',
-        videoUrl: 'https://www.youtube.com/embed/PBmcNg_oRxs',
-        bullets: [
-            'Set your language once, works everywhere automatically',
-            'Switch languages anytime from settings'
-        ]
+      id: 8,
+      icon: '🌐',
+      title: 'AI Website Translator to Break Language Barriers',
+      description: 'Translate entire webpages instantly into your preferred language and read international research, blogs, and academic content effortlessly.',
+      videoUrl: 'https://www.youtube.com/embed/ij5XBehuq7A',
+      bullets: [
+        'Translate any webpage into your preferred language in seconds — no copy-pasting, no extra tabs',
+        'Replace the original content seamlessly so the page feels like it was written in your native language',
+        'Or view translations side-by-side with the original text for easy comparison and learning',
+        'Toggle translations on or off anytime — switch between views with a single click'
+      ]
     },
     {
       id: 3,
       icon: '📝',
-      title: 'Understand any text in depth instantly',
+      title: 'Simplify Complex Text & Understand Any Content Instantly',
+      description: 'Select any text and get contextual AI explanations, simplifications, and translations to deeply understand complex academic or technical content.',
       videoUrl: 'https://www.youtube.com/embed/CPBM3p1e_Ts',
       bullets: [
         'Select any text or paragraph and get AI-powered contextual explanations — ask follow-up questions to dive deeper',
@@ -45,19 +49,23 @@ export const FeatureSet: React.FC = () => {
       ]
     },
     {
-      id: 4,
-      icon: '🔄',
-      title: 'Revisit what you just learned',
-      videoUrl: 'https://www.youtube.com/embed/u94PB_SjPg8',
+      id: 7,
+      icon: '📖',
+      title: 'AI Vocabulary Assistant – Master Any Word Instantly',
+      description: 'Understand new words in context with AI-powered explanations, examples, synonyms, antonyms, and instant translation while browsing.',
+      videoUrl: 'https://www.youtube.com/embed/cJxWhUKk9rc',
       bullets: [
-        'All AI explanations for words, text, images, summaries, and translations are stored right in the UI',
-        'Previous conversations stay intact while you explore new topics'
+        'Get contextual explanations with real examples, synonyms, antonyms, and instant translation to your native language',
+        'Ask follow-up questions about the word — in context or in general — with built-in smart prompts for detailed, clear answers',
+        'Save words to your personal dashboard and track your vocabulary growth over time',
+        'Jump back to the original webpage where you discovered the word with one click'
       ]
     },
     {
       id: 5,
       icon: '🖼️',
-      title: 'Decode any image with AI',
+      title: 'AI Image Explainer – Understand Diagrams, Charts & Infographics',
+      description: 'Click on any image to get instant AI-powered explanations and explore diagrams, charts, and visual content in depth.',
       videoUrl: 'https://www.youtube.com/embed/yHe7_MsaUy0',
       bullets: [
         'Click on any image and get instant AI-powered explanations — understand diagrams, charts, infographics, and more',
@@ -69,7 +77,8 @@ export const FeatureSet: React.FC = () => {
     {
       id: 6,
       icon: '🗂️',
-      title: 'One place for all your bookmarks',
+      title: 'Save & Organize Web Research in One Smart Dashboard',
+      description: 'Highlight text, save summaries, store links, and organize insights automatically while browsing — build your personal knowledge hub.',
       videoUrl: 'https://www.youtube.com/embed/_L9jWcIl__s',
       bullets: [
         'Stop juggling bookmarks across YouTube, Twitter, articles, and other platforms — save everything to one unified dashboard',
@@ -79,39 +88,38 @@ export const FeatureSet: React.FC = () => {
       ]
     },
     {
-      id: 7,
-      icon: '📖',
-      title: 'Master any word with one click',
-      videoUrl: 'https://www.youtube.com/embed/cJxWhUKk9rc',
+      id: 4,
+      icon: '🔄',
+      title: 'Revisit Previous AI Explanations & Conversations Anytime',
+      description: 'All your AI explanations, summaries, translations, and interactions remain accessible so you can continue learning without losing context.',
+      videoUrl: 'https://www.youtube.com/embed/u94PB_SjPg8',
       bullets: [
-        'Get contextual explanations with real examples, synonyms, antonyms, and instant translation to your native language',
-        'Ask follow-up questions about the word — in context or in general — with built-in smart prompts for detailed, clear answers',
-        'Save words to your personal dashboard and track your vocabulary growth over time',
-        'Jump back to the original webpage where you discovered the word with one click'
+        'All AI explanations for words, text, images, summaries, and translations are stored right in the UI',
+        'Previous conversations stay intact while you explore new topics'
       ]
     },
     {
-      id: 8,
-      icon: '🌐',
-      title: 'Translate entire webpages instantly',
-      videoUrl: 'https://www.youtube.com/embed/ij5XBehuq7A',
+      id: 2,
+      icon: '🌍',
+      title: 'Set Your Preferred Language Once & Learn Anywhere',
+      description: 'Choose your preferred language once and receive AI explanations and translations automatically across all websites.',
+      videoUrl: 'https://www.youtube.com/embed/PBmcNg_oRxs',
       bullets: [
-        'Translate any webpage into your preferred language in seconds — no copy-pasting, no extra tabs',
-        'Replace the original content seamlessly so the page feels like it was written in your native language',
-        'Or view translations side-by-side with the original text for easy comparison and learning',
-        'Toggle translations on or off anytime — switch between views with a single click'
+        'Set your language once, works everywhere automatically',
+        'Switch languages anytime from settings'
       ]
     },
-    { 
+    {
       id: 9,
       icon: '🎨',
-      title: 'Different themes for different websites', 
+      title: 'Custom Light & Dark Themes for Every Website',
+      description: 'Switch between light and dark themes individually for each website to optimize your reading and browsing experience.',
       videoUrl: 'https://www.youtube.com/embed/ZOpLJsZlb3U',
       bullets: [
         'You can set Light or Dark theme individually for each website',
         'Switch between websites without toggling themes manually'
       ]
-    },
+    }
   ];
 
   return (
