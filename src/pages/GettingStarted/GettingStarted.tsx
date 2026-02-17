@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { HighlightedCoupon } from '@/shared/components/HighlightedCoupon';
+import { ChromeTryFeaturesButton } from '@/shared/components/ChromeButton/ChromeTryFeaturesButton';
 import styles from './GettingStarted.module.css';
 
 const DEMO_ARTICLES = [
@@ -54,6 +56,13 @@ const WorkflowDiagram: React.FC = () => (
  * @returns JSX element
  */
 export const GettingStarted: React.FC = () => {
+  const location = useLocation();
+
+  const hideInstallExtensionButton = useMemo(() => {
+    const searchParams = new URLSearchParams(location.search);
+    return searchParams.get('source') === 'cws';
+  }, [location.search]);
+
   const article = useMemo(
     () => DEMO_ARTICLES[0], // Biomolecules article (with diagram) shown by default
     []
@@ -103,6 +112,11 @@ export const GettingStarted: React.FC = () => {
         </aside>
         <div className={styles.mainCenter}>
           <div className={styles.centerContent}>
+            {!hideInstallExtensionButton && (
+              <div className={styles.installExtensionWrapper}>
+                <ChromeTryFeaturesButton />
+              </div>
+            )}
             <header className={styles.headerSection}>
               <h1 className={styles.title}>Lets try the extension here first</h1>
               <span className={styles.sampleBadge}>Sample article for practice</span>

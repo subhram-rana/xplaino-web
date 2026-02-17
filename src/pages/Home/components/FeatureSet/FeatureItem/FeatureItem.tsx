@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { VideoModal } from '../VideoModal/VideoModal';
 import styles from './FeatureItem.module.css';
 
@@ -17,35 +17,6 @@ export const FeatureItem: React.FC<FeatureItemProps> = ({ title, videoUrl }) => 
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && videoRef.current) {
-            videoRef.current.play().catch((error) => {
-              console.log('Autoplay prevented:', error);
-            });
-          } else if (videoRef.current) {
-            videoRef.current.pause();
-          }
-        });
-      },
-      {
-        threshold: 0.5,
-      }
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
-      }
-    };
-  }, []);
 
   const handleVideoClick = () => {
     setIsModalOpen(true);

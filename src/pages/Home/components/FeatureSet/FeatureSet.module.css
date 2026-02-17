@@ -1,5 +1,6 @@
 .featureSetWrapper {
   position: relative;
+  overflow: hidden;
 }
 
 .featureSet {

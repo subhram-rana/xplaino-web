@@ -123,6 +123,12 @@
   gap: 1.5rem;
 }
 
+.installExtensionWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
 .headerSection {
   display: flex;
   flex-direction: column;

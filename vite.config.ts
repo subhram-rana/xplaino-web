@@ -12,8 +12,19 @@ export default defineConfig({
       '@/features': path.resolve(__dirname, './src/features'),
     },
   },
+  server: {
+    allowedHosts: [
+      'xplaino.com',
+      'www.xplaino.com',
+      '4412-2401-4900-8fd2-af0f-14b9-3ca8-7c53-bb99.ngrok-free.app',
+    ],
+  },
   preview: {
-    allowedHosts: ['xplaino.com', 'www.xplaino.com'],
+    allowedHosts: [
+      'xplaino.com',
+      'www.xplaino.com',
+      '4412-2401-4900-8fd2-af0f-14b9-3ca8-7c53-bb99.ngrok-free.app',
+    ],
   },
 })
 

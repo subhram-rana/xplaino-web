@@ -35,14 +35,14 @@
 
 .loginButton {
   padding: 0.5rem 1.5rem;
-  background-color: var(--bg-white);
-  color: var(--teal);
+  background-color: transparent;
+  color: var(--text-on-primary);
   text-decoration: none;
   font-size: 1rem;
   font-weight: 600;
   border-radius: var(--button-border-radius);
   font-family: 'Inter', sans-serif;
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  transition: color 0.2s ease, transform 0.1s ease;
   border: 2px solid var(--white);
   cursor: pointer;
   width: auto;
@@ -51,13 +51,13 @@
 }
 
 .loginButton:hover {
-  background-color: var(--button-hover-bg);
-  color: var(--teal);
+  background-color: transparent;
+  color: var(--text-on-primary);
 }
 
 .loginButton:active {
-  background-color: var(--button-hover-bg);
-  color: var(--teal);
+  background-color: transparent;
+  color: var(--text-on-primary);
   transform: scale(0.98);
 }
 
@@ -581,7 +581,7 @@
 }
 
 .menuToggle[aria-expanded="true"] .line:nth-child(1) {
-  transform: rotate(45deg) translate(8px, 8px);
+  transform: rotate(45deg) translateY(7px);
 }
 
 .menuToggle[aria-expanded="true"] .line:nth-child(2) {
@@ -589,7 +589,7 @@
 }
 
 .menuToggle[aria-expanded="true"] .line:nth-child(3) {
-  transform: rotate(-45deg) translate(8px, -8px);
+  transform: rotate(-45deg) translateY(-7px);
 }
 
 /* Responsive design */
@@ -608,10 +608,6 @@
     transform: none;
   }
 
-  .navRight {
-    display: none;
-  }
-
   .menuToggle {
     display: flex;
   }
@@ -621,22 +617,24 @@
     top: 100%;
     left: 0;
     right: 0;
-    background-color: var(--teal);
+    background-color: var(--white);
     flex-direction: column;
     gap: 0;
-    padding: 1rem 0;
+    padding: 0;
     box-shadow: 0 4px 6px var(--shadow-black-10);
-    transform: translateY(-100%);
-    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease, visibility 0s 0.3s;
     visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 10;
+    pointer-events: none;
   }
 
   .navLinksOpen {
-    transform: translateY(0);
-    opacity: 1;
+    max-height: 500px;
+    padding: 1rem 0;
     visibility: visible;
+    pointer-events: auto;
+    transition: max-height 0.3s ease, padding 0.3s ease, visibility 0s 0s;
   }
 
   .navLink {
@@ -644,7 +642,9 @@
     padding: 1rem 1.5rem;
     width: 100%;
     text-align: left;
-    border-bottom: 1px solid var(--white-rgba-10);
+    color: var(--teal);
+    background-color: var(--white);
+    border-bottom: 1px solid var(--teal-rgba-15);
   }
 
   .navLink:last-child {
@@ -652,8 +652,14 @@
   }
 
   .navLink:hover {
-    background-color: var(--white-rgba-10);
-    color: var(--white);
+    background-color: var(--teal-rgba-10);
+    color: var(--teal-dark);
+  }
+
+  .navLinkActive {
+    background-color: var(--teal-rgba-10);
+    color: var(--teal-dark);
+    font-weight: 700;
   }
 
   .navRight {
@@ -662,14 +668,20 @@
     padding: 0;
     border-top: none;
     justify-content: flex-end;
+    align-items: center;
+    gap: 0.25rem;
   }
 
   .loginButton {
     width: auto;
-    min-width: 100px;
+    min-width: auto;
     text-align: center;
     justify-content: center;
-    padding: 0.875rem 1.5rem;
+    padding: 0.25rem 0.75rem;
+    background-color: transparent;
+    color: var(--text-on-primary);
+    border: 2px solid var(--white);
+    box-shadow: none;
   }
 
   .nameContainer {

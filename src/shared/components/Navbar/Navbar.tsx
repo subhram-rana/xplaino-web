@@ -206,20 +206,7 @@ export const Navbar: React.FC<NavbarProps> = ({ showMiniCoupon, hideNavButtons }
             </button>
           )}
         </div>
-        
-        <button 
-          className={styles.menuToggle}
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-          aria-expanded={isMenuOpen}
-        >
-          <span className={styles.hamburger}>
-            <span className={styles.line}></span>
-            <span className={styles.line}></span>
-            <span className={styles.line}></span>
-          </span>
-        </button>
-        
+
         {!hideNavButtons && (
           <div className={styles.navCenter}>
             <div className={`${styles.navLinks} ${isMenuOpen ? styles.navLinksOpen : ''}`}>
@@ -253,7 +240,7 @@ export const Navbar: React.FC<NavbarProps> = ({ showMiniCoupon, hideNavButtons }
             </div>
           </div>
         )}
-        
+
         <div className={styles.navRight}>
           {isLoggedIn ? (
             <div className={styles.userSection} ref={profilePopoverRef}>
@@ -375,9 +362,22 @@ export const Navbar: React.FC<NavbarProps> = ({ showMiniCoupon, hideNavButtons }
                 closeMenu();
               }}
             >
-              Login
+              Sign in
             </button>
           )}
+
+          <button 
+            className={styles.menuToggle}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
+          >
+            <span className={styles.hamburger}>
+              <span className={styles.line}></span>
+              <span className={styles.line}></span>
+              <span className={styles.line}></span>
+            </span>
+          </button>
         </div>
       </div>
       {(showLoginModal || isModalClosing) && (

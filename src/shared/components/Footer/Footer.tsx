@@ -26,7 +26,7 @@ export const Footer: React.FC = () => {
           </Link>
         </div>
         <p className={styles.copyright}>
-          Copyright © {new Date().getFullYear()} Subhram Subhrajyoti Rana. All rights reserved.
+          Copyright © {new Date().getFullYear()} Xplaino. All rights reserved.
         </p>
       </div>
     </footer>

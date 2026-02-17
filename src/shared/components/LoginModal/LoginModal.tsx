@@ -61,7 +61,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ actionText, onClose }) =
               <FiX size={20} />
             </button>
           )}
-          <p className={styles.actionText}>Login to {actionText}</p>
+          <p className={styles.actionText}>Sign in to {actionText}</p>
           <div className={loginStyles.googleButtonWrapper}>
             <GoogleLogin
               onSuccess={handleGoogleSuccess}

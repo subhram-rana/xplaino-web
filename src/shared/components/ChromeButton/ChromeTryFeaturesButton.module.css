@@ -1,0 +1,81 @@
+.ctaCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ecfeff 0%, #f5f3ff 100%);
+  border: 1px solid rgba(15, 118, 110, 0.15);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.iconCircle {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+}
+
+.chromeLogo {
+  width: 24px;
+  height: 24px;
+}
+
+.textBlock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.ctaLink {
+  margin-left: auto;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  border: none;
+  background: #0f766e;
+  color: #ecfeff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ctaLink:hover {
+  background: #115e59;
+}
+
+.ctaArrow {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .ctaCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ctaLink {
+    margin-left: 0;
+  }
+}
+
