@@ -156,7 +156,7 @@ export const PromoVideo: React.FC = () => {
       </div>
       <VideoModal
         isOpen={isModalOpen}
-        videoUrl={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0&vq=hd720`}
+        videoUrl={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&rel=0&vq=hd720`}
         title="Maximise your contextual understanding with AI"
         sourceElement={containerRef.current}
         onClose={() => setIsModalOpen(false)}

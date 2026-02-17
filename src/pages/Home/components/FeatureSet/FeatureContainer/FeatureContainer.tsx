@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { VideoModal } from '../VideoModal/VideoModal';
 import styles from './FeatureContainer.module.css';
 
@@ -26,6 +26,28 @@ export const FeatureContainer: React.FC<FeatureContainerProps> = ({
   const videoSectionRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isInCenter, setIsInCenter] = useState(false);
+  
+  // IntersectionObserver for scroll-based scaling on mobile
+  useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (!isMobile || !containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsInCenter(entry.intersectionRatio > 0.6);
+        });
+      },
+      {
+        threshold: [0, 0.2, 0.4, 0.6, 0.8, 1.0],
+        rootMargin: '-20% 0px -20% 0px'
+      }
+    );
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
   
   // Check if the video URL is a YouTube embed
   const isYouTubeEmbed = videoUrl.includes('youtube.com/embed');
@@ -54,7 +76,7 @@ export const FeatureContainer: React.FC<FeatureContainerProps> = ({
     <>
       <div 
         ref={containerRef}
-        className={`${styles.featureContainer} ${isExpanded ? styles.expanded : ''}`}
+        className={`${styles.featureContainer} ${isExpanded ? styles.expanded : ''} ${isInCenter ? styles.centered : ''}`}
       >
         {/* Video Section - now shows a static thumbnail, opens modal on click */}
         <div 
@@ -117,7 +139,7 @@ export const FeatureContainer: React.FC<FeatureContainerProps> = ({
 
       <VideoModal
         isOpen={isModalOpen}
-        videoUrl={isYouTubeEmbed ? `${videoUrl.split('?')[0]}?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&vq=hd720` : videoUrl}
+        videoUrl={isYouTubeEmbed ? `${videoUrl.split('?')[0]}?autoplay=1&mute=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&vq=hd720` : videoUrl}
         title={title}
         bullets={bullets}
         sourceElement={videoSectionRef.current}

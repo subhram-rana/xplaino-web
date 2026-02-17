@@ -1,6 +1,6 @@
 .featureSetWrapper {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .featureSet {
@@ -13,7 +13,7 @@
 
 /* Raise z-index when hovering over feature cards so expanded descriptions appear above other sections */
 .featureSet:has(.containerList:hover) {
-  z-index: 10;
+  z-index: 100;
 }
 
 .heading {

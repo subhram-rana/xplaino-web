@@ -10,21 +10,6 @@
   z-index: 1;
 }
 
-/* Subtle teal gradient overlay on right side only */
-.promoVideo::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 50px;
-  background: linear-gradient(270deg, rgba(45, 212, 191, 0.08) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 2;
-  border-radius: 0 16px 16px 0;
-}
-
-
 .video {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -47,23 +32,17 @@
 @media (max-width: 768px) {
   .promoVideo {
     border-radius: 12px;
-    max-width: 100%;
+    max-width: 90%;
+    margin: 0 auto;
   }
 
-  .promoVideo::after {
-    width: 50px;
-    border-radius: 0 12px 12px 0;
-  }
 }
 
 @media (max-width: 480px) {
   .promoVideo {
     border-radius: 10px;
-  }
-
-  .promoVideo::after {
-    width: 40px;
-    border-radius: 0 10px 10px 0;
+    max-width: 95%;
+    margin: 0 auto;
   }
 }
 

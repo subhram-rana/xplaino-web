@@ -19,6 +19,7 @@
 @media (max-width: 1024px) {
   .promo {
     flex-direction: column;
+    align-items: center;
     gap: 3rem;
     padding: 3rem 2rem 4rem;
   }
@@ -32,10 +33,14 @@
   .promo {
     padding: 2.5rem 1.5rem 3rem;
     gap: 2rem;
+    justify-content: center;
   }
 
   .promoWrapper {
     padding-bottom: 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
   }
 }
 

@@ -32,8 +32,24 @@ export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, title,
   const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
+      const scrollY = scrollPositionRef.current;
+      // Keep overflow hidden while restoring position to prevent intermediate paint
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      // Restore scroll position in the same JS frame
+      window.scrollTo(0, scrollY);
+      // Restore overflow on next frame after scroll is applied
+      requestAnimationFrame(() => {
+        document.body.style.overflow = '';
+      });
+      scrollPositionRef.current = 0;
+      wasOpenRef.current = false;
+      setIsClosing(false);
       onClose();
-    }, 200); // Match animation duration
+    }, 200);
   }, [onClose]);
 
   useEffect(() => {
@@ -48,32 +64,16 @@ export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, title,
     if (isOpen) {
       setIsClosing(false);
       wasOpenRef.current = true;
-      // Store current scroll position
       scrollPositionRef.current = window.scrollY;
-      // Prevent body scroll
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollPositionRef.current}px`;
       document.body.style.left = '0';
       document.body.style.right = '0';
       document.body.style.width = '100%';
-    } else if (!isOpen && wasOpenRef.current) {
-      setIsClosing(false);
-      wasOpenRef.current = false;
-      // Restore scroll position
-      const scrollY = scrollPositionRef.current;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-      window.scrollTo(0, scrollY);
-      scrollPositionRef.current = 0;
     }
-    
+    // Cleanup on unmount only
     return () => {
-      // Cleanup on unmount
       if (document.body.style.position === 'fixed') {
         const scrollY = scrollPositionRef.current;
         document.body.style.position = '';
@@ -143,7 +143,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, title,
   if (!isOpen && !isClosing) return null;
 
   const modalContent = (
-    <div className={styles.modalOverlay} onClick={handleClose}>
+    <div className={`${styles.modalOverlay} ${isClosing ? styles.modalOverlayClosing : ''}`} onClick={handleClose}>
       <div 
         className={`${styles.modalContent} ${isClosing ? styles.modalClosing : isOpen ? styles.modalOpening : ''}`} 
         onClick={(e) => e.stopPropagation()}
@@ -154,8 +154,6 @@ export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, title,
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
-        
-        <h3 className={styles.modalTitle}>{title}</h3>
         
         <div className={styles.modalBody}>
           {/* Left side - Video */}
@@ -213,6 +211,13 @@ export const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, title,
                   <li key={index} className={styles.bulletItem}>{bullet}</li>
                 ))}
               </ul>
+              <button 
+                className={styles.descriptionCloseButton} 
+                onClick={handleClose}
+                aria-label="Close modal"
+              >
+                Close
+              </button>
             </div>
           )}
         </div>
