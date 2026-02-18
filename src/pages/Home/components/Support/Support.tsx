@@ -22,11 +22,7 @@ export const Support: React.FC = () => {
 
   const youtubeVideoId = 'Z-ULCeNCCBo';
 
-  const bullets = [
-    'Report any issue directly from the extension — your time and money matter to us, so we prioritize resolving it fast',
-    'Get real support from real people who care about your experience, not bots or endless FAQs',
-    'Request new features you\'d find useful in your day-to-day — your ideas help shape what we build next'
-  ];
+  const description = 'Report issues right from the extension, get real support from real people — not bots or endless FAQs — and share feature ideas that help shape what we build next.';
 
   // Load YouTube IFrame API
   useEffect(() => {
@@ -154,11 +150,7 @@ export const Support: React.FC = () => {
                 <span className={styles.icon}>💚</span>
                 We've got your back — always
               </h2>
-              <ul className={styles.bulletList}>
-                {bullets.map((bullet, index) => (
-                  <li key={index} className={styles.bulletItem}>{bullet}</li>
-                ))}
-              </ul>
+              <p className={styles.description}>{description}</p>
             </div>
 
             {/* Right side - Video */}
@@ -185,7 +177,6 @@ export const Support: React.FC = () => {
         isOpen={isModalOpen}
         videoUrl={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0&vq=hd720`}
         title="We've got your back — always"
-        bullets={bullets}
         sourceElement={containerRef.current}
         onClose={() => setIsModalOpen(false)}
       />

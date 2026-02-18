@@ -19,7 +19,7 @@ export const PromoVideo: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const youtubeVideoId = 'ziaFZV3RRbI';
+  const youtubeVideoId = 'Bi5Uo-cmqbY';
 
   // Load YouTube IFrame API
   useEffect(() => {
