@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { VideoModal } from '../../FeatureSet/VideoModal/VideoModal';
 import styles from './PromoVideo.module.css';
 
-const PROMO_VIDEO_URL = 'https://bmicorrect.com/website/website_promo_19_02_2026_final.mp4';
+const PROMO_VIDEO_URL = 'https://bmicorrect.com/website/website_1902_720_2.webm';
 
 /**
  * PromoVideo - Interactive promo video player with modal
