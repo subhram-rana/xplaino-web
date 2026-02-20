@@ -7,9 +7,9 @@
   z-index: 1;
 }
 
-.promoText :global(.chromeButton) {
+.description + * {
   margin: 0;
-  margin-top: 0.5rem;
+  margin-top: 2.25rem;
   align-self: flex-start;
 }
 
@@ -109,8 +109,9 @@
     gap: 1.5rem;
   }
 
-  .promoText :global(.chromeButton) {
+  .description + * {
     align-self: center;
+    margin-top: 2.7rem;
   }
 
   .badge {
@@ -133,6 +134,10 @@
     gap: 1.25rem;
   }
 
+  .description + * {
+    margin-top: 2.925rem;
+  }
+
   .heading {
     font-size: 2.25rem;
   }
@@ -150,6 +155,10 @@
 @media (max-width: 480px) {
   .promoText {
     gap: 1rem;
+  }
+
+  .description + * {
+    margin-top: 2.7rem;
   }
 
   .heading {

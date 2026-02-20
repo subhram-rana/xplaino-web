@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './Pricing.module.css';
 import { usePaddle } from '@/shared/hooks/usePaddle';
 import { useAuth } from '@/shared/hooks/useAuth';
@@ -421,24 +422,26 @@ export const Pricing: React.FC = () => {
         )}
       </div>
 
-      {/* Login Modal with Overlay */}
-      {(showLoginModal || isModalClosing) && (
-        <>
-          <div 
-            className={`${styles.modalOverlay} ${isModalClosing ? styles.modalOverlayClosing : ''}`} 
-            onClick={handleCloseModal} 
-          />
-          <div 
-            className={`${styles.modalContainer} ${isModalClosing ? styles.modalContainerClosing : ''}`} 
-            onClick={(e) => e.stopPropagation()}
-          >
-            <LoginModal 
-              actionText={freeTrialLoginRef.current ? "start your free trial" : "subscribe to a plan"}
-              onClose={handleCloseModal}
+      {/* Login Modal with Overlay - portaled to body so position:fixed is viewport-relative (avoids PageContent fadeIn transform containing block) */}
+      {(showLoginModal || isModalClosing) &&
+        createPortal(
+          <>
+            <div
+              className={`${styles.modalOverlay} ${isModalClosing ? styles.modalOverlayClosing : ''}`}
+              onClick={handleCloseModal}
             />
-          </div>
-        </>
-      )}
+            <div
+              className={`${styles.modalContainer} ${isModalClosing ? styles.modalContainerClosing : ''}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <LoginModal
+                actionText={freeTrialLoginRef.current ? 'start your free trial' : 'subscribe to a plan'}
+                onClose={handleCloseModal}
+              />
+            </div>
+          </>,
+          document.body
+        )}
     </div>
   );
 };

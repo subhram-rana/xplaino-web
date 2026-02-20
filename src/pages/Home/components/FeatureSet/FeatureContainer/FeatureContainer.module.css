@@ -395,24 +395,7 @@
   }
   
   .featureContainer.centered {
-    transform: scale(1.05);
-  }
-  
-  .featureContainer.centered .titleSection {
-    background: var(--teal);
-  }
-
-  .featureContainer.centered .heading {
-    color: var(--text-on-primary);
-  }
-
-  .featureContainer.centered .expandButton {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .featureContainer.centered .expandButton svg {
-    color: var(--text-on-primary);
+    transform: scale(1.08);
   }
 
   .videoSection {

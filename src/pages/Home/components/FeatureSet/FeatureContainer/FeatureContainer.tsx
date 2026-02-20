@@ -83,7 +83,7 @@ export const FeatureContainer: React.FC<FeatureContainerProps> = ({
             ) : (
               <video
                 src={videoUrl}
-                preload="metadata"
+                preload="auto"
                 muted
                 playsInline
                 aria-hidden
