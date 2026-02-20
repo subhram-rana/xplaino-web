@@ -1,40 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Navbar } from '@/shared/components/Navbar';
 import { HighlightedCoupon } from '@/shared/components/HighlightedCoupon';
 import { PageContent } from '@/shared/components/PageContent';
 import { Footer } from '@/shared/components/Footer';
-import { Home } from '@/pages/Home';
-import { Contact } from '@/pages/Contact';
-import { PreLaunch } from '@/pages/PreLaunch';
-import { GettingStarted } from '@/pages/GettingStarted';
-import { ReportIssue } from '@/pages/ReportIssue';
-import { Issues } from '@/pages/Issues';
-import { IssueDetail } from '@/pages/IssueDetail';
-import { TermsAndConditions } from '@/pages/TermsAndConditions';
-import { PrivacyPolicy } from '@/pages/PrivacyPolicy';
-import { RefundPolicy } from '@/pages/RefundPolicy';
-import { UninstallFeedback } from '@/pages/UninstallFeedback';
-import { Pricing } from '@/pages/Pricing';
-import { PaymentSuccess } from '@/pages/PaymentSuccess';
-import { AdminPricingPage } from '@/pages/Admin/AdminPricingPage';
-import { AdminTicketsPage } from '@/pages/Admin/AdminTicketsPage';
-import { AdminDomainsPage } from '@/pages/Admin/AdminDomainsPage';
-import { AdminCouponPage } from '@/pages/Admin/AdminCouponPage';
-import { PricingAdd } from '@/pages/Admin/components/PricingAdd';
-import { PricingDetail } from '@/pages/Admin/components/PricingDetail';
-import { UserDashboardLayout } from '@/pages/UserDashboard/UserDashboardLayout';
-import { MyBookmarksPage } from '@/pages/UserDashboard/MyBookmarksPage';
-import { PdfPage } from '@/pages/UserDashboard/PdfPage';
-import { FolderBookmarkPage } from '@/pages/UserDashboard/FolderBookmarkPage';
-import { PdfDetail } from '@/pages/PdfDetail';
-import { UserAccount } from '@/pages/UserAccount';
-import { AdminDashboard } from '@/pages/AdminDashboard';
-import { PricingEdit } from '@/pages/Admin/components/PricingEdit';
-import { AdminIssueDetail } from '@/pages/Admin/components/AdminIssueDetail';
-import { DomainEdit } from '@/pages/Admin/components/AdminDomains';
-import { CouponEdit } from '@/pages/Admin/components/AdminCoupons';
 import { authConfig } from '@/config/auth.config';
 import { AuthProvider } from '@/shared/hooks/AuthContext';
 import { ThemeProvider } from '@/shared/hooks/ThemeContext';
@@ -42,6 +12,37 @@ import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
 import { AdminProtectedRoute } from '@/shared/components/AdminProtectedRoute';
 import { UserProtectedRoute } from '@/shared/components/UserProtectedRoute';
 import { SubscriptionRequiredModal } from '@/shared/components/SubscriptionRequiredModal';
+
+const Home = lazy(() => import('@/pages/Home').then((m) => ({ default: m.Home })));
+const Contact = lazy(() => import('@/pages/Contact').then((m) => ({ default: m.Contact })));
+const PreLaunch = lazy(() => import('@/pages/PreLaunch').then((m) => ({ default: m.PreLaunch })));
+const GettingStarted = lazy(() => import('@/pages/GettingStarted').then((m) => ({ default: m.GettingStarted })));
+const ReportIssue = lazy(() => import('@/pages/ReportIssue').then((m) => ({ default: m.ReportIssue })));
+const Issues = lazy(() => import('@/pages/Issues').then((m) => ({ default: m.Issues })));
+const IssueDetail = lazy(() => import('@/pages/IssueDetail').then((m) => ({ default: m.IssueDetail })));
+const TermsAndConditions = lazy(() => import('@/pages/TermsAndConditions').then((m) => ({ default: m.TermsAndConditions })));
+const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy').then((m) => ({ default: m.PrivacyPolicy })));
+const RefundPolicy = lazy(() => import('@/pages/RefundPolicy').then((m) => ({ default: m.RefundPolicy })));
+const UninstallFeedback = lazy(() => import('@/pages/UninstallFeedback').then((m) => ({ default: m.UninstallFeedback })));
+const Pricing = lazy(() => import('@/pages/Pricing').then((m) => ({ default: m.Pricing })));
+const PaymentSuccess = lazy(() => import('@/pages/PaymentSuccess').then((m) => ({ default: m.PaymentSuccess })));
+const AdminPricingPage = lazy(() => import('@/pages/Admin/AdminPricingPage').then((m) => ({ default: m.AdminPricingPage })));
+const AdminTicketsPage = lazy(() => import('@/pages/Admin/AdminTicketsPage').then((m) => ({ default: m.AdminTicketsPage })));
+const AdminDomainsPage = lazy(() => import('@/pages/Admin/AdminDomainsPage').then((m) => ({ default: m.AdminDomainsPage })));
+const AdminCouponPage = lazy(() => import('@/pages/Admin/AdminCouponPage').then((m) => ({ default: m.AdminCouponPage })));
+const PricingAdd = lazy(() => import('@/pages/Admin/components/PricingAdd').then((m) => ({ default: m.PricingAdd })));
+const PricingDetail = lazy(() => import('@/pages/Admin/components/PricingDetail').then((m) => ({ default: m.PricingDetail })));
+const UserDashboardLayout = lazy(() => import('@/pages/UserDashboard/UserDashboardLayout').then((m) => ({ default: m.UserDashboardLayout })));
+const MyBookmarksPage = lazy(() => import('@/pages/UserDashboard/MyBookmarksPage').then((m) => ({ default: m.MyBookmarksPage })));
+const PdfPage = lazy(() => import('@/pages/UserDashboard/PdfPage').then((m) => ({ default: m.PdfPage })));
+const FolderBookmarkPage = lazy(() => import('@/pages/UserDashboard/FolderBookmarkPage').then((m) => ({ default: m.FolderBookmarkPage })));
+const PdfDetail = lazy(() => import('@/pages/PdfDetail').then((m) => ({ default: m.PdfDetail })));
+const UserAccount = lazy(() => import('@/pages/UserAccount').then((m) => ({ default: m.UserAccount })));
+const AdminDashboard = lazy(() => import('@/pages/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
+const PricingEdit = lazy(() => import('@/pages/Admin/components/PricingEdit').then((m) => ({ default: m.PricingEdit })));
+const AdminIssueDetail = lazy(() => import('@/pages/Admin/components/AdminIssueDetail').then((m) => ({ default: m.AdminIssueDetail })));
+const DomainEdit = lazy(() => import('@/pages/Admin/components/AdminDomains').then((m) => ({ default: m.DomainEdit })));
+const CouponEdit = lazy(() => import('@/pages/Admin/components/AdminCoupons').then((m) => ({ default: m.CouponEdit })));
 
 /**
  * AppContent - Inner component that uses useLocation for conditional rendering
@@ -56,6 +57,7 @@ const AppContent: React.FC<{ showMiniCoupon: boolean; setShowMiniCoupon: (show: 
       {!isGettingStartedPage && <HighlightedCoupon onDismiss={() => setShowMiniCoupon(true)} />}
       <Navbar showMiniCoupon={showMiniCoupon} hideNavButtons={isPdfDetailPage} />
       <PageContent>
+            <Suspense fallback={null}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/pre-launch" element={<PreLaunch />} />
@@ -264,6 +266,7 @@ const AppContent: React.FC<{ showMiniCoupon: boolean; setShowMiniCoupon: (show: 
               />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            </Suspense>
           </PageContent>
           {!isPdfDetailPage && <Footer />}
           <SubscriptionRequiredModal />

@@ -1,0 +1,47 @@
+.root {
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+/* Initial hidden states by variant */
+.fadeUp {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.fadeIn {
+  opacity: 0;
+}
+
+.fadeLeft {
+  opacity: 0;
+  transform: translateX(24px);
+}
+
+.fadeRight {
+  opacity: 0;
+  transform: translateX(-24px);
+}
+
+/* Visible state */
+.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .root.visible {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .fadeUp,
+  .fadeIn,
+  .fadeLeft,
+  .fadeRight {
+    opacity: 1;
+    transform: none;
+  }
+}

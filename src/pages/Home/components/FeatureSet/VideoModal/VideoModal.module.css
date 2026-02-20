@@ -137,7 +137,7 @@
   align-items: center;
   justify-content: center;
   min-height: 0;
-  background: #000;
+  background: #ffffff;
   border-left: 2px solid var(--teal-rgba-30);
   border-bottom: 2px solid var(--teal-rgba-30);
   border-top: 2px solid var(--teal-rgba-30);
@@ -153,6 +153,7 @@
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  background: #ffffff;
 }
 
 .controls {

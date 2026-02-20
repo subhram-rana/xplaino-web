@@ -37,6 +37,7 @@
 
 .ctaWrapper {
   position: relative;
+  margin-bottom: 4rem;
 }
 
 .chromeButtonContainer {
@@ -45,11 +46,13 @@
   align-items: center;
   gap: 1.5rem;
   padding: 4rem 4.5rem 3rem;
-  max-width: 1400px;
+  max-width: 800px;
   margin: 0 auto;
   text-align: center;
   position: relative;
   z-index: 1;
+  background: var(--teal-lighter);
+  border-radius: 20px;
 }
 
 /* Bottom gradient fade to white */
@@ -118,6 +121,10 @@
       var(--bg-white);
   }
 
+  .ctaWrapper {
+    margin-bottom: 3rem;
+  }
+
   .chromeButtonContainer {
     padding: 3rem 2rem 2.5rem;
     gap: 1.25rem;
@@ -148,6 +155,10 @@
 
   .home::after {
     background: linear-gradient(270deg, var(--teal-rgba-30) 0%, var(--teal-rgba-15) 50%, transparent 100%);
+  }
+
+  .ctaWrapper {
+    margin-bottom: 2rem;
   }
 
   .chromeButtonContainer {

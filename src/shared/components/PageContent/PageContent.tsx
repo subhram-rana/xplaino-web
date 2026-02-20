@@ -20,10 +20,20 @@ export const PageContent: React.FC<PageContentProps> = ({ children }) => {
   const isUserAccountRoute = location.pathname.startsWith('/user/account');
   const isUserDashboardRoute = location.pathname.startsWith('/user/dashboard');
   
+  const getPageContentClass = () => {
+    if (isHomePage) {
+      return styles.pageContentFullWidthNoBottomPadding;
+    }
+    if (isPdfDetailPage) {
+      return styles.pageContentFullWidth;
+    }
+    return styles.pageContent;
+  };
+
   return (
     <main 
       key={location.pathname}
-      className={`${isHomePage || isPdfDetailPage ? styles.pageContentFullWidth : styles.pageContent} ${!isAdminRoute && !isUserAccountRoute && !isUserDashboardRoute ? styles.fadeIn : ''}`}
+      className={`${getPageContentClass()} ${!isAdminRoute && !isUserAccountRoute && !isUserDashboardRoute ? styles.fadeIn : ''}`}
     >
       {children}
     </main>

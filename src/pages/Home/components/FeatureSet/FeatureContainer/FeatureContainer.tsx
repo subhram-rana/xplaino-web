@@ -7,6 +7,7 @@ interface FeatureContainerProps {
   videoUrl: string;
   bullets: string[];
   icon?: string;
+  thumbnailImage?: string;
 }
 
 /**
@@ -20,7 +21,8 @@ export const FeatureContainer: React.FC<FeatureContainerProps> = ({
   title, 
   videoUrl, 
   bullets,
-  icon
+  icon,
+  thumbnailImage
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoSectionRef = useRef<HTMLDivElement>(null);
@@ -48,20 +50,6 @@ export const FeatureContainer: React.FC<FeatureContainerProps> = ({
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
-  
-  // Check if the video URL is a YouTube embed
-  const isYouTubeEmbed = videoUrl.includes('youtube.com/embed');
-  
-  // Extract YouTube video ID
-  const getYouTubeVideoId = (url: string): string | null => {
-    const videoId = url.split('/embed/')[1]?.split('?')[0];
-    return videoId || null;
-  };
-
-  const youtubeVideoId = isYouTubeEmbed ? getYouTubeVideoId(videoUrl) : null;
-  const youtubeThumbnailUrl = youtubeVideoId
-    ? `https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`
-    : null;
 
   const handleVideoClick = () => {
     setIsModalOpen(true);
@@ -78,40 +66,39 @@ export const FeatureContainer: React.FC<FeatureContainerProps> = ({
         ref={containerRef}
         className={`${styles.featureContainer} ${isExpanded ? styles.expanded : ''} ${isInCenter ? styles.centered : ''}`}
       >
-        {/* Video Section - now shows a static thumbnail, opens modal on click */}
+        {/* Video Section - shows video first frame as thumbnail, opens modal on click */}
         <div 
           ref={videoSectionRef}
           className={styles.videoSection} 
           onClick={handleVideoClick}
         >
-          {isYouTubeEmbed ? (
-            <div className={styles.thumbnailWrapper}>
-              {youtubeThumbnailUrl && (
-                <img
-                  src={youtubeThumbnailUrl}
-                  alt={title}
-                  className={styles.thumbnail}
-                  loading="lazy"
-                />
-              )}
-              <div className={styles.playOverlay} aria-hidden="true">
-                <span className={styles.playIcon}>▶</span>
-              </div>
+          <div className={styles.thumbnailWrapper}>
+            {thumbnailImage ? (
+              <img
+                src={thumbnailImage}
+                alt=""
+                className={styles.thumbnail}
+                aria-hidden
+              />
+            ) : (
+              <video
+                src={videoUrl}
+                preload="metadata"
+                muted
+                playsInline
+                aria-hidden
+                className={styles.thumbnail}
+              />
+            )}
+            <div className={styles.playOverlay} aria-hidden="true">
+              <span className={styles.playIcon}>▶</span>
             </div>
-          ) : (
-            <div className={styles.thumbnailWrapper}>
-              <div className={styles.fallbackThumbnail} />
-              <div className={styles.playOverlay} aria-hidden="true">
-                <span className={styles.playIcon}>▶</span>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Title Section - always visible below video */}
         <div className={styles.titleSection}>
           <h3 className={styles.heading}>
-            {icon && <span className={styles.icon}>{icon}</span>}
             {title}
           </h3>
           
@@ -139,7 +126,7 @@ export const FeatureContainer: React.FC<FeatureContainerProps> = ({
 
       <VideoModal
         isOpen={isModalOpen}
-        videoUrl={isYouTubeEmbed ? `${videoUrl.split('?')[0]}?autoplay=1&mute=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&vq=hd720` : videoUrl}
+        videoUrl={videoUrl}
         title={title}
         bullets={bullets}
         sourceElement={videoSectionRef.current}

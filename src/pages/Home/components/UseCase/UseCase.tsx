@@ -1,4 +1,5 @@
 import React from 'react';
+import { ScrollReveal } from '@/shared/components/ScrollReveal';
 import styles from './UseCase.module.css';
 
 /**
@@ -17,7 +18,8 @@ export const UseCase: React.FC = () => {
   ];
 
   return (
-    <div className={styles.useCaseWrapper}>
+    <ScrollReveal variant="fadeLeft">
+      <div className={styles.useCaseWrapper}>
       <section className={styles.useCase}>
         <h2 className={styles.subheading}>Use cases</h2>
         <div className={styles.scrollingContainer}>
@@ -37,6 +39,7 @@ export const UseCase: React.FC = () => {
         </div>
       </section>
     </div>
+    </ScrollReveal>
   );
 };
 

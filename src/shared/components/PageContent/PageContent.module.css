@@ -13,6 +13,13 @@
   min-height: calc(100vh - 80px);
 }
 
+.pageContentFullWidthNoBottomPadding {
+  padding: 0;
+  padding-bottom: 0;
+  margin: 0;
+  min-height: calc(100vh - 80px);
+}
+
 .fadeIn {
   animation: fadeIn 0.5s ease-in-out forwards;
 }
@@ -39,6 +46,10 @@
   .pageContentFullWidth {
     padding-bottom: 3rem;
   }
+
+  .pageContentFullWidthNoBottomPadding {
+    padding-bottom: 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -50,6 +61,10 @@
 
   .pageContentFullWidth {
     padding-bottom: 2rem;
+  }
+
+  .pageContentFullWidthNoBottomPadding {
+    padding-bottom: 0;
   }
 }
 

@@ -13,7 +13,7 @@ export const PromoText: React.FC = () => {
     <div className={styles.promoText}>
       <div className={styles.badge}>
         <HiSparkles className={styles.badgeIcon} />
-        <span>Multilingual AI summarizer</span>
+        <span>Multilingual AI Research assistant</span>
       </div>
       <h1 className={styles.heading}>
         AI Research Assistant & Webpage Summarizer for <span className={styles.headingHighlight}>Smarter Learning</span>
