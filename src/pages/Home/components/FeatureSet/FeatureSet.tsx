@@ -123,7 +123,15 @@ export const FeatureSet: React.FC = () => {
   return (
     <div className={styles.featureSetWrapper}>
       <section className={styles.featureSet}>
-        <h2 className={styles.subheading}>Key Features</h2>
+        <div className={styles.headingRow}>
+          <div className={styles.comingSoonTeaser} aria-label="Upcoming features">
+            <span className={styles.comingSoonBadge}>Upcoming feature !</span>
+            <span className={styles.comingSoonText}>
+              Summarise any PDF & chat with your documents — we&apos;re building it.
+            </span>
+          </div>
+          <h2 className={styles.subheading}>What you can do today</h2>
+        </div>
         <div className={styles.containerList}>
           {features.map((feature, index) => (
             <ScrollReveal key={feature.id} variant="fadeUp" delay={index * 80}>

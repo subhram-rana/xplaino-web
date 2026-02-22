@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 4rem 4.5rem 5rem;
+  padding: 2.5rem 4.5rem 5rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -21,7 +21,7 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    padding: 3rem 2rem 4rem;
+    padding: 1.5rem 2rem 4rem;
   }
 
   .promoWrapper {
@@ -31,23 +31,23 @@
 
 @media (max-width: 768px) {
   .promo {
-    padding: 2.5rem 1.5rem 3rem;
-    gap: 5rem;
+    padding: 1.75rem 1.5rem 3rem;
+    gap: 3.5rem;
     justify-content: center;
   }
 
   .promoWrapper {
     padding-bottom: 1.5rem;
-    min-height: 100vh;
+    min-height: auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 480px) {
   .promo {
-    padding: 2rem 1rem 2.5rem;
-    gap: 4rem;
+    padding: 1.5rem 1rem 2.5rem;
+    gap: 3rem;
   }
 
   .promoWrapper {
