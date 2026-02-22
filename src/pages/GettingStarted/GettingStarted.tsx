@@ -83,7 +83,7 @@ export const GettingStarted: React.FC = () => {
           <div className={styles.userInstructionSection}>
             <h2 className={styles.userInstructionHeading}>User instruction</h2>
             <div className={styles.refreshTabsBanner}>
-              After installing, refresh any open tabs or open a new one to activate Xplaino.
+              You&apos;re all set! Refresh any open tab or open a new one to start using Xplaino.
             </div>
             <div className={styles.sidebarGuide}>
               <span className={styles.guideLabel}>Use guide</span>
@@ -96,15 +96,15 @@ export const GettingStarted: React.FC = () => {
               <div className={styles.shortcuts}>
                 <div className={styles.shortcutItem}>
                   <span className={styles.shortcutAction}>Summarize page</span>
-                  <span className={styles.shortcutKeyCombo}>{modKey} M</span>
+                  <span className={styles.shortcutKeyCombo}>{modKey} + M</span>
                 </div>
                 <div className={styles.shortcutItem}>
                   <span className={styles.shortcutAction}>Translate page</span>
-                  <span className={styles.shortcutKeyCombo}>{modKey} K</span>
+                  <span className={styles.shortcutKeyCombo}>{modKey} + K</span>
                 </div>
                 <div className={styles.shortcutItem}>
                   <span className={styles.shortcutAction}>Ask about page</span>
-                  <span className={styles.shortcutKeyCombo}>{modKey} B</span>
+                  <span className={styles.shortcutKeyCombo}>{modKey} + B</span>
                 </div>
               </div>
             </div>
