@@ -85,20 +85,16 @@
   }
 
   .metricsRow {
-    gap: 1.75rem;
+    display: none;
   }
 
-  .metricValue {
-    font-size: 1.875rem;
-  }
-
-  .metricLabel {
-    font-size: 0.9375rem;
+  .metricDivider {
+    display: none;
   }
 
   .trustLine {
     font-size: 1.25rem;
-    margin-top: 1rem;
+    margin-top: 0;
   }
 }
 
@@ -109,14 +105,6 @@
 
   .section {
     padding: 0.5rem 1rem 0.5rem;
-  }
-
-  .metricsRow {
-    gap: 1.5rem;
-  }
-
-  .metricValue {
-    font-size: 1.5rem;
   }
 
   .trustLine {

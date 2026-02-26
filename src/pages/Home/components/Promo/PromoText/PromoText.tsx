@@ -1,5 +1,6 @@
 import React from 'react';
 import { HiSparkles } from 'react-icons/hi2';
+import { FiStar, FiGlobe } from 'react-icons/fi';
 import { ChromeButton } from '@/shared/components/ChromeButton';
 import styles from './PromoText.module.css';
 
@@ -21,6 +22,23 @@ export const PromoText: React.FC = () => {
       <p className={styles.description}>
       Xplaino transforms any webpage into structured summaries, contextual explanations, translations, and a personal knowledge system — automatically while you browse
       </p>
+      <div className={styles.mobileMetrics} aria-label="Social proof">
+        <div className={styles.mobileMetric}>
+          <span className={styles.mobileMetricValue}>
+            <FiStar aria-hidden />
+            4.9/5
+          </span>
+          <span className={styles.mobileMetricLabel}>on Chrome Web Store</span>
+        </div>
+        <div className={styles.mobileMetricDivider} aria-hidden />
+        <div className={styles.mobileMetric}>
+          <span className={styles.mobileMetricValue}>
+            <FiGlobe aria-hidden />
+            10+
+          </span>
+          <span className={styles.mobileMetricLabel}>countries</span>
+        </div>
+      </div>
       <ChromeButton />
     </div>
   );
